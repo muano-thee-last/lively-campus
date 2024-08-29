@@ -29,38 +29,7 @@ function Header({ toggleSidebar }) {
                 <h4>Livelycampus</h4>
             </section>
             <section className='header-middle-section'>
-                <input 
-                    type="text" 
-                    className="search" 
-                    placeholder="Search" 
-                    onClick={handleSearchClick} // Show filters on click
-                />
-                <button className='search-button'>
-                    {/* Add content or icon for the search button */}
-                </button>
-                {showFilters && (
-                <div className="filter-options">
-                    <h4>Filter by:</h4>
-                    <div className="filter-option">
-                        <label>Location:</label>
-                        <select>
-                            <option value="all">All</option>
-                            <option value="location1">Location 1</option>
-                            <option value="location2">Location 2</option>
-                            {/* Add more options as needed */}
-                        </select>
-                    </div>
-                    <div className="filter-option">
-                        <label>Type:</label>
-                        <select>
-                            <option value="all">All</option>
-                            <option value="type1">Type 1</option>
-                            <option value="type2">Type 2</option>
-                            {/* Add more options as needed */}
-                        </select>
-                    </div>
-                </div>
-            )}
+               <h1>EVENT MANAGEMENT</h1>
             </section>
             <section className='header-left-section'>
                 <img 

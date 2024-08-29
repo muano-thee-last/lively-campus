@@ -228,13 +228,6 @@
   
   }
 
-  .slider-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden; /* Ensure the container hides overflow */
-    width: 100%;
-  }
   .arrow-button {
     padding: 2%;
     
@@ -257,6 +250,10 @@
     
    
   } 
+
+  .eventManagement2{
+    display: contents;
+  }
   
 
 }
@@ -302,5 +299,79 @@
 }
 .events-section{
   color:#003B5C ;
+}
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  
+}
+
+
+.search-bar {
+ width: 32%;
+  border: 2px solid #0044cc; /* Set border color and width */
+  outline: none; /* Remove the default outline to avoid conflicting styles */
+  border-radius: 4px; /* Optional: Add rounded corners for a better look */
+  padding: 8px; /* Optional: Add padding for better text alignment */
+}
+
+.search-bar:focus {
+  border-color: #0044cc; /* Ensure border color remains blue on focus */
+  box-shadow: 0 0 5px rgba(0, 68, 204, 0.5); /* Optional: Add a subtle shadow for focus */
+}
+
+
+.search-icon {
+  position: absolute;
+  color: #888;
+  font-size: 16px;
+  right: 35%;
+  top: 30%;
+}
+
+.create-event {
+  background-color: #0044cc;
+  color: white;
+  padding: 10px 20px;
+  transform: translateX(50px);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.event-actions {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  gap: 30px;
+  padding: 5px;
+  background: #f9f9f9;
+}
+
+.event-actions svg {
+  cursor: pointer;
+}
+.Capacity{
+  color: #003B5C;
+
+}
+.EventCapacity{
+  display: flex;
+}
+.deleteEvent:hover,
+.deleteEvent:active {
+  color: red; /* Changes the icon color to red on hover and active states */
+  background-color: transparent; /* Keep background transparent if needed */
+}
+.event-management-header{
+
+  position: relative;
+  display: flex;
+  justify-content: center;
+
+}
+.eventManagement2{
+  display: none;
 }
 

@@ -3,10 +3,10 @@ import Header from "./header";
 import Footer from "./footer";
 import SideBar from "./side-bar";
 import MainContent from "./main-content";
-import './dashboard.css';
+import './eventManagement.css';
 
 
-function Dashboard(){
+function EventManagement(){
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -14,7 +14,7 @@ function Dashboard(){
   };
     return(
       <div id='main-footer-separator'>
-        <div id='dashboard'>
+        <div id='eventManagement'>
       <Header toggleSidebar={toggleSidebar}/>
        <div id='content'>
           <SideBar isSidebarOpen={isSidebarOpen}/>
@@ -28,4 +28,4 @@ function Dashboard(){
     )
     
 }
-export default Dashboard;
+export default EventManagement;

@@ -1,12 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
-import Dashboard from "./dashboard/dashboard";
+import EventManagement from "./eventManagement/eventManagement";
 
 function Home() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/dashboard'); 
+    navigate('/eventManagement'); 
   };
 
   return (
@@ -24,7 +24,7 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} /> 
+        <Route path="/eventManagement" element={<EventManagement />} /> 
       </Routes>
     </Router>
   );

@@ -42,6 +42,12 @@
 }
 .header-middle-section{
     flex: 0.6;
+    
+}
+.header-middle-section h1{
+    
+    flex-wrap: nowrap;
+flex-shrink: 0;
 }
 
 .search{
@@ -90,6 +96,7 @@ border-width:1px;
     display: flex;
     align-items: center;
     position: relative; /* Add this for positioning the filter options */
+    justify-content: center;
 }
 
 .filter-options {
@@ -180,3 +187,12 @@ max-width: 100%;
 
   
 }
+@media (max-width: 950px){
+    .header-middle-section h1{
+        font-size: medium;
+        flex-wrap: nowrap;
+    flex-shrink: 0;
+    }
+}
+
+

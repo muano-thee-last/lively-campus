@@ -36,7 +36,7 @@ body {
  
   }
 
- #dashboard{
+ #eventManagement{
       display: flex;
       flex-direction: column;
       flex: 0.8;
@@ -47,7 +47,7 @@ body {
   min-height: 100vh;
  }
  @media (max-width: 600px) {
-  #dashboard{
+  #eventManagement{
     display: flex;
     flex-direction: column;
     flex: 0.8;
