@@ -20,7 +20,6 @@ async function getData() {
 
 const key =  await getData();
 
-console.log(key);
 
 const firebaseConfig = {
   apiKey: key,
