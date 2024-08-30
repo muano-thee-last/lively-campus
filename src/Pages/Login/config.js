@@ -2,30 +2,14 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-async function getData() {
-  const url = "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvVar"; 
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    const json = await response.json();
-    return json.value;
-  } catch (error) {
-    console.error(error.message);
-    throw error; // Re-throw the error to handle it in the calling function
-  }
-}
-
 let app, auth, db;
+const apiUrl = process.env.REACT_APP_API_URL; 
 
 async function initializeFirebase() {
   try {
-    const key = await getData();
-    console.log(key);
 
     const firebaseConfig = {
-      apiKey: key,
+      apiKey: apiUrl, 
       authDomain: "witslivelycampus.firebaseapp.com",
       databaseURL: "https://witslivelycampus-default-rtdb.firebaseio.com",
       projectId: "witslivelycampus",
@@ -38,12 +22,14 @@ async function initializeFirebase() {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app);
+    console.log("Firebase initialized successfully.");
   } catch (error) {
     console.error("Failed to initialize Firebase:", error);
-    // Handle the error appropriately (e.g., show an error message to the user)
+    // You might want to handle the error more gracefully here, like showing a UI message
   }
 }
 
+// Call the function to initialize Firebase
 initializeFirebase();
 
 export { auth, db, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider };
