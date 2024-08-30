@@ -3,8 +3,7 @@
   import { getFirestore } from "firebase/firestore";
 
   let app, auth, db;
-  const apiUrl = process.env.REACT_APP_FIREBASE_API_KEY; 
-  const domain = process.env.REACT_APP_FIREBASE_AUTH_DOMAIN; 
+
 
   async function initializeFirebase() {
     try {
