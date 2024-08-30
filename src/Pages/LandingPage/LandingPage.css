@@ -62,7 +62,7 @@ nav ul li a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url('../asserts/topimage.jpg') no-repeat center center;
+  background: url('../../asserts/topimage.jpg') no-repeat center center;
   background-size: cover;
 }
 

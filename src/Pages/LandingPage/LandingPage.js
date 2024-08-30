@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './LandingPage.css';
-import logo from '../asserts/logo.png';
-import upcomingEventsImg from '../asserts/beer-garden.jpg';
-import upcomingEventsImg2 from '../asserts/festival.jpeg'
-import upcomingEventsImg3 from '../asserts/parade.jpeg'
-import previousEventsImg2 from '../asserts/img.jpg'
-import previousEventImg from '../asserts/previous-event.webp';
-import Login from "../Login/login";
-
+import logo from '../../asserts/logo.png';
+import upcomingEventsImg from '../../asserts/beer-garden.jpg';
+import upcomingEventsImg2 from '../../asserts/festival.jpeg'
+import upcomingEventsImg3 from '../../asserts/parade.jpeg'
+import previousEventsImg2 from '../../asserts/img.jpg'
+import previousEventImg from '../../asserts/previous-event.webp';
+import Login from '../Login/login';
 // Main component for the Landing Page
 function LandingPage() {
   const [showLogin, setShowLogin] = useState(false);

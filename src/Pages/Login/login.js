@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./styles.css";
-import Lgoogle from "../asserts/google.jpeg";
-import Linsta from "../asserts/instagram.jpeg";
-import Lx from "../asserts/twitter.png";
-import Lface from "../asserts/facebookLogo.png"
+import Lgoogle from "../../asserts/google.jpeg";
+import Linsta from "../../asserts/instagram.jpeg";
+import Lx from "../../asserts/twitter.png";
+import Lface from "../../asserts/facebookLogo.png"
 
-import { auth, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider } from "../config";
+import { auth, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider } from "../../config";
 import { signInWithPopup, isSignInWithEmailLink, signInWithEmailLink, sendSignInLinkToEmail } from "firebase/auth";
 
 
