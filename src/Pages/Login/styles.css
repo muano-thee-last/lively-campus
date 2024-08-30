@@ -1,0 +1,90 @@
+.sign-in-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .sign-in-box {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 15px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .sign-in-button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .google {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ddd;
+  }
+  
+  .instagram {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ddd;
+  }
+  
+  .twitter {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ddd;
+  }
+  
+  .email-input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  .or-divider {
+    margin: 15px 0;
+    font-weight: bold;
+  }
+  
+  .email {
+    background-color: #6a11cb;
+    color: #fff;
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+  }
+  
+  .options {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  
+  .EmailSignin {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 15px;
+  }
+  
+  .EmailSignin p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  

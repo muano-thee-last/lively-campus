@@ -1,11 +1,9 @@
 import React from "react";
-
+import LandingPage from "./Pages/LandingPage/LandingPage";
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Hello, World!</h1>
-      </header>
+        <LandingPage/>
     </div>
   );
 }
