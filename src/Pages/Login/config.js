@@ -14,7 +14,7 @@ async function getData() {
     return json.value;
   } catch (error) {
     console.error(error.message);
-  }
+  } 
 }
 
 

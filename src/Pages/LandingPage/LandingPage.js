@@ -7,6 +7,9 @@ import upcomingEventsImg3 from '../../asserts/parade.jpeg'
 import previousEventsImg2 from '../../asserts/img.jpg'
 import previousEventImg from '../../asserts/previous-event.webp';
 import Login from '../Login/login';
+import Home from '../Home/Home';
+import { Routes, Route } from "react-router-dom";
+
 // Main component for the Landing Page
 function LandingPage() {
   const [showLogin, setShowLogin] = useState(false);
@@ -64,6 +67,9 @@ function LandingPage() {
       <Footer />
 
       {showLogin && <LoginModal handleCloseLogin={handleCloseLogin} />}
+      <Routes>
+        <Route path="/home" element={<Home />} />
+      </Routes>
     </div>
   );
 }
