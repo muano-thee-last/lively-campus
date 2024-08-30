@@ -8,8 +8,7 @@ import Lface from "../../asserts/facebookLogo.png"
 import { auth, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider } from "./config";
 import { signInWithPopup, isSignInWithEmailLink, signInWithEmailLink, sendSignInLinkToEmail } from "firebase/auth";
 
-console.log("API URL:", process.env.REACT_APP_FIREBASE_API_KEY);
-console.log("Environment Variables:", process.env);
+
 
 
 const Authenticate = (platform, email = null) => {
@@ -17,7 +16,7 @@ const Authenticate = (platform, email = null) => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        handleSignIn(result, "Google");
+        handleSignIn(result, "Google"); 
       })
       .catch((error) => {
         console.error("Error signing in with Google:", error);
