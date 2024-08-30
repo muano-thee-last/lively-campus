@@ -1,10 +1,6 @@
-  import { initializeApp } from "firebase/app";
-  import { getAuth, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider } from "firebase/auth";
-  import { getFirestore } from "firebase/firestore";
-
-  let app, auth, db;
-
-
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 
 async function getData() {
@@ -24,6 +20,7 @@ async function getData() {
 
 const key =  await getData();
 
+console.log(key);
 
 const firebaseConfig = {
   apiKey: key,
@@ -35,6 +32,9 @@ const firebaseConfig = {
   appId: "1:61229245877:web:44c304d1f7eed94b9065fc"
 };
 
-  initializeFirebase();
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  export { auth, db, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider };
+export { auth, db, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider };
