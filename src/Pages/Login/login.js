@@ -8,6 +8,9 @@ import Lface from "../../asserts/facebookLogo.png"
 import { auth, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider } from "./config";
 import { signInWithPopup, isSignInWithEmailLink, signInWithEmailLink, sendSignInLinkToEmail } from "firebase/auth";
 
+console.log("API URL:", process.env.REACT_APP_FIREBASE_API_KEY);
+console.log("Environment Variables:", process.env);
+
 
 const Authenticate = (platform, email = null) => {
   if (platform === "Google") {
