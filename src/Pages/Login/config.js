@@ -9,7 +9,7 @@
 
       const firebaseConfig = {
         apiKey: process.env.REACT_APP_FIREBASE_API_KEY , 
-        authDomain: domain,
+        authDomain: "witslivelycampus.firebaseapp.com",
         databaseURL: "https://witslivelycampus-default-rtdb.firebaseio.com",
         projectId: "witslivelycampus",
         storageBucket: "witslivelycampus.appspot.com",
