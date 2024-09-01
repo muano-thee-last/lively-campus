@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage/LandingPage";
 import Home from "./Pages/Home/Home";
-
+import VerifyEmail from "./Pages/Login/verifyEmail";
 // Define the App component
 function App() {
   return (
@@ -11,6 +11,8 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+
       </Routes>
     </Router>
   );

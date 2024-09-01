@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import "./styles.css";
 import Lgoogle from '../../asserts/google.jpeg';
 import Linsta from '../../asserts/instagram.jpeg';
@@ -18,7 +18,7 @@ const Authenticate = (platform, email = null, navigate) => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        handleSignIn(result, "Google", navigate); // Pass navigate here
+        handleSignIn(result, "Google", navigate); 
       })
       .catch((error) => {
         console.error("Error signing in with Google:", error);
@@ -29,7 +29,7 @@ const Authenticate = (platform, email = null, navigate) => {
     const provider = new TwitterAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        handleSignIn(result, "Twitter", navigate); // Pass navigate here
+        handleSignIn(result, "Twitter", navigate); 
       })
       .catch((error) => {
         console.error("Error signing in with Twitter:", error);
@@ -38,7 +38,7 @@ const Authenticate = (platform, email = null, navigate) => {
     const provider = new FacebookAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        handleSignIn(result, "Facebook", navigate); // Pass navigate here
+        handleSignIn(result, "Facebook", navigate); 
       })
       .catch((error) => {
         console.error("Error signing in with Facebook:", error);
@@ -47,10 +47,11 @@ const Authenticate = (platform, email = null, navigate) => {
     if (email && isSignInWithEmailLink(auth, window.location.href)) {
       signInWithEmailLink(auth, email, window.location.href)
         .then((result) => {
-          handleSignIn(result, "Email", navigate); // Pass navigate here
+          handleSignIn(result, "Email", navigate);
         })
         .catch((error) => {
           console.error("Error signing in with email link:", error);
+          // Add error handling here, e.g., show an error message to the user
         });
     }
   }
@@ -90,7 +91,7 @@ const handleSignIn = async (result, platform, navigate) => {
       alert("Account successfully created");
     } else {
       // Navigate to home page or dashboard
-      navigate('/home'); //
+      navigate('/home');
     }
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error);
@@ -100,10 +101,14 @@ const handleSignIn = async (result, platform, navigate) => {
 function SignIn() {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-  const navigate = useNavigate(); 
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isSignInWithEmailLink(auth, window.location.href)) {
+      setIsVerifying(true);
       let emailForSignIn = window.localStorage.getItem('emailForSignIn');
       if (!emailForSignIn) {
         emailForSignIn = window.prompt('Please provide your email for confirmation');
@@ -112,6 +117,7 @@ function SignIn() {
         setEmail(emailForSignIn);
         Authenticate("Email", emailForSignIn, navigate);
       }
+      setIsVerifying(false);
     }
   }, [navigate]);
 
@@ -120,8 +126,10 @@ function SignIn() {
   };
 
   const sendEmailVerificationLink = () => {
+    setError(null);
+    setIsSendingEmail(true);
     const actionCodeSettings = {
-      url: `${window.location.origin}/verify-email`, 
+      url: `${window.location.origin}/verify-email`,
       handleCodeInApp: true,
     };
 
@@ -129,41 +137,53 @@ function SignIn() {
       .then(() => {
         window.localStorage.setItem('emailForSignIn', email);
         setEmailSent(true);
-        alert("Verification link sent to your email.");
       })
       .catch((error) => {
         console.error("Error sending email verification link:", error);
-        alert("Failed to send email. Please try again.");
+        setError("Failed to send email. Please try again.");
+      })
+      .finally(() => {
+        setIsSendingEmail(false);
       });
   };
+
+  if (isVerifying) {
+    return (
+      <div className="sign-in-container">
+        <div className="sign-in-box">
+          <p>Verifying your email...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="sign-in-container">
       <div className="sign-in-box">
         <button
           className="sign-in-button google"
-          onClick={() => Authenticate("Google", null, navigate)} // Pass navigate here
+          onClick={() => Authenticate("Google", null, navigate)} 
         >
           <img src={Lgoogle} alt="Google Icon" className="options" />
           Continue with Google
         </button>
         <button
           className="sign-in-button instagram"
-          onClick={() => Authenticate("Instagram", null, navigate)} // Pass navigate here
+          onClick={() => Authenticate("Instagram", null, navigate)} 
         >
           <img src={Linsta} alt="Instagram Icon" className="options" />
           Continue with Instagram
         </button>
         <button
           className="sign-in-button twitter"
-          onClick={() => Authenticate("Twitter", null, navigate)} // Pass navigate here
+          onClick={() => Authenticate("Twitter", null, navigate)} 
         >
           <img src={Lx} alt="Twitter Icon" className="options" />
           Continue with Twitter
         </button>
         <button
           className="sign-in-button facebook"
-          onClick={() => Authenticate("Facebook", null, navigate)} // Pass navigate here
+          onClick={() => Authenticate("Facebook", null, navigate)} 
         >
           <img src={Lface} alt="Facebook Icon" className="options" />
           Continue with Facebook
@@ -178,17 +198,24 @@ function SignIn() {
             className="email-input"
             value={email}
             onChange={handleEmailInput}
-            disabled={emailSent}
+            disabled={emailSent || isSendingEmail}
           />
         </div>
 
         <button
           className="sign-in-button email"
           onClick={sendEmailVerificationLink}
-          disabled={emailSent}
+          disabled={emailSent || isSendingEmail}
         >
-          {emailSent ? "Verification Email Sent" : "Send Verification Link"}
+          {isSendingEmail ? "Sending..." : emailSent ? "Verification Email Sent" : "Send Verification Link"}
         </button>
+
+        {error && <p className="error-message">{error}</p>}
+        {emailSent && (
+          <p className="success-message">
+            A verification link has been sent to your email. Please check your inbox and click the link to sign in.
+          </p>
+        )}
       </div>
     </div>
   );
