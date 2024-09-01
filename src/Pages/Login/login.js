@@ -12,6 +12,8 @@ import {
   signInWithEmailLink, 
   sendSignInLinkToEmail 
 } from "firebase/auth";
+import createNewUser from "./createNewUser";
+
 
 const Authenticate = (platform, email = null, navigate) => {
   if (platform === "Google") {
@@ -60,13 +62,6 @@ const Authenticate = (platform, email = null, navigate) => {
 
 const handleSignIn = async (result, platform, navigate) => {
   const userID = result.user.uid;
-  const user = {
-    UserID: userID,
-    FirstName: result.user.displayName,
-    LastName: result.user.displayName,
-    profile_picture: result.user.photoURL,
-    Email: result.user.email,
-  };
 
   const url = `https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userID}`;
 
@@ -81,15 +76,20 @@ const handleSignIn = async (result, platform, navigate) => {
     const existingUser = await response.json();
 
     if (existingUser.error) {
-      const createUserUrl = "https://us-central1-witslivelycampus.cloudfunctions.net/app/users";
-      await fetch(createUserUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      alert("Account successfully created");
+ 
+      const userResponse = window.confirm(
+        "You don't have an account yet, press okay to create a new one"
+      );
+
+      if (userResponse) {
+        // Create a new user
+        createNewUser(result);
+        navigate("/home")
+      } else {
+        navigate("/");
+      }
+
+
     } else {
       // Navigate to home page or dashboard
       navigate('/home');
