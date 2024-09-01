@@ -47,11 +47,12 @@ const Authenticate = (platform, email = null, navigate) => {
     if (email && isSignInWithEmailLink(auth, window.location.href)) {
       signInWithEmailLink(auth, email, window.location.href)
         .then((result) => {
+          window.localStorage.setItem("res", JSON.stringify(result));
+          console.log(result);
           handleSignIn(result, "Email", navigate);
         })
         .catch((error) => {
           console.error("Error signing in with email link:", error);
-          // Add error handling here, e.g., show an error message to the user
         });
     }
   }
@@ -125,6 +126,8 @@ function SignIn() {
     setEmail(event.target.value);
   };
 
+
+  //goes to verify email
   const sendEmailVerificationLink = () => {
     setError(null);
     setIsSendingEmail(true);
