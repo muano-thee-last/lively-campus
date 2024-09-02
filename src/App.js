@@ -1,7 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage/LandingPage";
-import Home from "./Pages/Home/Home";
+
+import Dashboard from "./Pages/dashboard/dashboard";
 
 // Define the App component
 function App() {
@@ -9,8 +10,8 @@ function App() {
     // Top-level Router component
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="*" element={<LandingPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );
