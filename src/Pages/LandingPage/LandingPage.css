@@ -354,19 +354,19 @@ nav ul li a:hover {
 /* Styles the login modal */
 .login-modal {
   position: fixed;
-  top: 50%;
+  top: 2%;
+  bottom: 2%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 400px;
-  background: white;
+  width: 400px;
+  height: 1px;
+  background: transparent;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 101;
+  z-index: 1000;
 }
 
-/* Styles the close button for the login modal */
 .close-button {
   position: absolute;
   top: 10px;
@@ -380,10 +380,9 @@ nav ul li a:hover {
   text-align: center;
   line-height: 30px;
   cursor: pointer;
-  z-index: 102;
+  z-index: 1001;
 }
 
-/* Adds hover effect to the close button */
 .close-button:hover {
   background-color: darkred;
 }
