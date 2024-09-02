@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import "./styles.css";
 import Lgoogle from '../../asserts/google.jpeg';
 import Linsta from '../../asserts/instagram.jpeg';
@@ -12,6 +12,8 @@ import {
   signInWithEmailLink, 
   sendSignInLinkToEmail 
 } from "firebase/auth";
+import createNewUser from "./createNewUser";
+
 
 const Authenticate = (platform, email = null, navigate) => {
   if (platform === "Google") {
@@ -47,7 +49,9 @@ const Authenticate = (platform, email = null, navigate) => {
     if (email && isSignInWithEmailLink(auth, window.location.href)) {
       signInWithEmailLink(auth, email, window.location.href)
         .then((result) => {
-          handleSignIn(result, "Email", navigate); 
+          window.localStorage.setItem("res", JSON.stringify(result));
+          console.log(result);
+          handleSignIn(result, "Email", navigate);
         })
         .catch((error) => {
           console.error("Error signing in with email link:", error);
@@ -58,13 +62,6 @@ const Authenticate = (platform, email = null, navigate) => {
 
 const handleSignIn = async (result, platform, navigate) => {
   const userID = result.user.uid;
-  const user = {
-    UserID: userID,
-    FirstName: result.user.displayName,
-    LastName: result.user.displayName,
-    profile_picture: result.user.photoURL,
-    Email: result.user.email,
-  };
 
   const url = `https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userID}`;
 
@@ -79,17 +76,23 @@ const handleSignIn = async (result, platform, navigate) => {
     const existingUser = await response.json();
 
     if (existingUser.error) {
-      const createUserUrl = "https://us-central1-witslivelycampus.cloudfunctions.net/app/users";
-      await fetch(createUserUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      alert("Account successfully created");
+ 
+      const userResponse = window.confirm(
+        "You don't have an account yet, press okay to create a new one"
+      );
+
+      if (userResponse) {
+        // Create a new user
+        createNewUser(result);
+        navigate("/Dashboard")
+      } else {
+        navigate("/");
+      }
+
+
     } else {
-      navigate('/dashboard'); 
+      // Navigate to home page or dashboard
+      navigate('/Dashboard');
     }
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error);
@@ -99,10 +102,14 @@ const handleSignIn = async (result, platform, navigate) => {
 function SignIn() {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-  const navigate = useNavigate(); 
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isSignInWithEmailLink(auth, window.location.href)) {
+      setIsVerifying(true);
       let emailForSignIn = window.localStorage.getItem('emailForSignIn');
       if (!emailForSignIn) {
         emailForSignIn = window.prompt('Please provide your email for confirmation');
@@ -111,6 +118,7 @@ function SignIn() {
         setEmail(emailForSignIn);
         Authenticate("Email", emailForSignIn, navigate);
       }
+      setIsVerifying(false);
     }
   }, [navigate]);
 
@@ -118,9 +126,13 @@ function SignIn() {
     setEmail(event.target.value);
   };
 
+
+  //goes to verify email
   const sendEmailVerificationLink = () => {
+    setError(null);
+    setIsSendingEmail(true);
     const actionCodeSettings = {
-      url: `${window.location.origin}/verify-email`, 
+      url: `${window.location.origin}/verify-email`,
       handleCodeInApp: true,
     };
 
@@ -128,13 +140,25 @@ function SignIn() {
       .then(() => {
         window.localStorage.setItem('emailForSignIn', email);
         setEmailSent(true);
-        alert("Verification link sent to your email.");
       })
       .catch((error) => {
         console.error("Error sending email verification link:", error);
-        alert("Failed to send email. Please try again.");
+        setError("Failed to send email. Please try again.");
+      })
+      .finally(() => {
+        setIsSendingEmail(false);
       });
   };
+
+  if (isVerifying) {
+    return (
+      <div className="sign-in-container">
+        <div className="sign-in-box">
+          <p>Verifying your email...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="sign-in-container">
@@ -177,17 +201,24 @@ function SignIn() {
             className="email-input"
             value={email}
             onChange={handleEmailInput}
-            disabled={emailSent}
+            disabled={emailSent || isSendingEmail}
           />
         </div>
 
         <button
           className="sign-in-button email"
           onClick={sendEmailVerificationLink}
-          disabled={emailSent}
+          disabled={emailSent || isSendingEmail}
         >
-          {emailSent ? "Verification Email Sent" : "Send Verification Link"}
+          {isSendingEmail ? "Sending..." : emailSent ? "Verification Email Sent" : "Send Verification Link"}
         </button>
+
+        {error && <p className="error-message">{error}</p>}
+        {emailSent && (
+          <p className="success-message">
+            A verification link has been sent to your email. Please check your inbox and click the link to sign in.
+          </p>
+        )}
       </div>
     </div>
   );
