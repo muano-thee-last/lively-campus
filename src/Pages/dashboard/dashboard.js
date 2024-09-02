@@ -1,9 +1,10 @@
 import React,{useState} from 'react';
 import Header from "./header";
 import Footer from "./footer";
-import SideBar from "./side-bar";
+import SideBar from "./side-bar"
 import MainContent from "./main-content";
 import './dashboard.css';
+
 
 
 function Dashboard(){

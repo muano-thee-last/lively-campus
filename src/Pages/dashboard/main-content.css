@@ -7,7 +7,7 @@
   padding-bottom: 4%;
 }
 
-.events-section {
+.dashboard-events-section {
   display: flex;
   flex-direction: column;
   gap: 3vh;
@@ -29,7 +29,7 @@
   width: 100%;
 }
 
-.card-container {
+.dashboard-card-container {
   display: flex;
   gap: 20px; /* Space between cards */
   transition: transform 0.3s ease;
@@ -41,7 +41,7 @@
   padding: 2%;
 }
 
-.card {
+.dashboard-card {
   flex: 0 0 30%; /* Adjust width to fit 3 cards */
   height: 40vh; /* Increased height */
   background: #ffffff;
@@ -112,7 +112,7 @@
  
 } 
 
-.card:hover {
+.dashboard-card:hover {
 
   box-shadow: 0px 0px 6px 3px rgba(1, 33, 63, 0.3);
   transform: scale(1.01);
@@ -214,7 +214,7 @@
 
 
 @media (max-width: 950px) {
-  .card-container {
+  .dashboard-card-container {
     width: 100%; /* Show only one card at a time */
     gap: 7%; /* Remove gap to fit one card properly */
     
@@ -240,11 +240,11 @@
     
     
   }
-  .card {
+  .dashboard-card {
     flex: 0 0 85%; /* Make each card take up the full width */
     height: 42vh; /* Adjust height to fit the screen better */
   }
-  .card:hover {
+  .dashboard-card:hover {
 
     box-shadow: 0px 0px 6px 1px rgba(0, 47, 92, 0.3);
   
@@ -263,7 +263,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-  .card-container {
+  .dashboard-card-container {
     width: 100%; /* Show only one card at a time */
     gap: 7%; /* Remove gap to fit one card properly */
     
@@ -300,7 +300,7 @@
    
   } 
 }
-.events-section{
+.dashboard-events-section{
   color:#003B5C ;
 }
 

@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import './main-content.css';
 import profile from './images-logos/profile-logo.jpg';
 import comments from './images-logos/comments.jpeg';
-import media from './images-logos/media.jpg';
+
 
 function MainContent() {
   const [events, setEvents] = useState([]);
@@ -46,14 +46,14 @@ function MainContent() {
 
   return (
     <div id='main-content'>
-      <div className='events-section'>
+      <div className='dashboard-events-section'>
         <h2>Upcoming Events</h2>
         <div className='slider-container'>
           <button className='arrow-button left' onClick={() => handleScroll(upcomingSlider, 'left')} role='button'>‹</button>
           <div className='slider'>
-            <div className='card-container' ref={upcomingSlider}>
+            <div className='dashboard-card-container' ref={upcomingSlider}>
               {events.map((event, index) => (
-                <div className='card' key={index}>
+                <div className='dashboard-card' key={index}>
                   <div className='card-first-row'>
                     <h4 className='event-title'>{event.title}</h4>
                   </div>
@@ -62,7 +62,7 @@ function MainContent() {
                     <p className='event-organizer'>{event.organizer}</p>
                   </div>
                   <div className='card-third-row'>
-                    <img className='event-images' src={media} alt='Event' />
+                    <img className='event-images' src={event.image} alt='Event' />
                   </div>
                   <div className='card-fourth-row'>
                     <div className='like-comment'>
