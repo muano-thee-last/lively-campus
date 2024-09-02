@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom"; 
 import "./styles.css";
 import Lgoogle from '../../asserts/google.jpeg';
 import Linsta from '../../asserts/instagram.jpeg';
@@ -18,7 +18,7 @@ const Authenticate = (platform, email = null, navigate) => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        handleSignIn(result, "Google", navigate); // Pass navigate here
+        handleSignIn(result, "Google", navigate); 
       })
       .catch((error) => {
         console.error("Error signing in with Google:", error);
@@ -29,7 +29,7 @@ const Authenticate = (platform, email = null, navigate) => {
     const provider = new TwitterAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        handleSignIn(result, "Twitter", navigate); // Pass navigate here
+        handleSignIn(result, "Twitter", navigate); 
       })
       .catch((error) => {
         console.error("Error signing in with Twitter:", error);
@@ -38,7 +38,7 @@ const Authenticate = (platform, email = null, navigate) => {
     const provider = new FacebookAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        handleSignIn(result, "Facebook", navigate); // Pass navigate here
+        handleSignIn(result, "Facebook", navigate); 
       })
       .catch((error) => {
         console.error("Error signing in with Facebook:", error);
@@ -47,7 +47,7 @@ const Authenticate = (platform, email = null, navigate) => {
     if (email && isSignInWithEmailLink(auth, window.location.href)) {
       signInWithEmailLink(auth, email, window.location.href)
         .then((result) => {
-          handleSignIn(result, "Email", navigate); // Pass navigate here
+          handleSignIn(result, "Email", navigate); 
         })
         .catch((error) => {
           console.error("Error signing in with email link:", error);
@@ -89,8 +89,7 @@ const handleSignIn = async (result, platform, navigate) => {
       });
       alert("Account successfully created");
     } else {
-      // Navigate to home page or dashboard
-      navigate('/home'); //
+      navigate('/dashboard'); 
     }
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error);
@@ -142,28 +141,28 @@ function SignIn() {
       <div className="sign-in-box">
         <button
           className="sign-in-button google"
-          onClick={() => Authenticate("Google", null, navigate)} // Pass navigate here
+          onClick={() => Authenticate("Google", null, navigate)} 
         >
           <img src={Lgoogle} alt="Google Icon" className="options" />
           Continue with Google
         </button>
         <button
           className="sign-in-button instagram"
-          onClick={() => Authenticate("Instagram", null, navigate)} // Pass navigate here
+          onClick={() => Authenticate("Instagram", null, navigate)} 
         >
           <img src={Linsta} alt="Instagram Icon" className="options" />
           Continue with Instagram
         </button>
         <button
           className="sign-in-button twitter"
-          onClick={() => Authenticate("Twitter", null, navigate)} // Pass navigate here
+          onClick={() => Authenticate("Twitter", null, navigate)} 
         >
           <img src={Lx} alt="Twitter Icon" className="options" />
           Continue with Twitter
         </button>
         <button
           className="sign-in-button facebook"
-          onClick={() => Authenticate("Facebook", null, navigate)} // Pass navigate here
+          onClick={() => Authenticate("Facebook", null, navigate)} 
         >
           <img src={Lface} alt="Facebook Icon" className="options" />
           Continue with Facebook
