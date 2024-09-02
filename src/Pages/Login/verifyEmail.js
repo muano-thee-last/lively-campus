@@ -64,6 +64,7 @@ function VerifyEmail() {
               if (userResponse) {
                 // Create a new user
                 createNewUser(result);
+                navigate("/Dashboard");
               } else {
                 // Go back to the landing page
                 navigate("/");
@@ -74,7 +75,7 @@ function VerifyEmail() {
             setVerificationStatus(
               "Email verified successfully! Redirecting..."
             );
-            setTimeout(() => navigate("/home"), 2000);
+            setTimeout(() => navigate("/Dashboard"), 2000);
           } catch (error) {
             console.error("Error signing in with email link:", error);
             setVerificationStatus("Verification failed. Please try again.");
