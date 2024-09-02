@@ -17,18 +17,6 @@ describe('App Component', () => {
     expect(screen.getByText(/Landing Page Content/i)).toBeInTheDocument();
   });
 
-  test('renders Home component at /home path', () => {
-    window.history.pushState({}, 'Test Page', '/home');
-
-    render(
-      <Router>
-        <App />
-      </Router>
-    );
-
-    // Check if the Home component is rendered
-    expect(screen.getByText(/Home Page Content/i)).toBeInTheDocument();
-  });
 
   test('renders VerifyEmail component at /verify-email path', () => {
     window.history.pushState({}, 'Test Page', '/verify-email');

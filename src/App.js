@@ -9,7 +9,7 @@ function App() {
   return (
     <Router>
       <Routes>
-      <Route path="*" element={<LandingPage />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
 

@@ -22,7 +22,6 @@ async function checkUserExistsAlready(email) {
     }
 
     const json = await response.json();
-    console.log(json);
 
     return !json.message;
   } catch (error) {
@@ -54,6 +53,10 @@ function VerifyEmail() {
               email,
               window.location.href
             );
+            const myUID = result.user.uid;
+
+            sessionStorage.setItem("uid", myUID);
+
 
             const userExists = await checkUserExistsAlready(email);
             if (!userExists) {
@@ -62,7 +65,6 @@ function VerifyEmail() {
               );
 
               if (userResponse) {
-                // Create a new user
                 createNewUser(result);
                 navigate("/Dashboard");
               } else {
@@ -75,6 +77,7 @@ function VerifyEmail() {
             setVerificationStatus(
               "Email verified successfully! Redirecting..."
             );
+
             setTimeout(() => navigate("/Dashboard"), 2000);
           } catch (error) {
             console.error("Error signing in with email link:", error);

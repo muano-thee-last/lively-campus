@@ -63,6 +63,7 @@ const Authenticate = (platform, email = null, navigate) => {
 const handleSignIn = async (result, platform, navigate) => {
   const userID = result.user.uid;
 
+  sessionStorage.setItem("uid", userID);
   const url = `https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userID}`;
 
   try {
@@ -83,6 +84,7 @@ const handleSignIn = async (result, platform, navigate) => {
 
       if (userResponse) {
         // Create a new user
+
         createNewUser(result);
         navigate("/Dashboard")
       } else {
