@@ -4,6 +4,7 @@ async function createNewUser(result){
 
     const userID = result.user.uid;
 
+    sessionStorage.setItem("uid", userID);
     const user = {
         UserID: userID,
         FirstName: result.user.displayName,
