@@ -117,7 +117,10 @@ function EventsSection({ title, images, currentIndex, handleDotClick, showBookNo
       <div
         className="card"
         style={{
-          backgroundImage: `url(${images[currentIndex]})`
+          backgroundImage: `url(${images[currentIndex]})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
         <div className="event-content">
