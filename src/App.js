@@ -1,31 +1,20 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
-import Dashboard from "./dashboard/dashboard";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./Pages/LandingPage/LandingPage";
+import Home from "./Pages/Home/Home";
 
-function Home() {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate('/dashboard'); 
-  };
-
+// Define the App component
+function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Hello, World!</h1>
-        <button onClick={handleClick}>Login</button>
-      </header>
-    </div>
-  );
-}
-
-export default function App() {
-  return (
+    // Top-level Router component
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} /> 
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </Router>
   );
 }
+
+// Export the App component as the default export
+export default App;
