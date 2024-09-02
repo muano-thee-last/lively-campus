@@ -84,7 +84,7 @@ const handleSignIn = async (result, platform, navigate) => {
       if (userResponse) {
         // Create a new user
         createNewUser(result);
-        navigate("/home")
+        navigate("/Dashboard")
       } else {
         navigate("/");
       }
@@ -92,7 +92,7 @@ const handleSignIn = async (result, platform, navigate) => {
 
     } else {
       // Navigate to home page or dashboard
-      navigate('/home');
+      navigate('/Dashboard');
     }
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error);
