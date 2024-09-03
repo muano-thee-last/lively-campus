@@ -1,13 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './main-content.css';
 import profile from './images-logos/profile-logo.jpg';
 import comments from './images-logos/comments.jpeg';
-
 
 function MainContent() {
   const [events, setEvents] = useState([]);
   const [liked, setLiked] = useState([]);
   const upcomingSlider = useRef(null);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events')
@@ -23,10 +24,9 @@ function MainContent() {
       })
       .catch(error => {
         console.error('Error fetching events:', error);
-        // You might want to set an error state here to display a message to users
+        // Optionally, handle error state here
       });
   }, []);
-  
 
   const handleScroll = (slider, direction) => {
     if (slider.current) {
@@ -42,6 +42,10 @@ function MainContent() {
       updatedLiked[index] = !updatedLiked[index];
       return updatedLiked;
     });
+  };
+
+  const handleViewDetails = (id) => {
+    navigate(`/details/${id}`); // Navigate to the ViewMoreDetails page with event ID
   };
 
   return (
@@ -77,7 +81,7 @@ function MainContent() {
                       <img src={comments} alt='Comments' className='comments-image' />
                       <p className='like-count'>likes {event.likes}</p>
                     </div>
-                    <button className='details-button'>View more details</button>
+                    <button className='details-button' onClick={() => handleViewDetails(event.id)}>View more details</button> {/* Pass event ID */}
                   </div>
                 </div>
               ))}
@@ -91,3 +95,4 @@ function MainContent() {
 }
 
 export default MainContent;
+
