@@ -62,7 +62,7 @@ function MainContent() {
                     <p className='event-organizer'>{event.organizer}</p>
                   </div>
                   <div className='card-third-row'>
-                    <img className='event-images' src={event.image} alt='Event' />
+                    <img className='event-images' src={event.imageUrl} alt='Event' />
                   </div>
                   <div className='card-fourth-row'>
                     <div className='like-comment'>
