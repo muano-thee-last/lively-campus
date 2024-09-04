@@ -16,7 +16,6 @@ import {useNavigate} from "react-router-dom"
 
 const EVENTS_API =
   "https://us-central1-witslivelycampus.cloudfunctions.net/app/events";
-const VENUE_API = null;
 const MAP_API_KEY = process.env.REACT_APP_GOOGLE_MAP_API_KEY;
 
 
@@ -24,7 +23,6 @@ const MAP_API_KEY = process.env.REACT_APP_GOOGLE_MAP_API_KEY;
 
 
 export default function EventCreation() {
-  const userData = JSON.parse(sessionStorage.getItem("user"));
   let availableVenues;
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = React.useState(false);

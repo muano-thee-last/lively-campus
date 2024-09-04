@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import "../EventCreation/styles/main-content.css";
 import "../EventCreation/styles/Profile.css";
 import genderLogo from "../EventCreation/images-logos/gender-male.svg";
@@ -37,7 +37,7 @@ export default function Profile() {
         <SideBar isSidebarOpen={isSidebarOpen} />
         <div className="profile">
           <div className="wits-background-picture">
-            <img src={witsBackground} className="wits-background" />
+            <img src={witsBackground} className="wits-background" alt="background"/>
           </div>
           <div className="picture-container">
             <img src={myImg} className="profile-picture" alt="profile-pic" />
@@ -50,19 +50,19 @@ export default function Profile() {
             <h2 className="bold-title">About</h2>
             <div className="details-container">
               <div>
-                <img src={genderLogo} />
+                <img src={genderLogo} alt="gender" />
                 <span>{gender}</span>
               </div>
               <div>
-                <img src={birthdayLogo} />
+                <img src={birthdayLogo} alt="dob" />
                 <span>{birthday}</span>
               </div>
               <div>
-                <img src={emailLogo} />
+                <img src={emailLogo} alt="email" />
                 <span>{email}</span>
               </div>
               <div>
-                <img src={phoneLogo} />
+                <img src={phoneLogo} alt="phone"/>
                 <span>{phone}</span>
               </div>
             </div>
