@@ -10,7 +10,7 @@ function App() {
     <Router>
       <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/Dashboard" element={<Dashboard />} />
+      <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
 
       </Routes>
