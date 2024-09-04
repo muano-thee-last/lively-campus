@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // For accessing route parameters
-import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaTicketAlt } from 'react-icons/fa'; // Icons
-import './MainContent.css'; // Add CSS file for styling
+import { useParams } from 'react-router-dom'; 
+import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaTicketAlt } from 'react-icons/fa'; 
+import './MainContent.css'; 
 
 function MainContent() {
-  const { id } = useParams(); // Get the event ID from the URL
+  const { id } = useParams(); 
   const [event, setEvent] = useState(null);
+  const [googleMapsApiKey, setGoogleMapsApiKey] = useState(null); 
 
   useEffect(() => {
     fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${id}`)
@@ -20,15 +21,30 @@ function MainContent() {
       })
       .catch(error => {
         console.error('Error fetching event details:', error);
-        // Optionally, handle error state here
       });
   }, [id]);
 
-  if (!event) {
-    return <p>Loading...</p>; // Show loading state while fetching data
-  }
+  useEffect(() => {
+    const getGoogleKey = async () => {
+      const url = "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvgoogle"; 
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+        const json = await response.json();
+        setGoogleMapsApiKey(json.value);
+      } catch (error) {
+        console.error('Error fetching Google Maps API key:', error);
+      }
+    };
 
-  const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    getGoogleKey();
+  }, []); 
+
+  if (!event || !googleMapsApiKey) {
+    return <p>Loading...</p>; 
+  }
 
   return (
     <div className="view-more-details">
@@ -67,15 +83,11 @@ function MainContent() {
       <div className="event-venue-location">
         <h2>Venue and Location</h2>
         <div className="map-container">
-
-        <iframe
+          <iframe
             title={`Map showing location of ${event.location}`}
             src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(event.location)}`}
             allowFullScreen
           ></iframe>
-
-    
-          
         </div>
       </div>
 
@@ -88,4 +100,5 @@ function MainContent() {
 }
 
 export default MainContent;
+
 
