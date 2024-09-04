@@ -10,9 +10,15 @@ function App() {
     <Router>
       <Routes>
       <Route path="/" element={<LandingPage />} />
+<<<<<<< HEAD
       <Route path="/Dashboard" element={<Dashboard />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/Notifications" element={<Notifications/> } />
+=======
+      <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+
+>>>>>>> 14248faded82bc3edd01fae5467a2e7774420170
       </Routes>
     </Router>
   );

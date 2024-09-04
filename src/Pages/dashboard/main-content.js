@@ -30,7 +30,7 @@ function MainContent() {
 
   const handleScroll = (slider, direction) => {
     if (slider.current) {
-      const cardWidth = slider.current.querySelector('.card').offsetWidth + 20; // Card width + gap
+      const cardWidth = slider.current.querySelector('.dashboard-card').offsetWidth + 20; // Card width + gap
       const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
       slider.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
@@ -62,7 +62,7 @@ function MainContent() {
                     <p className='event-organizer'>{event.organizer}</p>
                   </div>
                   <div className='card-third-row'>
-                    <img className='event-images' src={event.image} alt='Event' />
+                    <img className='event-images' src={event.imageUrl} alt='Event' />
                   </div>
                   <div className='card-fourth-row'>
                     <div className='like-comment'>
