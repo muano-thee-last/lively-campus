@@ -1,13 +1,13 @@
 .view-more-details {
+  zoom: 1.7;
   width: 100%; /* Make the container fill the entire width of the screen */
   max-width: none; /* Remove the max-width constraint */
   padding: 20px;
   margin: auto;
-  background-color: #ffffff;
+  background-color: #ffffff; /* Ensure this background is white */
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  transform: translate(-90px);
-
+  border: 1px solid #0a87da; /* Border color */
 }
 
 .event-image {
@@ -16,6 +16,7 @@
   overflow: hidden;
   border-radius: 10px;
   margin-bottom: 20px;
+  background-color: #f0f0f0; /* Light background to avoid issues with missing images */
 }
 
 .event-image img {
@@ -74,12 +75,17 @@
 
 .event-description, .event-venue-location {
   margin-bottom: 20px;
+  color: black; /* Ensure text is black */
 }
 
 .event-description h2, .event-venue-location h2 {
   font-size: 1.5em;
   margin-bottom: 10px;
   color: #003B5C;
+}
+
+.event-description p {
+  color: black; /* Ensure paragraph text is black */
 }
 
 .map-container {
@@ -95,6 +101,11 @@
   align-items: center;
   padding-top: 20px;
   border-top: 1px solid #e0e0e0;
+  color: black; /* Ensure text is black */
+}
+
+.event-footer p {
+  color: black; /* Ensure paragraph text is black */
 }
 
 .buy-ticket-button {

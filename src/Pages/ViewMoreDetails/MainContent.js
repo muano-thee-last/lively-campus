@@ -28,6 +28,8 @@ function MainContent() {
     return <p>Loading...</p>; // Show loading state while fetching data
   }
 
+  const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
   return (
     <div className="view-more-details">
       <div className="event-image">
@@ -65,10 +67,15 @@ function MainContent() {
       <div className="event-venue-location">
         <h2>Venue and Location</h2>
         <div className="map-container">
-          <iframe
-            src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyC4TJvgsFeWfyDV2DNX6Im0BH6_CpDX4XI&q=${encodeURIComponent(event.location)}`}
+
+        <iframe
+            title={`Map showing location of ${event.location}`}
+            src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(event.location)}`}
             allowFullScreen
           ></iframe>
+
+    
+          
         </div>
       </div>
 
