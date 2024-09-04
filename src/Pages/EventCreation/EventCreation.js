@@ -1,5 +1,5 @@
 import React from "react";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import add from "./images-logos/add.svg";
 import location from "./images-logos/location.svg";
 import calendar from "./images-logos/calendar.svg";
@@ -18,14 +18,14 @@ const EVENTS_API =
   "https://us-central1-witslivelycampus.cloudfunctions.net/app/events";
 const VENUE_API = null;
 const MAP_API_KEY = process.env.REACT_APP_GOOGLE_MAP_API_KEY;
-const user = JSON.parse(sessionStorage.getItem("user"));
+
 
 
 
 
 export default function EventCreation() {
+  const userData = JSON.parse(sessionStorage.getItem("user"));
   let availableVenues;
-  let showStatus = false;
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = React.useState(false);
 
@@ -35,8 +35,6 @@ export default function EventCreation() {
   };
   
   const [eventData, setEventData] = React.useState({
-    organizerId: sessionStorage.getItem("uid"), //organizerId: sessionStorage.getItem("uid"),
-    organizerName: user.displayName,
     eventName: "",
     eventDescription: "",
     ticketPrice: 0,
@@ -49,7 +47,6 @@ export default function EventCreation() {
   const id = React.useId();
   const fileInputRef = React.useRef(null);
   const [image, setImage] = React.useState("");
-  const [imageUrl, setImageUrl] = React.useState("");
   const [imageUrlLocal, setImageUrlLocal] = React.useState("");
   const [isPopupTagOpen, setIsPopupTagOpen] = React.useState(false);
   const [isPopupLocationOpen, setIsPopupLocationOpen] = React.useState(false);
@@ -227,8 +224,6 @@ export default function EventCreation() {
       });
   
       console.log("Response Status:", response.status);
-      
-      showStatus = true;
       navigate("/Dashboard");
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -237,24 +232,24 @@ export default function EventCreation() {
   }
   
 
-  async function getAvailableVenues() {
-    let headersList = {
-      Accept: "*/*",
-      "User-Agent": "lively-campus",
-    };
-    let bodyContent = JSON.stringify({
-      date: eventData.eventDate,
-      time: eventData.eventTime,
-    });
+  // async function getAvailableVenues() {
+  //   let headersList = {
+  //     Accept: "*/*",
+  //     "User-Agent": "lively-campus",
+  //   };
+  //   let bodyContent = JSON.stringify({
+  //     date: eventData.eventDate,
+  //     time: eventData.eventTime,
+  //   });
 
-    let response = await fetch(VENUE_API, {
-      method: "GET",
-      headers: headersList,
-      body: bodyContent,
-    });
+  //   let response = await fetch(VENUE_API, {
+  //     method: "GET",
+  //     headers: headersList,
+  //     body: bodyContent,
+  //   });
 
-    availableVenues = await response.json();
-  }
+  //   availableVenues = await response.json();
+  // }
 
   function AddTagContent() {
     return (
@@ -367,7 +362,7 @@ export default function EventCreation() {
             }}
           >
             <img src={upload} alt="upload-image-logo" id="upload-img" />
-            {imageUrl ? <p>Change Cover Image</p> : <p>Upload Cover Image</p>}
+            {imageUrlLocal ? <p>Change Cover Image</p> : <p>Upload Cover Image</p>}
           </div>
           <input
             type="file"

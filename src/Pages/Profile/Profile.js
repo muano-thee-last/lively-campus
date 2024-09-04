@@ -6,64 +6,24 @@ import birthdayLogo from "../EventCreation/images-logos/birthday.svg";
 import emailLogo from "../EventCreation/images-logos/email.svg";
 import phoneLogo from "../EventCreation/images-logos/phone.svg";
 import witsBackground from "../EventCreation/images-logos/wits-background.png";
-import profile from "../EventCreation/images-logos/profile-logo.jpg";
-import comments from "../EventCreation/images-logos/comments.jpeg";
 import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
-import MainContent from "../dashboard/main-content";
+
 export default function Profile() {
   const user = JSON.parse(sessionStorage.getItem("user"));
-
-  console.log(user);
+  
   const userData = {
     name: user.displayName,
     myImg: user.photoURL,
     title: "Student",
-    gender: "Male",
-    birthday: "01/01/2001",
+    gender: "many-genders-issue",
+    birthday: "to-be-added",
     email: user.email,
-    phone: "1234567890",
+    phone: "to-be-added",
   }; //this data must be fetched from the session storage
 
   const { myImg, name, title, gender, birthday, email, phone } = userData;
 
-  const [events, setEvents] = useState([]);
-  const [liked, setLiked] = useState([]);
-  const upcomingSlider = useRef(null);
-
-  useEffect(() => {
-    fetch("https://us-central1-witslivelycampus.cloudfunctions.net/app/events")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setEvents(data);
-        setLiked(new Array(data.length).fill(false));
-      })
-      .catch((error) => {
-        console.error("Error fetching events:", error);
-        // You might want to set an error state here to display a message to users
-      });
-  }, []);
-
-  const handleScroll = (slider, direction) => {
-    if (slider.current) {
-      const cardWidth = slider.current.querySelector(".card").offsetWidth + 20; // Card width + gap
-      const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
-      slider.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
-  };
-
-  const handleLike = (index) => {
-    setLiked((prev) => {
-      const updatedLiked = [...prev];
-      updatedLiked[index] = !updatedLiked[index];
-      return updatedLiked;
-    });
-  };
   const [isSidebarOpen, setSidebarOpen] = React.useState(false);
 
   const toggleSidebar = () => {
