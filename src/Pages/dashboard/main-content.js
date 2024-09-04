@@ -30,7 +30,7 @@ function MainContent() {
 
   const handleScroll = (slider, direction) => {
     if (slider.current) {
-      const cardWidth = slider.current.querySelector('.card').offsetWidth + 20; // Card width + gap
+      const cardWidth = slider.current.querySelector('.dashboard-card').offsetWidth + 20; // Card width + gap
       const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
       slider.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
