@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 
 async function getData() {
@@ -35,5 +36,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
-export { auth, db, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider };
+export { auth, db, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider, storage};
