@@ -25,8 +25,6 @@ const Authenticate = (platform, email = null, navigate) => {
       .catch((error) => {
         console.error("Error signing in with Google:", error);
       });
-  } else if (platform === "Instagram") {
-    console.log("Instagram authentication is not yet implemented.");
   } else if (platform === "Twitter") {
     const provider = new TwitterAuthProvider();
     signInWithPopup(auth, provider)
@@ -36,15 +34,7 @@ const Authenticate = (platform, email = null, navigate) => {
       .catch((error) => {
         console.error("Error signing in with Twitter:", error);
       });
-  } else if (platform === "Facebook") {
-    const provider = new FacebookAuthProvider();
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        handleSignIn(result, "Facebook", navigate); 
-      })
-      .catch((error) => {
-        console.error("Error signing in with Facebook:", error);
-      });
+  
   } else if (platform === "Email") {
     if (email && isSignInWithEmailLink(auth, window.location.href)) {
       signInWithEmailLink(auth, email, window.location.href)
@@ -173,26 +163,13 @@ function SignIn() {
           <img src={Lgoogle} alt="Google Icon" className="options" />
           Continue with Google
         </button>
-        <button
-          className="sign-in-button instagram"
-          onClick={() => Authenticate("Instagram", null, navigate)} 
-        >
-          <img src={Linsta} alt="Instagram Icon" className="options" />
-          Continue with Instagram
-        </button>
+      
         <button
           className="sign-in-button twitter"
           onClick={() => Authenticate("Twitter", null, navigate)} 
         >
           <img src={Lx} alt="Twitter Icon" className="options" />
           Continue with Twitter
-        </button>
-        <button
-          className="sign-in-button facebook"
-          onClick={() => Authenticate("Facebook", null, navigate)} 
-        >
-          <img src={Lface} alt="Facebook Icon" className="options" />
-          Continue with Facebook
         </button>
 
         <div className="or-divider">OR</div>
