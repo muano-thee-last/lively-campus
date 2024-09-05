@@ -9,64 +9,32 @@ function Notifications() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
-  // Toggle this flag to switch between fake data and real API data
-  const useFakeData = true;
-
-  // Fake notifications array for testing purposes
-  const fakeNotifications = [
-    {
-      id: '1',
-      eventId: 'event1',
-      title: 'Event 1: Graduation Ceremony',
-      message: 'Don\'t miss the upcoming graduation ceremony!',
-      imageUrl: 'https://www.wits.ac.za/media/wits-university/news-and-events/images/news/2022-may-aug/The-Wits-Great-Hall_870px.jpg',
-    },
-    {
-      id: '2',
-      eventId: 'event2',
-      title: 'Event 2: Research Conference',
-      message: 'Join us for the annual research conference.',
-      imageUrl: 'https://www.wits.ac.za/media/wits-university/news-and-events/images/news/2022-may-aug/The-Wits-Great-Hall_870px.jpg',
-    },
-    {
-      id: '3',
-      eventId: 'event3',
-      title: 'Event 3: Alumni Meetup',
-      message: 'Connect with alumni at the upcoming meetup.',
-      imageUrl: 'https://www.wits.ac.za/media/wits-university/news-and-events/images/news/2022-may-aug/The-Wits-Great-Hall_870px.jpg',
-    },
-  ];
-
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
   };
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      if (useFakeData) {
-        setNotifications(fakeNotifications);
-      } else {
-        try {
-          const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications');
-          const notificationsData = await response.json();
+      try {
+        const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications');
+        const notificationsData = await response.json();
 
-          const detailedNotifications = await Promise.all(
-            notificationsData.map(async (notification) => {
-              const eventResponse = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${notification.eventId}`);
-              const eventData = await eventResponse.json();
-              return { ...notification, ...eventData };
-            })
-          );
+        const detailedNotifications = await Promise.all(
+          notificationsData.map(async (notification) => {
+            const eventResponse = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${notification.eventId}`);
+            const eventData = await eventResponse.json();
+            return { ...notification, ...eventData };
+          })
+        );
 
-          setNotifications(detailedNotifications);
-        } catch (error) {
-          console.error('Error fetching notifications:', error);
-        }
+        setNotifications(detailedNotifications);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
       }
     };
 
     fetchNotifications();
-  }, [useFakeData]);
+  }, []);
 
   return (
     <div id="main-footer-separator">
