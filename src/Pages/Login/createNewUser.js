@@ -1,25 +1,27 @@
+import { json } from "react-router-dom";
 
 
 async function createNewUser(result) {
 
-  const userID = result.user.uid;
+  const userId1 = result.user.uid;
 
-  sessionStorage.setItem("uid", userID);
+  sessionStorage.setItem("uid", userId1);
   sessionStorage.setItem("user", JSON.stringify(result.user));
   const user = {
-    UserID: userID,
-    FirstName: result.user.displayName,
-    LastName: result.user.displayName,
+    userId1: userId1,
+    name: result.user.displayName,
+    email: result.user.email,
+    commentedEvents: [],
+    likedEvents: [],
     profile_picture: result.user.photoURL,
-    Email: result.user.email,
   };
   
 
-  if (!user.FirstName) {
+  if (!user.name) {
 
     const newFirstName = prompt("Please enter your name:");
     if (newFirstName) {
-      user.FirstName = newFirstName;
+      user.name = newFirstName;
     } else {
       alert("First name is required!");
       return;
