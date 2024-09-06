@@ -13,6 +13,10 @@ function Header({ toggleSidebar }) {
     const handleNotificationsClick = () => {
         navigate('/Notifications');
     };
+
+    const handleLogoClick = () => {
+        navigate('/dashboard');
+    };
     
     return (
         <div id='header'>
@@ -27,8 +31,10 @@ function Header({ toggleSidebar }) {
                     className='lively-campus-logo' 
                     src={logo} 
                     alt="Livelycampus Logo"
+                    onClick={handleLogoClick}
                 />
-                <h4>Livelycampus</h4>
+
+                <h4 onClick={handleLogoClick}>Livelycampus</h4>
             </section>
             <section className='header-middle-section'>
                 <input 
@@ -81,5 +87,5 @@ function Header({ toggleSidebar }) {
            
         </div>
     );
-}
-export default Header;
+
+}export default Header;

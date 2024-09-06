@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Header from "./header";
-import Footer from "./footer";
-import SideBar from "./side-bar";
-import './dashboard.css';
+import { useNavigate } from 'react-router-dom';
 import './Notifications.css';
 
 function Notifications() {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
-
-  const toggleSidebar = () => {
-    setSidebarOpen(prev => !prev);
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -36,29 +29,24 @@ function Notifications() {
     fetchNotifications();
   }, []);
 
+  const handleViewNotification = (id) => {
+    navigate(`/details/${id}`);
+  };
+
   return (
-    <div id="main-footer-separator">
-      <div id="dashboard">
-        <Header toggleSidebar={toggleSidebar} />
-        <div id="content">
-          <SideBar isSidebarOpen={isSidebarOpen} />
-          <div className="notifications-container">
-            <h2>Notifications</h2>
-            <ul className="notifications-list">
-              {notifications.map(notification => (
-                <li key={notification.id} className="notification-item">
-                  <img src={notification.imageUrl} alt={notification.title} className="notification-image" />
-                  <div className="notification-details">
-                    <span className="notification-event">{notification.title}</span>
-                    <p className="notification-message">{notification.message}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-      <Footer />
+    <div className="notifications-container">
+      <h2>Notifications</h2>
+      <ul className="notifications-list">
+        {notifications.map(notification => (
+          <li key={notification.id} className="notification-item" onClick={() => handleViewNotification(notification.eventId)}>
+            <img src={notification.imageUrl} alt={notification.title} className="notification-image" />
+            <div className="notification-details">
+              <span className="notification-event">{notification.title}</span>
+              <p className="notification-message">{notification.message}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
