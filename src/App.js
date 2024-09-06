@@ -18,7 +18,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/details/:id" element={<ViewMoreDetails />} /> {/* Add this line */}
-
+        <Route path="/Notifications" element={<Notifications />} />
       </Routes>
     </Router>
   );
