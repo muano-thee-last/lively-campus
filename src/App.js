@@ -13,7 +13,6 @@ function App() {
     <Router>
       <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/Dashboard" element={<Dashboard />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/Notifications" element={<Notifications/> } />
       <Route path="/dashboard" element={<Dashboard />} />
