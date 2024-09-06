@@ -1,4 +1,3 @@
-import { json } from "react-router-dom";
 
 
 async function createNewUser(result) {

@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
 import Lgoogle from '../../asserts/google.jpeg';
-import Linsta from '../../asserts/instagram.jpeg';
 import Lx from '../../asserts/twitter.png';
-import Lface from '../../asserts/facebookLogo.png'; 
 import { auth, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider } from "./config";
 import { 
   signInWithPopup, 
