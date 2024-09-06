@@ -17,6 +17,10 @@ function Header({ toggleSidebar }) {
     const handleLogoClick = () => {
         navigate('/dashboard');
     };
+
+    const handleSearchClick = () => {
+        setShowFilters(!showFilters);
+    };
     
     return (
         <div id='header'>
@@ -41,7 +45,7 @@ function Header({ toggleSidebar }) {
                     type="text" 
                     className="search" 
                     placeholder="Search" 
-                    //onClick={handleSearchClick} // Show filters on click
+                    onClick={handleSearchClick}
                 />
                 <button className='search-button'>
                     {/* Add content or icon for the search button */}
@@ -88,4 +92,6 @@ function Header({ toggleSidebar }) {
         </div>
     );
 
-}export default Header;
+}
+
+export default Header;
