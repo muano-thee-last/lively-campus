@@ -5,8 +5,6 @@ import logo from './images-logos/logo.png';
 import profile from './images-logos/profile-logo.jpg';
 import notifications from './images-logos/notification-logo.jpeg';
 import './header.css';
-import { useNavigate } from 'react-router-dom';
-
 function Header({ toggleSidebar }) {
     const [showFilters, setShowFilters] = useState(false);
     const navigate = useNavigate();
