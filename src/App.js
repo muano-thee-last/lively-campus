@@ -4,6 +4,9 @@ import LandingPage from "./Pages/LandingPage/LandingPage";
 import VerifyEmail from "./Pages/Login/verifyEmail";
 import Dashboard from "./Pages/dashboard/dashboard";
 import Notifications from './Pages/Notifications/Notifications';
+import EventCreation from "./Pages/EventCreation/EventCreation";
+import Profile from "./Pages/Profile/Profile";
+import ViewMoreDetails from "./Pages/ViewMoreDetails/ViewMoreDetails";
 
 function App() {
   return (
