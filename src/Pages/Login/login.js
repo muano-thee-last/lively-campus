@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./styles.css";
 import Lgoogle from '../../asserts/google.jpeg';
 import Lx from '../../asserts/twitter.png';
-import { auth, GoogleAuthProvider, TwitterAuthProvider, FacebookAuthProvider } from "./config";
+import { auth, GoogleAuthProvider, TwitterAuthProvider } from "./config";
 import { 
   signInWithPopup, 
   isSignInWithEmailLink, 
