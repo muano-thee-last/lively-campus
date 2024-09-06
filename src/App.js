@@ -12,15 +12,12 @@ function App() {
   return (
     <Router>
       <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/Dashboard" element={<Dashboard />} />
-      <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/Notifications" element={<Notifications/> } />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/post-event" element={<EventCreation />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/details/:id" element={<ViewMoreDetails />} /> {/* Add this line */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/post-event" element={<EventCreation />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/details/:id" element={<ViewMoreDetails />} /> {/* Add this line */}
 
       </Routes>
     </Router>
