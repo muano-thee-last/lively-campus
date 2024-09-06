@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import hamburger from './images-logos/hamburger.jpg';
-import { useNavigate } from "react-router-dom";
 import logo from './images-logos/logo.png';
 import profile from './images-logos/profile-logo.jpg';
 import notifications from './images-logos/notification-logo.jpeg';
 import './header.css';
+import { useNavigate } from 'react-router-dom';
+
 function Header({ toggleSidebar }) {
     const [showFilters, setShowFilters] = useState(false);
     const navigate = useNavigate();
-    
-    const handleNotificationsClick = () => {
-        navigate('/Notifications');
+    const handleSearchClick = () => {
+        setShowFilters(!showFilters); // Toggle filter div visibility
     };
-    
+
     return (
         <div id='header'>
             <section className='header-right-section'>
@@ -34,7 +34,7 @@ function Header({ toggleSidebar }) {
                     type="text" 
                     className="search" 
                     placeholder="Search" 
-                    //onClick={handleSearchClick} // Show filters on click
+                    onClick={handleSearchClick} // Show filters on click
                 />
                 <button className='search-button'>
                     {/* Add content or icon for the search button */}
@@ -65,11 +65,9 @@ function Header({ toggleSidebar }) {
             </section>
             <section className='header-left-section'>
                 <img 
-                    id="notifications"
                     className='lively-campus-notifications' 
                     src={notifications} 
                     alt="Notifications"
-                    onClick={handleNotificationsClick}
                 />
                 <img 
                     className='lively-campus-profile' 
@@ -82,4 +80,5 @@ function Header({ toggleSidebar }) {
         </div>
     );
 }
+
 export default Header;
