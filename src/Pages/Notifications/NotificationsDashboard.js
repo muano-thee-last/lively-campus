@@ -1,7 +1,7 @@
 import React,{useState} from 'react';
 import Header from "./header";
-import Footer from "./footer";
-import SideBar from "./side-bar"
+import Footer from "../dashboard/footer";
+import SideBar from "../dashboard/side-bar";
 import './dashboard.css';
 import Notifications from './Notifications';
 

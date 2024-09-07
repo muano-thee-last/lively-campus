@@ -49,12 +49,12 @@ function MainContent() {
   };
 
   return (
-    <div id='main-content'>
+    <div id='dashboard-main-content'>
       <div className='dashboard-events-section'>
         <h2>Upcoming Events</h2>
-        <div className='slider-container'>
+        <div className='dashboard-slider-container'>
           <button className='arrow-button left' onClick={() => handleScroll(upcomingSlider, 'left')}>‹</button>
-          <div className='slider'>
+          <div className='dashboard-slider'>
             <div className='dashboard-card-container' ref={upcomingSlider}>
               {events.map((event, index) => (
                 <div className='dashboard-card' key={index}>
