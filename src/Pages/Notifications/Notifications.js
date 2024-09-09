@@ -16,9 +16,29 @@ function Notifications() {
           notificationsData.map(async (notification) => {
             const eventResponse = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${notification.eventId}`);
             const eventData = await eventResponse.json();
-            return { ...notification, ...eventData };
+            
+            // Convert the timestamp to a readable date format
+            const timestampDate = new Date(notification.timestamp._seconds * 1000);
+
+            // Format the date and time as "7 September 2024 3:17:02 PM"
+            const formattedDate = timestampDate.toLocaleDateString('en-GB', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            });
+            const formattedTime = timestampDate.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+            });
+            
+            return { ...notification, ...eventData, timestampDate: `${formattedDate} ${formattedTime}`, dateObject: timestampDate };
           })
         );
+
+        // Sort notifications by date (newest first)
+        detailedNotifications.sort((a, b) => b.dateObject - a.dateObject);
 
         setNotifications(detailedNotifications);
       } catch (error) {
@@ -43,6 +63,7 @@ function Notifications() {
             <div className="notification-details">
               <span className="notification-event">{notification.title}</span>
               <p className="notification-message">{notification.message}</p>
+              <span className="notification-timestamp">{notification.timestampDate}</span> {/* Display the formatted date here */}
             </div>
           </li>
         ))}

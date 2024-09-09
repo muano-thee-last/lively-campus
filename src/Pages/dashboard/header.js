@@ -13,6 +13,10 @@ function Header({ toggleSidebar }) {
         navigate('/Notifications');
     };
     
+    const handleDashboardNavigation = () => {
+        navigate('/dashboard');
+    };
+    
     return (
         <div id='header'>
             <section className='header-right-section'>
@@ -26,8 +30,9 @@ function Header({ toggleSidebar }) {
                     className='lively-campus-logo' 
                     src={logo} 
                     alt="Livelycampus Logo"
+                    onClick={handleDashboardNavigation}
                 />
-                <h4>Livelycampus</h4>
+                <h4 onClick={handleDashboardNavigation}>Livelycampus</h4>
             </section>
             <section className='header-middle-section'>
                 <input 
