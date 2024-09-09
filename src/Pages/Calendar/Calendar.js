@@ -1,84 +1,132 @@
-// CustomCalendar.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Calendar.css';
 
-function Calendar() {
+const months = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [events, setEvents] = useState([]);
 
-  const events = [
-    { date: '2024-01-08', title: 'BEER GARDEN', time: '17:00' },
-    { date: '2024-01-09', title: 'BEER GARDEN', time: '17:00' },
-  ];
-
-  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-  // Get the days in the current month
-  const getDaysInMonth = (year, month) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
-  // Get the first day of the month
-  const getFirstDayOfMonth = (year, month) => {
-    return new Date(year, month, 1).getDay();
-  };
-
-  const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
-  const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-  const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
+  const currentYear = currentDate.getFullYear();
+  const today = new Date();
 
-  // Function to handle events for a specific date
-  const getEventsForDate = (date) => {
-    const dateString = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
-    return events.filter((event) => event.date === dateString);
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay(); // To align the start of the month correctly
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events');
+        const data = await response.json();
+        setEvents(data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  // Handle month change
+  const handleMonthChange = (e) => {
+    const newMonth = parseInt(e.target.value);
+    const newDate = new Date(currentYear, newMonth, 1);
+    setCurrentDate(newDate);
   };
 
-  const generateCalendar = () => {
-    const days = [];
-    const leadingEmptyDays = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; // Adjust for Mon-Sun start
-
-    // Push empty cells for days before the start of the month
-    for (let i = 0; i < leadingEmptyDays; i++) {
-      days.push(<div key={`empty-${i}`} className="calendar-day empty"></div>);
-    }
-
-    // Push cells for each day in the current month
-    for (let day = 1; day <= daysInMonth; day++) {
-      const eventsForDay = getEventsForDate(day);
-      days.push(
-        <div key={day} className="calendar-day">
-          <span className="day-number">{day}</span>
-          <ul className="events">
-            {eventsForDay.length > 0 ? (
-              eventsForDay.map((event, index) => (
-                <li key={index} className="event">
-                  {event.title} - {event.time}
-                </li>
-              ))
-            ) : null}
-          </ul>
-        </div>
-      );
-    }
-
-    return days;
-  };
+  // Filter events for the current month and year
+  const eventsInCurrentMonth = events.filter(event => {
+    const eventDate = new Date(event.date);
+    return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+  });
 
   return (
     <div className="calendar-container">
-      <div className="calendar-header">
-        <h2>{currentDate.toLocaleString('default', { month: 'long' })} {currentYear}</h2>
-      </div>
-      <div className="calendar-grid">
-        {daysOfWeek.map((day, index) => (
-          <div key={index} className="calendar-day-header">
-            {day}
+      {/* Sidebar */}
+      <div className="sidebar">
+        <div className="month-header">
+          <p className='current-month'>{months[currentMonth]}</p>
+          <p className='current-year'>{currentYear}</p>
+        </div>
+
+        <div className="mini-calendar">
+          {/* Mini calendar dates */}
+          <div className="mini-calendar-row">
+            <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
           </div>
-        ))}
-        {generateCalendar()}
+          <div className="mini-calendar-dates">
+            {/* Align start of month */}
+            {Array(firstDayOfMonth).fill(null).map((_, i) => (
+              <div key={`empty-${i}`} className="mini-date empty"></div>
+            ))}
+            {/* Display correct number of days */}
+            {[...Array(daysInMonth).keys()].map(day => (
+              <div key={day} className={`mini-date ${day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() ? 'highlight' : ''}`}>
+                {day + 1}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="upcoming-events">
+          <h4>Upcoming Events</h4>
+          
+        </div>
+      </div>
+
+      {/* Main Calendar */}
+      <div className="calendar">
+        <div className="calendar-header">
+          <h2 className='viewing-month'>{months[currentMonth]}</h2>
+          <select onChange={handleMonthChange} value={currentMonth}>
+            {months.map((month, index) => (
+              <option key={month} value={index}>{month}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="calendar-grid">
+          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+            <div key={day} className="day-name">{day}</div>
+          ))}
+
+          {/* Empty slots for days before the first of the month */}
+          {Array(firstDayOfMonth).fill(null).map((_, index) => (
+            <div key={`empty-${index}`} className="day empty"></div>
+          ))}
+
+          {/* Render calendar days with events */}
+          {[...Array(daysInMonth).keys()].map(day => {
+            const dayEvents = eventsInCurrentMonth.filter(event => {
+              const eventDate = new Date(event.date).getDate();
+              return eventDate === day + 1;
+            });
+
+            return (
+              <div key={day} className={`day ${day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() ? 'highlight-day' : ''}`}>
+                <span>{day + 1}</span>
+                {/* Render events on this day */}
+                {dayEvents.map(event => (
+                  <div key={event.id} className="event-details">
+                    <span>{event.title}</span>
+                    <span>{new Date(event.date).toLocaleTimeString()}</span>
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default Calendar;
+
+
+
+
