@@ -13,6 +13,7 @@ import {storage} from "../../Pages/Login/config";
 import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
 import {useNavigate} from "react-router-dom"
+import Footer from "../dashboard/footer"
 
 const EVENTS_API =
   "https://us-central1-witslivelycampus.cloudfunctions.net/app/events";
@@ -516,6 +517,7 @@ export default function EventCreation() {
           </form>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

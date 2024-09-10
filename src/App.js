@@ -3,14 +3,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage/LandingPage";
 import VerifyEmail from "./Pages/Login/verifyEmail";
 import Dashboard from "./Pages/dashboard/dashboard";
+
 import Calendar from "./Pages/Calendar/Calendar";
+
+import Notifications from './Pages/Notifications/NotificationsDashboard';
 
 import EventCreation from "./Pages/EventCreation/EventCreation";
 import Profile from "./Pages/Profile/Profile";
-import "./App.css"
-
-import ViewMoreDetails from "./Pages/ViewMoreDetails/ViewMoreDetails"; // Import the new component
-
+import ViewMoreDetails from "./Pages/ViewMoreDetails/ViewMoreDetails";
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/event-calendar" element={<Calendar />} />
         <Route path="/details/:id" element={<ViewMoreDetails />} /> {/* Add this line */}
-
+        <Route path="/Notifications" element={<Notifications />} />
       </Routes>
     </Router>
   );

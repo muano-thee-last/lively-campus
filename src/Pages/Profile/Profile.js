@@ -1,5 +1,4 @@
 import React from "react";
-import "../EventCreation/styles/main-content.css";
 import "../EventCreation/styles/Profile.css";
 import genderLogo from "../EventCreation/images-logos/gender-male.svg";
 import birthdayLogo from "../EventCreation/images-logos/birthday.svg";
@@ -8,6 +7,7 @@ import phoneLogo from "../EventCreation/images-logos/phone.svg";
 import witsBackground from "../EventCreation/images-logos/wits-background.png";
 import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
+import Footer from "../dashboard/footer";
 
 export default function Profile() {
   const user = JSON.parse(sessionStorage.getItem("user"));
@@ -69,6 +69,7 @@ export default function Profile() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
