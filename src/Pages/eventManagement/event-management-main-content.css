@@ -1,4 +1,4 @@
-#main-content {
+#management-main-content {
   display: flex;
   flex-direction: column;
  
@@ -7,14 +7,14 @@
   padding-bottom: 4%;
 }
 
-.events-section {
+.management-events-section {
   display: flex;
   flex-direction: column;
   gap: 3vh;
   flex: 1;
 }
 
-.slider-container {
+.management-slider-container {
   display: flex;
   align-items: center;
   position: relative;
@@ -22,14 +22,14 @@
   width: 100%;
 }
 
-.slider {
+.management-slider {
   display: flex;
   overflow: hidden;
   flex: 1;
   width: 100%;
 }
 
-.card-container {
+.management-card-container {
   display: flex;
   gap: 20px; /* Space between cards */
   transition: transform 0.3s ease;
@@ -41,7 +41,7 @@
   padding: 2%;
 }
 
-.card {
+.management-card {
   flex: 0 0 30%; /* Adjust width to fit 3 cards */
   height: 40vh; /* Increased height */
   background: #ffffff;
@@ -58,7 +58,7 @@
   padding-top: 1%;
   padding-bottom: 3%;
 }
-.card-first-row{
+.management-card-first-row{
   flex: 0.1;
   display: flex;
   
@@ -66,7 +66,7 @@
  padding-right: 5%;
   
 }
-.card-second-row{
+.management-card-second-row{
   display: flex;
   padding-left: 1%;
   align-items: center;
@@ -74,12 +74,12 @@
   padding-bottom: 2%;
   
 }
-.card-third-row{
+.management-card-third-row{
  display: flex;
   flex: 0.5;
 
 }
-.card-fourth-row{
+.management-card-fourth-row{
   display: flex;
   padding-left: 5%;
   padding-right: 3%;
@@ -87,39 +87,39 @@
   align-items: center;
   flex: 0.2;
 }
-.profile-image {
+.management-profile-image {
   flex: 0.2;
   max-width: 100%;
   height: 6vh;
   object-fit: contain;
   object-position: center;
 }
-.event-organizer{
+.management-event-organizer{
   flex: 0.8;
   padding-left: 5%;
   color: #003B5C;
   font-weight: bold;
 }
-.event-images{
+.management-event-images{
   width: 100%;
   height: 25vh;
   object-fit: cover;
   
 }
-.comments-image{
+.management-comments-image{
   height: 6.2vh;
   
  
 } 
 
-.card:hover {
+.management-card:hover {
 
   box-shadow: 0px 0px 6px 3px rgba(1, 33, 63, 0.3);
   transform: scale(1.01);
   z-index: 5;
 }
 
-.arrow-button {
+.management-arrow-button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -135,18 +135,18 @@
   
 }
 
-.arrow-button.left {
+.management-arrow-button.left {
   left: -5px; /* Adjust to position correctly */
   border-radius: 55vh;
 
 }
 
-.arrow-button.right {
+.management-arrow-button.right {
   right: 10px; /* Adjust to position correctly */
   border-radius: 25vh;
 }
 
-.slider-container .arrow-button {
+.management-slider-container .management-arrow-button {
   padding: 10px 20px;
   border: none;
   background: #7c7c7c;
@@ -157,12 +157,12 @@
   opacity: 0.5;
 }
 
-.slider-container .arrow-button:hover {
+.management-slider-container .management-arrow-button:hover {
   background: #003B5C;
   opacity: 1;
 }
 
-.details-button{
+.management-details-button{
   border: none;
   background-color: #003B5C;
   border-radius: 0.8vh;
@@ -170,17 +170,17 @@
   padding: 3%;
   margin-top: 1%;
 }
-.details-button:hover{
+.management-details-button:hover{
   opacity: 0.8;
 }
-.details-button:active{
+.management-details-button:active{
   background-color: white;
   color: #003B5C;
   border-style: solid;
   border-width: thin;
   border-color: #003B5C;
 }
-.like-button {
+.management-like-button {
   background: none;
   border: none;
   cursor: pointer;
@@ -188,22 +188,22 @@
   transition: background-color 0.3s ease;
 }
 
-.like-icon {
+.management-like-icon {
   fill: rgb(134, 134, 134);
   
   transition: fill 0.3s ease;
 }
 
-.like-button.active .like-icon {
+.management-like-button.active .like-icon {
   fill: rgb(255, 0, 0);
 }
 
-.like-comment{
+.management-like-comment{
   display: flex;
   align-items: center;
   position: relative;
 }
-.like-count{
+.management-like-count{
   position: absolute;
   left: -10%;
   bottom:-25%;
@@ -214,7 +214,7 @@
 
 
 @media (max-width: 950px) {
-  .card-container {
+  .management-card-container {
     width: 100%; /* Show only one card at a time */
     gap: 7%; /* Remove gap to fit one card properly */
     
@@ -228,30 +228,30 @@
   
   }
 
-  .arrow-button {
+  .management-arrow-button {
     padding: 2%;
     
     
   }
-  .card {
+  .management-card {
     flex: 0 0 85%; /* Make each card take up the full width */
     height: 42vh; /* Adjust height to fit the screen better */
   }
-  .card:hover {
+  .management-card:hover {
 
     box-shadow: 0px 0px 6px 1px rgba(0, 47, 92, 0.3);
   
   }
-  #main-content{
+  #management-main-content{
     width: 85%;
   }
-  .comments-image{
+  .management-comments-image{
     height: 4.3vh;
     
    
   } 
 
-  .eventManagement2{
+  .management-eventManagement2{
     display: contents;
   }
   
@@ -260,7 +260,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-  .card-container {
+  .management-card-container {
     width: 100%; /* Show only one card at a time */
     gap: 7%; /* Remove gap to fit one card properly */
     
@@ -275,32 +275,32 @@
   }
  
 
-  .slider-container {
+  .management-slider-container {
     display: flex;
     align-items: center;
     position: relative;
     overflow: hidden; /* Ensure the container hides overflow */
     width: 100%;
   }
-  .arrow-button {
+  .management-arrow-button {
     padding: 2%;
     
     
   }
-  .arrow-button.left{
+  .management-arrow-button.left{
     display: none;
     
   }
-  .comments-image{
+  .management-comments-image{
     height: 5.1vh;
     
    
   } 
 }
-.events-section{
+.management-events-section{
   color:#003B5C ;
 }
-.search-container {
+.management-search-container {
   position: relative;
   display: flex;
   align-items: center;
@@ -308,7 +308,7 @@
 }
 
 
-.search-bar {
+.management-search-bar {
  width: 32%;
   border: 2px solid #0044cc; /* Set border color and width */
   outline: none; /* Remove the default outline to avoid conflicting styles */
@@ -316,13 +316,13 @@
   padding: 8px; /* Optional: Add padding for better text alignment */
 }
 
-.search-bar:focus {
+.management-search-bar:focus {
   border-color: #0044cc; /* Ensure border color remains blue on focus */
   box-shadow: 0 0 5px rgba(0, 68, 204, 0.5); /* Optional: Add a subtle shadow for focus */
 }
 
 
-.search-icon {
+.management-search-icon {
   position: absolute;
   color: #888;
   font-size: 16px;
@@ -330,7 +330,7 @@
   top: 30%;
 }
 
-.create-event {
+.management-create-event {
   background-color: #0044cc;
   color: white;
   padding: 10px 20px;
@@ -340,7 +340,7 @@
   cursor: pointer;
 }
 
-.event-actions {
+.management-event-actions {
   display: flex;
   justify-content: right;
   align-items: center;
@@ -349,33 +349,33 @@
   background: #f9f9f9;
 }
 
-.event-actions svg {
+.management-event-actions svg {
   cursor: pointer;
 }
-.Capacity{
+.management-Capacity{
   color: #003B5C;
 
 }
-.EventCapacity{
+.management-EventCapacity{
   display: flex;
 }
-.deleteEvent:hover,
-.deleteEvent:active {
+.management-deleteEvent:hover,
+.management-deleteEvent:active {
   color: red; /* Changes the icon color to red on hover and active states */
   background-color: transparent; /* Keep background transparent if needed */
 }
-.event-management-header{
+.management-event-management-header{
 
   position: relative;
   display: flex;
   justify-content: center;
 
 }
-.eventManagement2{
+.management-eventManagement2{
   display: none;
 }
 
-.modal-overlay {
+.management-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -387,7 +387,7 @@
   align-items: center;
 }
 
-.modal-content {
+.management-modal-content {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
@@ -395,16 +395,16 @@
   width: 100%;
 }
 
-.modal-content h2 {
+.management-modal-content h2 {
   margin-top: 0;
 }
 
-.modal-content label {
+.management-modal-content label {
   display: block;
   margin-bottom: 10px;
 }
 
-.modal-content input {
+.management-modal-content input {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
@@ -413,7 +413,7 @@
   border: 1px solid #ccc;
 }
 
-.modal-content button {
+.management-modal-content button {
   margin-right: 10px;
   padding: 10px 20px;
   border: none;
@@ -423,10 +423,10 @@
   cursor: pointer;
 }
 
-.modal-content button:hover {
+.management-modal-content button:hover {
   background-color: #003B5C;
 }
-.upload-modal-overlay {
+.management-upload-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -440,7 +440,7 @@
 }
 
 /* Modal Content */
-.upload-modal-content {
+.management-upload-modal-content {
   background-color: #fff;
   border-radius: 8px;
   padding: 20px;
@@ -452,14 +452,14 @@
 }
 
 /* Modal Header */
-.upload-modal-content h2 {
+.management-upload-modal-content h2 {
   font-size: 24px;
   margin-bottom: 20px;
   color: #333;
 }
 
 /* Image Upload Container */
-.image-upload {
+.management-image-upload {
   background-color: #f5f5f5;
   border: 2px dashed #ddd;
   border-radius: 8px;
@@ -468,23 +468,23 @@
   transition: border-color 0.3s ease;
 }
 
-.image-upload:hover {
+.management-image-upload:hover {
   border-color: #aaa;
 }
 
 /* Upload Placeholder */
-.upload-placeholder {
+.management-upload-placeholder {
   font-size: 16px;
   color: #666;
 }
 
 /* Image Preview */
-.image-previews {
+.management-image-previews {
   margin-top: 20px;
   text-align: center;
 }
 
-.image-preview {
+.management-image-preview {
   max-width: 100%;
   height: 100px;
   border-radius: 8px;
@@ -492,26 +492,26 @@
 }
 
 /* Uploading Text */
-.upload-modal-content p {
+.management-upload-modal-content p {
   font-size: 16px;
   color: #666;
 }
 
 /* Error Message */
-.error {
+.management-error {
   color: #ff4d4f;
   margin-top: 10px;
   font-size: 14px;
 }
 
 /* Modal Buttons */
-.upload-modal-buttons {
+.management-upload-modal-buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
 }
 
-.upload-modal-buttons button {
+.management-upload-modal-buttons button {
   background-color: #007bff;
   color: #fff;
   border: none;
@@ -521,24 +521,24 @@
   transition: background-color 0.3s ease;
 }
 
-.upload-modal-buttons button:hover {
+.management-upload-modal-buttons button:hover {
   background-color: #0056b3;
 }
 
-.upload-modal-buttons button:disabled {
+.management-upload-modal-buttons button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-.upload-modal-buttons button:nth-child(1) {
+.management-upload-modal-buttons button:nth-child(1) {
   background-color: #6c757d;
 }
 
-.upload-modal-content button:nth-child(1):hover {
+.management-upload-modal-content button:nth-child(1):hover {
   background-color: #5a6268;
 }
 
-.auto-resize-textarea {
+.management-auto-resize-textarea {
   width: 100%;            /* Full width */
   height: auto;           /* Height adjusts based on content */
   min-height: 50px;       /* Minimum height */

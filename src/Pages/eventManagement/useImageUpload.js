@@ -1,21 +1,10 @@
 import { useState, useRef } from "react";
-import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import {storage} from "../../Pages/Login/config";
+
 
 // Firebase configuration
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: "witslivelycampus.firebaseapp.com",
-  databaseURL: "https://witslivelycampus-default-rtdb.firebaseio.com",
-  projectId: "witslivelycampus",
-  storageBucket: "witslivelycampus.appspot.com",
-  messagingSenderId: "61229245877",
-  appId: "1:61229245877:web:44c304d1f7eed94b9065fc",
-};
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
 
 const useImageUpload = () => {
   const [image, setImage] = useState(null); // State for the selected image file

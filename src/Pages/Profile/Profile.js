@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import "../EventCreation/styles/Profile.css";
 import genderLogo from "../EventCreation/images-logos/gender-male.svg";
 import birthdayLogo from "../EventCreation/images-logos/birthday.svg";
@@ -18,6 +19,7 @@ export default function Profile() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [events, setEvents] = useState([]);
   const [likedEvents, setLikedEvents] = useState([]);
+  const navigate = useNavigate();
 
   const userData = {
     name: user.displayName,
@@ -117,6 +119,9 @@ export default function Profile() {
         console.error('Error updating liked events:', error);
       });
   };
+  const handleEventManagement = () => {
+    navigate(`/eventManagement`);
+  };
 
   return (
     <div>
@@ -159,7 +164,7 @@ export default function Profile() {
           <div className="additional-features">
           <h2 className="add-features-bold-title">Additional Functions
           </h2>
-          <button className="additional-features-buttons">Manage your Events</button>
+          <button className="additional-features-buttons" onClick={() => handleEventManagement()}>Manage your Events</button>
           <button className="additional-features-buttons">Create an Event</button>
           </div>
           </div>

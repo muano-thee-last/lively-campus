@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import './event-management-main-content.css';
+import './event-management-main-content.css'
 import profile from './images-logos/profile-logo.jpg';
 import { FaSearch, FaEdit, FaTrash, FaCamera, FaUsers } from 'react-icons/fa';
 import useImageUpload from './useImageUpload';
@@ -46,7 +46,7 @@ function EventManagementMainContent() {
 
   const handleScroll = (slider, direction) => {
     if (slider.current) {
-      const cardWidth = slider.current.querySelector('.card').offsetWidth + 20; // Card width + gap
+      const cardWidth = slider.current.querySelector('.management-card').offsetWidth + 20; // Card width + gap
       const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
       slider.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
@@ -173,67 +173,67 @@ function EventManagementMainContent() {
   };
 
   return (
-    <div id="main-content">
-      <div className="events-section">
-        <header className="event-management-header">
-          <p className="eventManagement2">EVENT MANAGEMENT</p>
+    <div id="management-main-content">
+      <div className="management-events-section">
+        <header className="management-event-management-header">
+          <p className="management-eventManagement2">EVENT MANAGEMENT</p>
           <input
             type="text"
             placeholder="search your events"
-            className="search-bar"
+            className="management-search-bar"
           />
-          <span className="search-icon">
+          <span className="management-search-icon">
             <FaSearch />
           </span>
         </header>
-        <div className="slider-container">
+        <div className="management-slider-container">
           <button
-            className="arrow-button left"
+            className="management-arrow-button left"
             onClick={() => handleScroll(upcomingSlider, 'left')}
             role="button"
           >
             ‹
           </button>
-          <div className="slider">
-            <div className="card-container" ref={upcomingSlider}>
+          <div className="management-slider">
+            <div className="management-card-container" ref={upcomingSlider}>
               {events.map((event, index) => (
-                <div className="card" key={event.id}>
-                  <div className="card-first-row">
-                    <h4 className="event-title">{event.title}</h4>
+                <div className="management-card" key={event.id}>
+                  <div className="management-card-first-row">
+                    <h4 className="management-event-title">{event.title}</h4>
                   </div>
-                  <div className="card-second-row">
+                  <div className="management-card-second-row">
                     <img
                       src={profile}
                       alt="Profile"
-                      className="profile-image"
+                      className="management-profile-image"
                     />
-                    <p className="event-organizer">{event.organizer}</p>
+                    <p className="management-event-organizer">{event.organizer}</p>
                   </div>
-                  <div className="card-third-row">
+                  <div className="management-card-third-row">
                     <img
-                      className="event-images"
+                      className="management-event-images"
                       src={event.imageUrl}
                       alt="Event"
                     />
                   </div>
-                  <div className="card-fourth-row">
-                    <div className="EventCapacity">
+                  <div className="management-card-fourth-row">
+                    <div className="management-EventCapacity">
                       <FaUsers
-                        className="attendance-icon"
+                        className="management-attendance-icon"
                         size={24}
                         title="Attendance"
                       />
-                      <p className="Capacity">{event.availableTickets}</p>
+                      <p className="management-Capacity">{event.availableTickets}</p>
                     </div>
 
-                    <div className="event-actions">
+                    <div className="management-event-actions">
                       <FaEdit
-                        className="event-edit"
+                        className="management-event-edit"
                         size={24}
                         onClick={() => handleEdit(event)}
                       />
                       <FaCamera
-                        className="event-upload-image"
+                        className="management-event-upload-image"
                         size={24}
                         onClick={() => {
                           setSelectedEventId(event.id);
@@ -241,7 +241,7 @@ function EventManagementMainContent() {
                         }}
                       />
                       <FaTrash
-                        className="deleteEvent"
+                        className="management-deleteEvent"
                         size={24}
                         onClick={() => handleDelete(event.id)}
                       />
@@ -252,7 +252,7 @@ function EventManagementMainContent() {
             </div>
           </div>
           <button
-            className="arrow-button right"
+            className="management-arrow-button right"
             onClick={() => handleScroll(upcomingSlider, 'right')}
             role="button"
           >
@@ -262,13 +262,13 @@ function EventManagementMainContent() {
       </div>
 
       {isModalOpen && editingEvent && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="management-modal-overlay">
+          <div className="management-modal-content">
             <h2>Edit Event</h2>
             <label>
               Title:
               <input
-                type="text"
+                type="management-text"
                 value={editingEvent.title || ''}
                 onChange={(e) =>
                   setEditingEvent({ ...editingEvent, title: e.target.value })
@@ -278,7 +278,7 @@ function EventManagementMainContent() {
             <label>
               Description:
               <textarea
-                className="auto-resize-textarea"
+                className="management-auto-resize-textarea"
                 value={editingEvent.description || ''}
                 onChange={(e) =>
                   setEditingEvent({
@@ -312,7 +312,7 @@ function EventManagementMainContent() {
 
 
 
-            <div className="modal-buttons">
+            <div className="management-modal-buttons">
               <button onClick={handleModalClose}>Cancel</button>
               <button onClick={handleSaveChanges}>Save Changes</button>
             </div>
@@ -321,8 +321,8 @@ function EventManagementMainContent() {
       )}
 
 {uploadModalOpen && (
-       <div className="upload-modal-overlay">
-       <div className="upload-modal-content">
+       <div className="management-upload-modal-overlay">
+       <div className="management-upload-modal-content">
          <h2>Upload Image</h2>
          <input
            type="file"
@@ -331,17 +331,17 @@ function EventManagementMainContent() {
            style={{ display: 'none' }}
            accept="image/*"
          />
-         <div className="image-upload" onClick={handleDivClick}>
-           <span className="upload-placeholder">Select Image</span>
+         <div className="management-image-upload" onClick={handleDivClick}>
+           <span className="management-upload-placeholder">Select Image</span>
          </div>
          {imagePreview && (
-           <div className="image-previews">
-             <img src={imagePreview} alt="preview" className="image-preview" />
+           <div className="management-image-previews">
+             <img src={imagePreview} alt="preview" className="management-image-preview" />
            </div>
          )}
          {uploading && <p>Uploading...</p>}
-         {error && <p className="error">{error}</p>}
-         <div className="upload-modal-buttons">
+         {error && <p className="management-error">{error}</p>}
+         <div className="management-upload-modal-buttons">
            <button onClick={handleUploadModalClose}>Cancel</button>
            <button onClick={handleUploadImage} disabled={uploading}>
              Upload
