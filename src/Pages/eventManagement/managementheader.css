@@ -1,0 +1,198 @@
+.hamburger-logo{
+    height: 100%;
+    max-width: 100%;
+
+}
+.lively-campus-logo{
+    height:7vh;
+    max-width: 100%;
+}
+.search-logo{
+   object-fit: contain;
+    
+}
+
+.lively-campus-profile{
+    height:5vh;
+    max-width: 100%;
+
+}
+.lively-campus-notifications{
+    height:7vh;
+    max-width: 100%;
+}
+#header{
+    flex: 0.1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #003B5C;
+    
+}
+
+.header-right-section,
+.header-left-section,
+.header-middle-section{
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    margin-right: 3%;
+   
+
+}
+.header-middle-section{
+    flex: 0.6;
+    
+}
+.header-middle-section h1{
+    
+    flex-wrap: nowrap;
+flex-shrink: 0;
+}
+
+.search{
+   flex: 0.8;
+    padding: 15px;
+    border-style: solid;
+    border-width: thin;
+    border-top-left-radius: 0.5vh;
+    border-bottom-left-radius: 0.5vh;
+    box-shadow: inset 0px 0px 2px rgba(117, 117, 117, 0.5);
+    
+    width: 100%;
+  
+  
+}
+.search:focus{
+    border-color: #003B5C;
+    outline: #003B5C;
+border-width:1px;
+
+
+}
+
+.search:focus::placeholder {
+    font-size: 17px; /* Increased font size on focus *//* Optional: Change color on focus */
+  }
+.search-button{
+    border-style: solid;
+    border-width: thin;
+    margin-left: -0.8vh;
+    padding: 22.6px;
+    border-top-right-radius: 0.5vh;
+    border-bottom-right-radius: 0.5vh;
+    border-color: rgb(122, 122, 122);
+    background-image: url('./images-logos/searchlogo.svg');
+    background-position:center;
+    background-size:60%;
+   
+    background-repeat: no-repeat;
+
+    box-shadow: inset 0px 0px 2px rgba(117, 117, 117, 0.5);
+}
+/* Existing styles */
+
+.header-middle-section {
+    display: flex;
+    align-items: center;
+    position: relative; /* Add this for positioning the filter options */
+    justify-content: center;
+}
+
+.filter-options {
+    display: flex;
+   
+    background-color: #f9f9f9;
+    padding: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    position: absolute; /* Position the filter options absolutely */
+     /* Position it beside the search input */
+    top: 85%;
+    left: 4%;
+    z-index: 1; /* Ensure it appears above other elements */
+    max-width: 110%; /* Adjust width as needed */
+}
+
+.filter-option {
+    margin-bottom: 10px;
+}
+
+.filter-option label {
+    margin-right: 10px;
+}
+
+.filter-option select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+
+@media (max-width: 600px) {
+    .header-right-section,
+.header-left-section,
+.header-middle-section{
+    height: 7vh;
+    display: flex;
+    align-items: center;
+    margin-right: 5%;
+    flex-shrink: 0;
+    justify-content: center;
+   
+}
+.lively-campus-logo{
+    height:4vh;
+    max-width: 100%;
+}
+.lively-campus-profile{
+height: 3vh;
+max-width: 100%;
+}
+.lively-campus-notifications{
+height: 4vh;
+max-width: 100%;
+}
+.search::placeholder {
+    font-size: 10px; /* Adjust font size */
+    color: #aaa; /* Placeholder color */
+  }
+  .search{
+    flex: 0.8;
+     padding: 2vh;
+     border-style: solid;
+     border-width: thin;
+     border-top-left-radius: 0.5vh;
+     border-bottom-left-radius: 0.5vh;
+     box-shadow: inset 0px 0px 10px rgba(109, 109, 109, 0.9);
+     
+     width: 100%;
+     display: none;
+   
+   
+     
+ }
+ .search-button{
+    background-color: #d6ffa1;
+    border-style: solid;
+    border-width: thin;
+    margin-left: -1vh;
+    padding: 25px;
+    border-radius: 0.5vh;
+    border-color: rgb(3, 26, 100);
+    justify-content: center;
+    box-shadow: 0px 0px 5px rgb(3, 26, 100,0.4);
+    border: none;
+}
+
+  
+}
+@media (max-width: 950px){
+    .header-middle-section h1{
+        font-size: medium;
+        flex-wrap: nowrap;
+    flex-shrink: 0;
+    }
+}
+
+

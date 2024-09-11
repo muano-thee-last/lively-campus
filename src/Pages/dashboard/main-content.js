@@ -1,16 +1,54 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import './main-content.css';
 import profile from './images-logos/profile-logo.jpg';
 import comments from './images-logos/comments.jpeg';
+import { useCallback } from 'react';
 
 function MainContent() {
   const [events, setEvents] = useState([]);
   const [liked, setLiked] = useState([]);
   const upcomingSlider = useRef(null);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+  const userId = sessionStorage.getItem('uid');
+  const fetchUserLikedEvents = useCallback(async () => {
+    if (!userId) return;
+  
+    try {
+      const response = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch user liked events');
+      }
+  
+      const data = await response.json();
+      
+      if (data && Array.isArray(data.likedEvents)) {
+        const likedEvents = data.likedEvents;
+        const likedStatuses = events.map(event => likedEvents.includes(event.id));
+        setLiked(likedStatuses);
+      } else {
+        console.error('Invalid data structure:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching user liked events:', error);
+    }
+  }, [userId, events, setLiked]); 
 
   useEffect(() => {
+    // Fetch events and user's liked events
+    fetchEvents();
+  }, []);
+
+  useEffect(() => {
+    // Fetch user's liked events after events are fetched
+    if (events.length > 0) {
+      fetchUserLikedEvents();
+    }
+  }, [events, fetchUserLikedEvents]);
+  
+
+  const fetchEvents = () => {
     fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events')
       .then(response => {
         if (!response.ok) {
@@ -20,13 +58,13 @@ function MainContent() {
       })
       .then(data => {
         setEvents(data);
-        setLiked(new Array(data.length).fill(false));
       })
       .catch(error => {
         console.error('Error fetching events:', error);
-        // Optionally, handle error state here
       });
-  }, []);
+  };
+
+
 
   const handleScroll = (slider, direction) => {
     if (slider.current) {
@@ -37,15 +75,113 @@ function MainContent() {
   };
 
   const handleLike = (index) => {
-    setLiked(prev => {
-      const updatedLiked = [...prev];
-      updatedLiked[index] = !updatedLiked[index];
-      return updatedLiked;
+    const eventId = events[index].id;
+    const isLiked = !liked[index];
+    
+    // Toggle like status locally
+    const updatedLiked = [...liked];
+    updatedLiked[index] = isLiked;
+    setLiked(updatedLiked);
+  
+    // Increment or decrement like count locally
+    const updatedEvents = [...events];
+    if (isLiked) {
+      updatedEvents[index].likes += 1;
+    } else {
+      updatedEvents[index].likes -= 1;
+    }
+    setEvents(updatedEvents);
+  
+    // Update liked events in backend for the user
+    updateUserLikedEvents(eventId, isLiked)
+      .then(() => {
+        // After updating backend, re-fetch liked events to sync with backend
+        fetchUserLikedEvents();
+      });
+  
+    // Update like count on the event in backend (using your previous logic)
+    updateEventLikeCount(index, updatedEvents);
+  };
+  
+  // Function to update liked events for the user (unchanged)
+  const updateUserLikedEvents = (eventId, isLiked) => {
+    if (!userId) {
+      console.error("User is not logged in");
+      return Promise.reject("User is not logged in");
+    }
+  
+    // First, fetch the current liked events from the backend
+    return fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch user liked events');
+        }
+        return response.json();
+      })
+      .then(data => {
+        const currentLikedEvents = data.likedEvents || [];
+  
+        // Determine the new liked events array
+        let updatedLikedEvents;
+        if (isLiked) {
+          // If liking the event, add it to the array
+          updatedLikedEvents = [...currentLikedEvents, eventId];
+        } else {
+          // If unliking, remove the event from the array
+          updatedLikedEvents = currentLikedEvents.filter(id => id !== eventId);
+        }
+  
+        // Now, update the liked events in the backend with the updated array
+        return fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}/liked-events`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ likedEvents: updatedLikedEvents }),
+        });
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to update liked events');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Liked events updated successfully:', data);
+      })
+      .catch(error => {
+        console.error('Error updating liked events:', error);
+      });
+  };
+  
+  
+  // Updated function to update event like count (based on your existing logic)
+  const updateEventLikeCount = (index, updatedEvents) => {
+    return fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${updatedEvents[index].id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ likes: updatedEvents[index].likes }), // Send the updated likes count
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to update likes');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Likes updated successfully:', data);
+    })
+    .catch(error => {
+      console.error('Error updating likes:', error);
     });
   };
+  
+  
 
   const handleViewDetails = (id) => {
-    navigate(`/details/${id}`); // Navigate to the ViewMoreDetails page with event ID
+    navigate(`/details/${id}`);
   };
 
   return (
@@ -70,8 +206,8 @@ function MainContent() {
                   </div>
                   <div className='card-fourth-row'>
                     <div className='like-comment'>
-                      <button 
-                        className={`like-button ${liked[index] ? 'active' : ''}`} 
+                      <button
+                        className={`like-button ${liked[index] ? 'active' : ''}`}
                         onClick={() => handleLike(index)}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" className="like-icon">
@@ -81,7 +217,7 @@ function MainContent() {
                       <img src={comments} alt='Comments' className='comments-image' />
                       <p className='like-count'>likes {event.likes}</p>
                     </div>
-                    <button className='details-button' onClick={() => handleViewDetails(event.id)}>View more details</button> {/* Pass event ID */}
+                    <button className='details-button' onClick={() => handleViewDetails(event.id)}>View more details</button>
                   </div>
                 </div>
               ))}
@@ -95,4 +231,3 @@ function MainContent() {
 }
 
 export default MainContent;
-
