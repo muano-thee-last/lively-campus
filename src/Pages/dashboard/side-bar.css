@@ -1,0 +1,129 @@
+#side-bar {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0.7%;
+    transition: flex 0.3s ease-in-out;
+    z-index: 1000;
+    margin-right: 0.9%;
+}
+
+.sidebar-logos {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12%;
+    flex-shrink: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar-logos p {
+    color: #003B5C;
+    white-space: nowrap;
+    font-weight: bold;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+}
+
+.post-history-logos {
+    height: 8.8vh;
+    max-width: 100%;
+}
+.history-logos {
+    height: 8.5vh;
+    max-width: 100%;
+}
+
+
+.event-ticket-logos {
+    height: 7.5vh;
+    max-width: 100%;
+    padding: 2%;
+}
+
+
+
+#side-bar.expanded .sidebar-logos p {
+    opacity: 1; /* Make text fully visible */
+    transition: opacity 0.3s ease-in-out; 
+}
+
+#side-bar:not(.expanded) .sidebar-logos p {
+    opacity: 0; /* Hide text when not expanded */
+    display: none; /* Hide text completely */
+
+}
+
+#side-bar:not(.expanded) .sidebar-logos .history-logos{
+    display: none;
+}
+
+
+@media (max-width: 1254px) {
+    #side-bar {
+        height: 60vh;
+        display: flex;
+        flex-direction: column;
+        
+    }
+}
+
+
+@media (max-width: 690px) {
+    .sidebar-logos p {
+        display: none; /* Always hide text on small screens */
+    }
+
+    .post-history-logos {
+        height: 5vh;
+        max-width: 100%;
+    }
+    .history-logos {
+        height: 5vh;
+        max-width: 100%;
+    }
+
+    .event-ticket-logos {
+        height: 4.5vh;
+        max-width: 100%;
+    }
+    #side-bar.expanded .event-ticket-logos {
+        height: 5vh;
+        max-width: 100%;
+    
+    }
+    #side-bar.expanded .post-history-logos {
+        height: 6vh;
+        max-width: 107%;
+        
+        
+    }
+    #side-bar.expanded .history-logos  {
+        height: 5.7vh;
+        max-width: 106%;
+        
+    }
+ 
+    
+   
+}
+
+
+
+@media (max-width: 1024px) {
+    #side-bar {
+        height: 60vh;
+        display: flex;
+        flex-direction: column;
+      
+        
+    }
+}
+@media (max-width: 950px) {
+    #side-bar:not(.expanded) .sidebar-logos{
+        display: none;
+        
+    }
+    .sidebar-logos p {
+        display: none; /* Always hide text on small screens */
+    }
+   
+}

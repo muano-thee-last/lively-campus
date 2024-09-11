@@ -1,0 +1,305 @@
+#dashboard-main-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1%;
+  padding-bottom: 4%;
+  overflow: hidden;
+  flex: 1;
+}
+
+.dashboard-events-section {
+  display: flex;
+  flex-direction: column;
+  gap: 3vh;
+  flex: 1;
+}
+
+.dashboard-slider-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden; /* Ensure the container hides overflow */
+  width: 100%;
+}
+
+.dashboard-slider {
+  display: flex;
+  overflow: hidden;
+  flex: 1;
+  width: 100%;
+}
+
+.dashboard-card-container {
+  display: flex;
+  gap: 20px; /* Space between cards */
+  transition: transform 0.3s ease;
+  width: calc(30% * 3 + 20px); /* Show 3 full cards and half of the fourth */
+  overflow-x: auto; /* Enables horizontal scrolling */
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  padding: 2%;
+}
+
+.dashboard-card {
+  flex: 0 0 30%; /* Adjust width to fit 3 cards */
+  height: 42vh; /* Increased height */
+  background: #ffffff;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0px 0px 6px 1px rgba(121, 121, 121, 0.6);
+
+  overflow: hidden;
+  position: relative;
+  flex-direction: column;
+  padding-top: 1%;
+  padding-bottom: 3%;
+}
+.card-first-row{
+  flex: 0.1;
+  display: flex;
+  
+  justify-content: end;
+ padding-right: 5%;
+  
+}
+.card-second-row{
+  display: flex;
+  padding-left: 1%;
+  align-items: center;
+  flex: 0.2;
+  padding-bottom: 2%;
+  
+}
+.card-third-row{
+ display: flex;
+  flex: 0.5;
+
+}
+.card-fourth-row{
+  display: flex;
+  padding-left: 5%;
+  padding-right: 3%;
+  justify-content: space-between;
+  align-items: center;
+  flex: 0.2;
+}
+.profile-image {
+  flex: 0.2;
+  max-width: 100%;
+  height: 6vh;
+  object-fit: contain;
+  object-position: center;
+}
+.event-organizer{
+  flex: 0.8;
+  padding-left: 5%;
+  color: #003B5C;
+  font-weight: bold;
+}
+.event-images{
+  width: 100%;
+  height: 25vh;
+  object-fit: fill;
+  
+}
+.comments-image{
+  height: 6.2vh;
+  
+ 
+} 
+
+.dashboard-card:hover {
+
+  box-shadow: 0px 0px 6px 3px rgba(2, 18, 61, 0.3);
+  transform: scale(1.01);
+  z-index: 5;
+}
+
+.arrow-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 10;
+  font-weight: bold;
+  font-size: large;
+  
+}
+
+.arrow-button.left {
+  left: -5px; /* Adjust to position correctly */
+  border-radius: 55vh;
+
+}
+
+.arrow-button.right {
+  right: 10px; /* Adjust to position correctly */
+  border-radius: 25vh;
+}
+
+.dashboard-slider-container .arrow-button {
+  padding: 10px 20px;
+  border: none;
+  background: #7c7c7c;
+  color: white;
+  border-radius: 25vh;
+  cursor: pointer;
+  margin: 5px;
+  opacity: 0.5;
+}
+
+.dashboard-slider-container .arrow-button:hover {
+  background: #003B5C;
+  opacity: 1;
+}
+
+.details-button{
+  border: none;
+  background-color: #003B5C;
+  border-radius: 0.8vh;
+  color: white;
+  padding: 3%;
+  margin-top: 1%;
+}
+.details-button:hover{
+  opacity: 0.8;
+}
+.details-button:active{
+  background-color: white;
+  color: #003B5C;
+  border-style: solid;
+  border-width: thin;
+  border-color: #003B5C;
+}
+.like-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5%;
+  transition: background-color 0.3s ease;
+}
+
+.like-icon {
+  fill: rgb(134, 134, 134);
+  
+  transition: fill 0.3s ease;
+}
+
+.like-button.active .like-icon {
+  fill: rgb(255, 0, 0);
+}
+
+.like-comment{
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.like-count{
+  position: absolute;
+  left: -10%;
+  bottom:-25%;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #003B5C;
+}
+
+
+@media (max-width: 950px) {
+  .dashboard-card-container {
+    width: 100%; /* Show only one card at a time */
+    gap: 7%; /* Remove gap to fit one card properly */
+    
+   /* Space between cards */
+  transition: transform 0.3s ease;
+
+  overflow-x: auto; /* Enables horizontal scrolling */
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  
+  }
+
+  .dashboard-slider-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden; /* Ensure the container hides overflow */
+    width: 100%;
+  }
+  .arrow-button {
+    padding: 2%;
+    
+    
+  }
+  .dashboard-card {
+    flex: 0 0 85%; /* Make each card take up the full width */
+    height: 42vh; /* Adjust height to fit the screen better */
+  }
+  .dashboard-card:hover {
+
+    box-shadow: 0px 0px 6px 1px rgba(0, 47, 92, 0.3);
+  
+  }
+  
+  .comments-image{
+    height: 4.3vh;
+    
+   
+  } 
+  
+
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .dashboard-card-container {
+    width: 100%; /* Show only one card at a time */
+    gap: 7%; /* Remove gap to fit one card properly */
+    
+   /* Space between cards */
+  transition: transform 0.3s ease;
+
+  overflow-x: auto; /* Enables horizontal scrolling */
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  
+  }
+ 
+
+  .dashboard-slider-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden; /* Ensure the container hides overflow */
+    width: 100%;
+  }
+  .arrow-button {
+    padding: 2%;
+    
+    
+  }
+  .arrow-button.left{
+    display: none;
+    
+  }
+  .comments-image{
+    height: 5.1vh;
+    
+   
+  } 
+}
+.dashboard-events-section{
+  color:#003B5C ;
+}
+

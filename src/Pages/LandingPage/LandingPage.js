@@ -7,8 +7,7 @@ import upcomingEventsImg3 from '../../asserts/parade.jpeg'
 import previousEventsImg2 from '../../asserts/img.jpg'
 import previousEventImg from '../../asserts/previous-event.webp';
 import Login from '../Login/login';
-import Home from '../Home/Home';
-import { Routes, Route } from "react-router-dom";
+import Footer from '../dashboard/footer'
 
 // Main component for the Landing Page
 function LandingPage() {
@@ -67,9 +66,7 @@ function LandingPage() {
       <Footer />
 
       {showLogin && <LoginModal handleCloseLogin={handleCloseLogin} />}
-      <Routes>
-        <Route path="/home" element={<Home />} />
-      </Routes>
+   
     </div>
   );
 }
@@ -120,7 +117,10 @@ function EventsSection({ title, images, currentIndex, handleDotClick, showBookNo
       <div
         className="card"
         style={{
-          backgroundImage: `url(${images[currentIndex]})`
+          backgroundImage: `url(${images[currentIndex]})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
         <div className="event-content">
@@ -145,40 +145,10 @@ function EventsSection({ title, images, currentIndex, handleDotClick, showBookNo
 }
 
 // Footer component with logo, links, and newsletter signup
-function Footer() {
-  return (
-    <footer className="footer">
-      <div className="logo-container">
-        <img src={logo} alt="LivelyCampus Logo" className="logo-image" />
-        <div className="logo-text">LivelyCampus</div>
-      </div>
-      <div className="footer-content">
-        <FooterSection title="Plan Events" items={["LivelyCampus", "About Us", "Press", "Contact Us", "Help Center", "How it Works", "Privacy", "Terms"]} />
-        <FooterSection title="Create and Set Up" items={["Sell Tickets", "Online RSVP", "Online Events"]} />
-        <div className="footer-section">
-          <h3>Stay in the Loop</h3>
-          <p>Join our mailing list to stay in the loop with our newest events and concerts</p>
-          <input type="email" placeholder="Enter your email address..." />
-          <button className="btn-primary">Subscribe Now</button>
-        </div>
-      </div>
-    </footer>
-  );
-}
+
 
 // Footer section component for rendering a list of items
-function FooterSection({ title, items }) {
-  return (
-    <div className="footer-section">
-      <h3>{title}</h3>
-      <ul>
-        {items.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+
 
 // Login modal component for displaying the login form
 function LoginModal({ handleCloseLogin }) {

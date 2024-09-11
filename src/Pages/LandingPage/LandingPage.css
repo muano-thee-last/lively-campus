@@ -1,37 +1,44 @@
 /* General Styles */
+/* Sets default font*/
 body {
   font-family: Arial, sans-serif;
 }
 
 /* Header Styles */
+/* Positions the header at the top of the page and styles it */
 .header {
   position: absolute;
   top: 0;
-  width: 100%;
-  z-index: 2;
+  width: 80%;
+  z-index: 3;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px;
   background-color: transparent;
+  transition: padding 0.3s ease;
 }
 
+/* Styles the logo container */
 .logo-container {
   display: flex;
   align-items: center;
 }
 
+/* Sets dimensions for the logo image */
 .logo-image {
   width: 50px;
   height: auto;
   margin-right: 10px;
 }
 
+/* Styles the logo text */
 .logo-text {
   font-size: 24px;
   color: white;
 }
 
+/* Styles the navigation menu */
 nav ul {
   list-style: none;
   display: flex;
@@ -40,22 +47,45 @@ nav ul {
   align-items: center;
 }
 
+/* Styles individual navigation menu items */
 nav ul li {
   margin-left: 20px;
 }
 
+/* Styles navigation menu links */
 nav ul li a {
   text-decoration: none;
   color: white;
 }
 
+/* Adds underline on hover for navigation links */
 nav ul li a:hover {
   text-decoration: underline;
 }
 
+/* Styles secondary buttons */
+.btn-secondary {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #003B5C;
+  border-radius: 20px;
+  cursor: pointer;
+  padding: 10px 20px;
+  font-size: 12px;
+}
+
+/* Adds hover effect to secondary buttons */
+.btn-secondary:hover {
+  background-color: rgba(90, 98, 104, 0.5);
+}
+
 /* Hero Section */
+/* Styles the main hero section */
 .card1 {
   width: 100%;
+  min-height: 120px;
+  margin: auto;
+  padding: 16px;
   height: 40vh;
   position: relative;
   overflow: hidden;
@@ -64,8 +94,11 @@ nav ul li a:hover {
   align-items: center;
   background: url('../../asserts/topimage.jpg') no-repeat center center;
   background-size: cover;
+  transition: padding 0.3s ease;
+  z-index: 2;
 }
 
+/* Adds a semi-transparent overlay to the hero section */
 .card1::before {
   content: "";
   position: absolute;
@@ -78,6 +111,7 @@ nav ul li a:hover {
   z-index: 1;
 }
 
+/* Styles the hero card */
 .hero-card {
   position: absolute;
   right: 15%;
@@ -87,83 +121,87 @@ nav ul li a:hover {
   z-index: 2;
 }
 
+/* Styles the hero section heading */
 .hero h4 {
   font-size: 16px;
   margin-bottom: 16px;
   color: white;
 }
 
+/* Styles the hero section paragraph */
 .hero p {
   color: white;
   font-size: 12px;
   margin-bottom: 20px;
 }
 
+/* Styles the container for hero buttons */
 .hero-buttons {
   display: flex;
   justify-content: center;
   gap: 10px;
 }
 
+/* Styles both primary and secondary buttons */
 .btn-primary, .btn-secondary {
   padding: 10px 20px;
-  width: 250px;
   height: 40px;
   font-size: 12px;
   border-radius: 20px;
   cursor: pointer;
+  z-index: 2;
+  width: auto;
+  max-width: 100%;
 }
 
+/* Styles primary buttons */
 .btn-primary {
   background-color: #003B5C;
   color: #fff;
   border: none;
 }
 
+/* Adds hover effect to primary buttons */
 .btn-primary:hover {
   background-color: #002b43;
 }
 
-.btn-secondary {
-  background-color: transparent;
-  color: #fff;
-  border: 2px solid #003B5C;
-}
-
-.btn-secondary:hover {
-  background-color: rgba(90, 98, 104, 0.5);
-}
-
 /* Events Section */
+/* Styles the events section */
 .events-section {
   text-align: center;
   margin-bottom: 30px;
 }
 
+/* Styles the events section heading */
 .events-section h3 {
   text-align: left;
   margin-left: 2%;
   color: #003B5C;
 }
 
+/* Styles the events section subheading */
 .events-section h2 {
   color: white;
 }
 
+/* Styles individual event cards */
 .card {
-  width: 100vw;
+  width: 100%;
   height: 30vh;
-  border: 1px solid #ddd;
-  border-radius: 0;
+  min-height: 200px;
+  border: none;
+  border-radius: 8px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 0;
+  margin: 20px auto;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* Adds a blurred background to event cards */
 .card::before {
   content: "";
   position: absolute;
@@ -178,6 +216,7 @@ nav ul li a:hover {
   opacity: 0.6;
 }
 
+/* Styles the content within event cards */
 .card .event-content {
   position: relative;
   z-index: 1;
@@ -187,14 +226,18 @@ nav ul li a:hover {
   margin-bottom: -10%;
 }
 
+/* Positions the button in upcoming events */
 .upcoming-events button {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
+  width: auto;
+  max-width: 90%;
 }
 
+/* Styles the dots for event navigation */
 .dots {
   position: absolute;
   bottom: 10px;
@@ -204,6 +247,7 @@ nav ul li a:hover {
   gap: 10px;
 }
 
+/* Styles individual dots */
 .dot {
   height: 10px;
   width: 10px;
@@ -211,51 +255,54 @@ nav ul li a:hover {
   border-radius: 50%;
   display: inline-block;
   transition: background-color 0.6s ease;
+  cursor: pointer;
 }
 
+/* Styles the active dot */
 .dot.active {
   background-color: #717171;
 }
 
 /* Footer Styles */
+/* Styles the footer section */
 .footer {
   display: flex;
   justify-content: space-between;
   padding: 20px;
   background-color: #003B5C;
-}
-
-.footer-content {
-  display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
 }
 
+/* Styles individual footer sections */
 .footer-section {
   flex: 1 1 200px;
   margin: 20px;
-  margin-left: 40px;
   color: white;
 }
 
+/* Styles footer section headings */
 .footer-section h3 {
   margin-bottom: 10px;
 }
 
+/* Styles footer section lists */
 .footer-section ul {
   list-style: none;
   padding: 0;
 }
 
+/* Styles footer section list items */
 .footer-section ul li {
   margin-bottom: 8px;
+  cursor: pointer;
 }
 
-.footer-section p {
-  margin-bottom: 10px;
+/* Adds hover effect to footer list items */
+.footer-section ul li:hover {
+  text-decoration: underline;
 }
 
+/* Styles the email input in the footer */
 .footer-section input[type="email"] {
   padding: 10px;
   margin-bottom: 10px;
@@ -264,6 +311,7 @@ nav ul li a:hover {
   border-radius: 5px;
 }
 
+/* Styles the primary button in the footer */
 .footer-section .btn-primary {
   padding: 10px 20px;
   background-color: white;
@@ -271,13 +319,17 @@ nav ul li a:hover {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  width: auto;
+  max-width: 100%;
 }
 
+/* Adds hover effect to the primary button in the footer */
 .footer-section .btn-primary:hover {
   background-color: #f0f0f0;
 }
 
 /* Login Modal Styles */
+/* Styles the background blur for the login modal */
 .background-blur {
   position: fixed;
   top: 0;
@@ -288,15 +340,18 @@ nav ul li a:hover {
   backdrop-filter: blur(5px);
   transition: opacity 0.3s ease;
   opacity: 0;
-  z-index: 100;
   pointer-events: none;
+  z-index: 1;
 }
 
+/* Styles for active background blur */
 .background-blur.active {
   opacity: 1;
   pointer-events: auto;
+  z-index: 100;
 }
 
+/* Styles the login modal */
 .login-modal {
   position: fixed;
   top: 2%;
@@ -333,6 +388,7 @@ nav ul li a:hover {
 }
 
 /* Responsive Design */
+/* Adjusts layout for screens up to 1200px wide */
 @media (max-width: 1200px) {
   .header, .footer {
     flex-direction: column;
@@ -342,24 +398,21 @@ nav ul li a:hover {
   .footer-section {
     flex: 1 1 100%;
     text-align: center;
+    margin-left: 0;
+  }
+
+  .hero-card {
+    right: 1%;
+    width: 20%;
+    height: 30%;
   }
 }
 
-@media (max-width: 768px) {
-  .hero h1 {
-    font-size: 2em;
-  }
-
-  .hero p {
-    font-size: 1em;
-  }
-
-  .hero-buttons {
-    flex-direction: column;
-  }
-
+/* Adjusts layout for screens up to 900px wide */
+@media (max-width: 900px) {
   .btn-primary, .btn-secondary {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     margin: 5px 0;
   }
 
@@ -371,8 +424,51 @@ nav ul li a:hover {
     width: 95%;
     padding: 15px;
   }
+
+  .card1 {
+    padding: 8px;
+  }
+
+  .header {
+    padding: 8px;
+  }
+
+  .hero-card {
+    display: none;
+  }
 }
 
+/* Adjusts layout for screens up to 614px tall */
+@media (max-height: 614px) {
+  .btn-primary, .btn-secondary {
+    width: auto;
+    max-width: 100%;
+    margin: 5px 0;
+  }
+
+  .events-section {
+    padding: 0 10px;
+  }
+
+  .login-modal {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .card1 {
+    padding: 8px;
+  }
+
+  .header {
+    padding: 8px;
+  }
+
+  .hero-card {
+    display: none;
+  }
+}
+
+/* Adjusts layout for screens up to 480px wide */
 @media (max-width: 480px) {
   .logo-text {
     font-size: 1.2em;
@@ -389,5 +485,16 @@ nav ul li a:hover {
 
   .footer-section {
     flex: 1 1 100%;
+  }
+
+  .hero-card {
+    width: 60%;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: auto;
+    max-width: 100%;
+    font-size: 10px;
+    padding: 8px 16px;
   }
 }
