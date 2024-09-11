@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
-import './main-content.css';
+import './event-management-main-content.css';
 import profile from './images-logos/profile-logo.jpg';
 import { FaSearch, FaEdit, FaTrash, FaCamera, FaUsers } from 'react-icons/fa';
 import useImageUpload from './useImageUpload';
 
-function MainContent() {
+function EventManagementMainContent() {
   const [events, setEvents] = useState([]);
   const [liked, setLiked] = useState([]);
   const [editingEvent, setEditingEvent] = useState(null);
@@ -355,4 +355,4 @@ function MainContent() {
   );
 }
 
-export default MainContent;
+export default EventManagementMainContent;
