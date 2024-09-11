@@ -10,35 +10,6 @@ function MainContent() {
   const upcomingSlider = useRef(null);
   const navigate = useNavigate();
   const userId = sessionStorage.getItem('uid');
-
-  useEffect(() => {
-    // Fetch events and user's liked events
-    fetchEvents();
-  }, []);
-
-  useEffect(() => {
-    // Fetch user's liked events after events are fetched
-    if (events.length > 0) {
-      fetchUserLikedEvents();
-    }
-  }, [events]);
-
-  const fetchEvents = () => {
-    fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setEvents(data);
-      })
-      .catch(error => {
-        console.error('Error fetching events:', error);
-      });
-  };
-
   const fetchUserLikedEvents = () => {
     if (!userId) return;
 
@@ -62,6 +33,37 @@ function MainContent() {
         console.error('Error fetching user liked events:', error);
       });
   };
+
+  useEffect(() => {
+    // Fetch events and user's liked events
+    fetchEvents();
+  }, []);
+
+  useEffect(() => {
+    // Fetch user's liked events after events are fetched
+    if (events.length > 0) {
+      fetchUserLikedEvents();
+    }
+  }, [events, fetchUserLikedEvents]);
+  
+
+  const fetchEvents = () => {
+    fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setEvents(data);
+      })
+      .catch(error => {
+        console.error('Error fetching events:', error);
+      });
+  };
+
+
 
   const handleScroll = (slider, direction) => {
     if (slider.current) {

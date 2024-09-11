@@ -6,7 +6,6 @@ import useImageUpload from './useImageUpload';
 
 function EventManagementMainContent() {
   const [events, setEvents] = useState([]);
-  const [liked, setLiked] = useState([]);
   const [editingEvent, setEditingEvent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false); // Modal for image upload
@@ -14,8 +13,6 @@ function EventManagementMainContent() {
   const upcomingSlider = useRef(null);
 
   const {
-    images,
-    imageUrl,
     imagePreview,
     uploading,
     uploadImage,
@@ -24,7 +21,6 @@ function EventManagementMainContent() {
     handleFileChange,
     handleDivClick,
     setImagePreview,
-    uploadMultipleImages
   } = useImageUpload();
 
   useEffect(() => {
@@ -37,7 +33,7 @@ function EventManagementMainContent() {
       })
       .then((data) => {
         setEvents(data);
-        setLiked(new Array(data.length).fill(false));
+        
       })
       .catch((error) => {
         console.error('Error fetching events:', error);
@@ -52,14 +48,7 @@ function EventManagementMainContent() {
     }
   };
 
-  const handleLike = (index) => {
-    setLiked((prev) => {
-      const updatedLiked = [...prev];
-      updatedLiked[index] = !updatedLiked[index];
-      return updatedLiked;
-    });
-  };
-
+ 
   const handleDelete = async (eventId) => {
     try {
       const response = await fetch(

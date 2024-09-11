@@ -7,11 +7,8 @@ import './managementheader.css';
 import { useNavigate } from "react-router-dom";
 
 function Header({ toggleSidebar }) {
-    const [showFilters, setShowFilters] = useState(false);
     const navigate = useNavigate();
-    const handleSearchClick = () => {
-        setShowFilters(!showFilters); // Toggle filter div visibility
-    };
+   
     const handleNotificationsClick = () => {
         navigate('/Notifications');
     };

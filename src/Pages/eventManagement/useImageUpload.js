@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import {  ref, uploadBytes, getDownloadURL} from "firebase/storage";
 import {storage} from "../../Pages/Login/config";
 
 
