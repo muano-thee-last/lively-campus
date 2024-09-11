@@ -13,7 +13,7 @@ body {
     display: flex;
   flex-direction: column;
 }
-  #dashboard p,#dashboard h1,#dashboard h2,#dashboard h3,#dashboard h4,#dashboard h5{
+  #dashboard p, h1, h2, h3, h4, h5{
     margin: 0;
   }
   
