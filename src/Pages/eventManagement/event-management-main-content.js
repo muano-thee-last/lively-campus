@@ -179,7 +179,7 @@ function EventManagementMainContent() {
           <button
             className="management-arrow-button left"
             onClick={() => handleScroll(upcomingSlider, 'left')}
-            role="button"
+            
           >
             ‹
           </button>
@@ -243,7 +243,7 @@ function EventManagementMainContent() {
           <button
             className="management-arrow-button right"
             onClick={() => handleScroll(upcomingSlider, 'right')}
-            role="button"
+            
           >
             ›
           </button>
