@@ -1,5 +1,4 @@
 .view-more-details {
-  zoom: 1.7;
   width: 100%; /* Make the container fill the entire width of the screen */
   max-width: none; /* Remove the max-width constraint */
   padding: 20px;
