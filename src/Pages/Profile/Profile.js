@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from "react";
+
 import "../EventCreation/styles/Profile.css";
 import genderLogo from "../EventCreation/images-logos/gender-male.svg";
 import birthdayLogo from "../EventCreation/images-logos/birthday.svg";
@@ -33,24 +34,7 @@ export default function Profile() {
 
   const { myImg, name, title, gender, birthday, email, phone } = userData;
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  useEffect(() => {
-    if (events.length > 0) {
-      fetchUserLikedEvents();
-    }
-  }, [events]);
-
-  const fetchEvents = () => {
-    fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events')
-      .then(response => response.json())
-      .then(data => setEvents(data))
-      .catch(error => console.error("Error fetching events:", error));
-  };
-
-  const fetchUserLikedEvents = () => {
+  const fetchUserLikedEvents = useCallback(() => {
     fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`)
       .then(response => response.json())
       .then(data => {
@@ -59,7 +43,27 @@ export default function Profile() {
         setLikedEvents(filteredLikedEvents);
       })
       .catch(error => console.error("Error fetching liked events:", error));
+  }, [events, userId]);
+
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  useEffect(() => {
+    if (events.length > 0) {
+      fetchUserLikedEvents();
+    }
+  }, [events, fetchUserLikedEvents]);
+
+
+  const fetchEvents = () => {
+    fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events')
+      .then(response => response.json())
+      .then(data => setEvents(data))
+      .catch(error => console.error("Error fetching events:", error));
   };
+
 
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -161,14 +165,14 @@ export default function Profile() {
             </div>
           </div>
           <div className="additional-features-container">
-          <div className="additional-features">
-          <h2 className="add-features-bold-title">Additional Functions
-          </h2>
-          <button className="additional-features-buttons" onClick={() => handleEventManagement()}>Manage your Events</button>
-          <button className="additional-features-buttons">Create an Event</button>
+            <div className="additional-features">
+              <h2 className="add-features-bold-title">Additional Functions
+              </h2>
+              <button className="additional-features-buttons" onClick={() => handleEventManagement()}>Manage your Events</button>
+              <button className="additional-features-buttons">Create an Event</button>
+            </div>
           </div>
-          </div>
-          
+
 
           {/* Liked Events Section */}
           <div className="liked-events-section">
