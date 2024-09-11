@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './main-content.css';
 import profile from './images-logos/profile-logo.jpg';
 import comments from './images-logos/comments.jpeg';
+import { useCallback } from 'react';
 
 function MainContent() {
   const [events, setEvents] = useState([]);
@@ -10,29 +11,29 @@ function MainContent() {
   const upcomingSlider = useRef(null);
   const navigate = useNavigate();
   const userId = sessionStorage.getItem('uid');
-  const fetchUserLikedEvents = () => {
+  const fetchUserLikedEvents = useCallback(async () => {
     if (!userId) return;
-
-    fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch user liked events');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data && Array.isArray(data.likedEvents)) {
-          const likedEvents = data.likedEvents;
-          const likedStatuses = events.map(event => likedEvents.includes(event.id));
-          setLiked(likedStatuses);
-        } else {
-          console.error('Invalid data structure:', data);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching user liked events:', error);
-      });
-  };
+  
+    try {
+      const response = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch user liked events');
+      }
+  
+      const data = await response.json();
+      
+      if (data && Array.isArray(data.likedEvents)) {
+        const likedEvents = data.likedEvents;
+        const likedStatuses = events.map(event => likedEvents.includes(event.id));
+        setLiked(likedStatuses);
+      } else {
+        console.error('Invalid data structure:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching user liked events:', error);
+    }
+  }, [userId, events, setLiked]); 
 
   useEffect(() => {
     // Fetch events and user's liked events
