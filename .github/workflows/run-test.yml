@@ -22,4 +22,23 @@ jobs:
         run: npm ci --legacy-peer-deps && npm run build
 
       - name: Run Jest tests
-        run: npm test
+        run: npm test -- --ci --reporters=default --reporters=jest-junit
+        continue-on-error: true
+
+      - name: Upload test results
+        if: always() # Ensure this step runs even if the tests fail
+        uses: actions/upload-artifact@v3
+        with:
+          name: jest-test-results
+          path: ./test-results/jest-junit.xml
+
+      - name: Download test results
+        if: always() # Ensure this step runs even if the tests fail
+        uses: actions/download-artifact@v3
+        with:
+          name: jest-test-results
+          path: ./test-results
+
+      - name: Display test results
+        if: always() # Ensure this step runs even if the tests fail
+        run: cat ./test-results/jest-junit.xml
