@@ -52,20 +52,21 @@
     ]
   },
   "devDependencies": {
+    "jest": "^27.5.1",
     "jest-junit": "^16.0.0",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"
-  }, "jest": {
-  "reporters": [
-    "default",
-    [
-      "jest-junit",
-      {
-        "outputDirectory": "./test-results",
-        "outputName": "jest-junit.xml"
-      }
+  },
+  "jest": {
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "./test-results",
+          "outputName": "jest-junit.xml"
+        }
+      ]
     ]
-  ]
-}
-
+  }
 }
