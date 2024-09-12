@@ -13,9 +13,9 @@ function BuyTickets() {
   const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvc: '' });
   const [icamNumber, setIcamNumber] = useState('');
   const [googleInfo, setGoogleInfo] = useState('');
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
-    // Detect device payment method
     if (window.ApplePaySession) {
       setDevicePaymentMethod('Apple Pay');
     } else if (window.SamsungPay) {
@@ -29,34 +29,58 @@ function BuyTickets() {
     setPaymentMethod(method);
   };
 
+  const sendConfirmationEmail = (paymentDetails) => {
+    fetch('http://localhost:3001/send-confirmation-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        paymentDetails: JSON.stringify(paymentDetails),
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        alert(data.message);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('There was an error sending the confirmation email.');
+      });
+  };
+
   const handleBuyTickets = async () => {
     if (paymentMethod === 'Card Payment') {
       if (!cardDetails.number || !cardDetails.expiry || !cardDetails.cvc) {
         alert('Please fill in all card details');
         return;
       }
-      // Process card payment
-      alert('Processing card payment...');
     } else if (paymentMethod === 'KuduBucks') {
       if (!icamNumber) {
         alert('Please enter your ICAM number');
         return;
       }
-      // Process KuduBucks payment
-      alert(`Processing KuduBucks payment for ICAM: ${icamNumber}`);
     } else if (paymentMethod === 'Google Pay') {
       if (!googleInfo) {
         alert('Please enter your Google Pay information');
         return;
       }
-      // Process Google Pay payment
-      alert(`Processing Google Pay payment with info: ${googleInfo}`);
-    } else if (paymentMethod === devicePaymentMethod) {
-      // Handle device-specific payment logic here
-      alert(`${devicePaymentMethod} selected`);
-    } else {
+    } else if (paymentMethod !== devicePaymentMethod) {
       alert('Please select a payment method');
+      return;
     }
+
+    const paymentDetails = {
+      amount: `$${ticketCount * 100}`,
+      date: new Date().toLocaleString(),
+      method: paymentMethod,
+    };
+
+    setTimeout(() => {
+      alert('Payment processed successfully!');
+      sendConfirmationEmail(paymentDetails);
+    }, 1000);
   };
 
   return (
@@ -166,10 +190,20 @@ function BuyTickets() {
         </div>
       )}
 
+      <div className="email-input">
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+
       <button 
         className="confirm-purchase-button" 
         onClick={handleBuyTickets}
-        disabled={!paymentMethod}
+        disabled={!paymentMethod || !email}
       >
         Confirm Purchase
       </button>
