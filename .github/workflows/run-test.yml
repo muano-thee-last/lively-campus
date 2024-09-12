@@ -16,19 +16,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # Use the Node.js version compatible with your project
+          node-version: '16'
 
       - name: Install dependencies and build
-        run: npm install --save-dev jest-junit --force 
-        run: npm ci --legacy-peer-deps && npm run build
-
+        run: |
+          npm ci --legacy-peer-deps
+          npm run build
 
       - name: Run Jest tests
-        run: npm test -- --ci --reporters=default --reporters=jest-junit
+        run: npm test
         continue-on-error: true
 
       - name: Upload test results
-        if: always() # Ensure this step runs even if the tests fail
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: jest-test-results
@@ -43,4 +43,4 @@ jobs:
 
       - name: Display test results
         if: always()
-        run: cat ./test-results/jest-junit.xml 
+        run: cat ./test-results/jest-junit.xml
