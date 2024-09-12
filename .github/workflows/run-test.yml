@@ -42,12 +42,3 @@ jobs:
       - name: Display test results
         if: always() # Ensure this step runs even if the tests fail
         run: cat ./test-results/jest-junit.xml
-        run: npm test -- --ci --reporters=default --reporters=jest-junit
-        continue-on-error: true
-
-      - name: Upload test results
-        if: always() # Ensures this step runs even if the tests fail
-        uses: actions/upload-artifact@v3
-        with:
-          name: jest-test-results
-          path: ./test-results/jest-junit.xml
