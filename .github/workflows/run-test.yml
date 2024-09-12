@@ -43,4 +43,4 @@ jobs:
 
       - name: Display test results
         if: always()
-        run: cat ./test-results/jest-junit.xml
+        run: cat ./test-results/jest-junit.xml 
