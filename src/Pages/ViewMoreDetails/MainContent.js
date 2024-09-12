@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'; 
 import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaTicketAlt } from 'react-icons/fa'; 
-import './MainContent.css'; 
+import './MainContent.css';
+import BuyTickets from '../BuyTickets/BuyTickets';
+import { Modal, Button } from '@mui/material'; 
 
 function MainContent() {
   const { id } = useParams(); 
   const [event, setEvent] = useState(null);
   const [googleMapsApiKey, setGoogleMapsApiKey] = useState(null); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
 
   useEffect(() => {
     fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${id}`)
@@ -41,6 +44,13 @@ function MainContent() {
 
     getGoogleKey();
   }, []); 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   if (!event || !googleMapsApiKey) {
     return <p>Loading...</p>; 
@@ -93,8 +103,25 @@ function MainContent() {
 
       <div className="event-footer">
         <p><strong>Ticket Price:</strong> {event.ticketPrice}</p>
-        <button className="buy-ticket-button">Buy Ticket</button>
+        <Button class="buy-ticket-button" variant="contained" color="primary" onClick={handleOpenModal}>
+          Buy Ticket
+        </Button>
       </div>
+
+      {/* Modal for Buy Tickets */}
+      <Modal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        aria-labelledby="buy-ticket-modal"
+        aria-describedby="buy-ticket-form"
+      >
+        <div className="modal-content">
+          <BuyTickets />
+          <Button variant="contained" color="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -1,0 +1,65 @@
+.buy-tickets-modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
+  }
+  
+  .ticket-selection, .payment-method-selection, .card-details, .icam-number-input {
+    margin: 15px 15px;
+  }
+  
+  .payment-method-options {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .payment-option {
+    cursor: pointer;
+    padding: 10px;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: border 0.3s ease;
+  }
+  
+  .payment-option img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .payment-option.selected {
+    border: 2px solid #003B5C;
+  }
+  
+  .payment-option:hover {
+    border: 2px solid #001f33;
+  }
+  
+  .card-details input, .icam-number-input input {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+  }
+  
+  .confirm-purchase-button {
+    background-color: #003B5C;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .confirm-purchase-button:hover {
+    background-color:#001f33
+  }
+  
+  .confirm-purchase-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
