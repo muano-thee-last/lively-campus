@@ -147,18 +147,13 @@
   flex-direction: column;
 }
 
-.event-details {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  padding: 2px 4px;
-  margin-bottom: 2px;
-  font-size: 0.8em;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
+
 .event-title {
+  text-decoration: none !important;
   display: block;
   font-weight: bold;
+  color: black;
+  font: small-caps;
 }
 
 .event-time {
@@ -227,5 +222,41 @@
 .highlighted {
   background-color: #ffeb3b;
   border-radius: 50%;
+}
+
+
+.upcoming-event a, .event-details a {
+  text-decoration: none;
+  color: black; /* You can adjust this color if needed */
+}
+
+
+
+/* Remove underline from links inside event details */
+.event-details a {
+  text-decoration: none !important; /* Force removal of underline */
+  color: black;
+}
+
+/* Remove underline from links inside event details on hover */
+.event-details a:hover {
+  text-decoration: none !important;
+}
+.event-title {
+  position: relative;
+  padding-left: 25px; /* Space for the dot */
+  text-transform: uppercase; /* Ensure text is capitalized if needed */
+  font-weight: bold; /* Adjust as needed */
+}
+
+.event-title::before {
+  content: '•'; /* Unicode character for the dot */
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%); /* Center the dot vertically */
+  color: #00796b; /* Dot color */
+  font-size: 50px; /* Dot size */
+  line-height: 1;
 }
 
