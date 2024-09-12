@@ -22,13 +22,25 @@ afterEach(() => {
 });
 
 test('fetches and displays events on component mount', async () => {
-  render(<MainContent />);
+  const mockNavigate = jest.fn();
+  jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockNavigate,
+  }));
+
+  const { MemoryRouter } = require('react-router-dom');
+
+  render(
+    <MemoryRouter>
+      <MainContent />
+    </MemoryRouter>
+  );
 
   // Verify fetch is called with correct URL
   await waitFor(() => {
     expect(global.fetch).toHaveBeenCalledWith('https://us-central1-witslivelycampus.cloudfunctions.net/app/events');
-    expect(global.fetch).toHaveBeenCalledTimes(1);
   });
+  expect(global.fetch).toHaveBeenCalledTimes(1);
 
   // Verify the number of event cards rendered
   const eventCards = await screen.findAllByRole('heading', { name: /Event \d/ });

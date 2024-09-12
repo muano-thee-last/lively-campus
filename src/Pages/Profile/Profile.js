@@ -70,59 +70,35 @@ export default function Profile() {
     console.log(sessionStorage.getItem("uid"));
   };
 
+  const decrementLike = (eventId) => {
+    return fetch(
+      `https://us-central1-witslivelycampus.cloudfunctions.net/app/unlike`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, eventId }),
+      }
+    );
+  };
+
   const handleUnlike = (eventId) => {
-    updateUserLikedEvents(eventId, false)
-      .then(() => {
-        const updatedLikedEvents = likedEvents.filter(event => event.id !== eventId);
-        setLikedEvents(updatedLikedEvents);
-      })
-      .catch(error => console.error('Error unliking event:', error));
+    //Optimistic UI updates
+    const updatedLikedEvents = likedEvents.filter(event => event.id !== eventId);
+    setLikedEvents(updatedLikedEvents);
+
+    decrementLike(eventId).then((response) => {
+      if (!response.ok) {
+        console.error("Failed to decrement like:", response.json());
+        //add back the event we failed to unlike
+        setLikedEvents([eventId,...updatedLikedEvents]);
+      }else{
+        console.log("Successfully decremented like",response.json());
+      }
+    });
   };
 
-  const updateUserLikedEvents = (eventId, isLiked) => {
-    if (!userId) {
-      console.error("User is not logged in");
-      return Promise.reject("User is not logged in");
-    }
-
-    return fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch user liked events');
-        }
-        return response.json();
-      })
-      .then(data => {
-        const currentLikedEvents = data.likedEvents || [];
-
-        let updatedLikedEvents;
-        if (isLiked) {
-          updatedLikedEvents = [...currentLikedEvents, eventId];
-        } else {
-          updatedLikedEvents = currentLikedEvents.filter(id => id !== eventId);
-        }
-
-        return fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}/liked-events`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ likedEvents: updatedLikedEvents }),
-        });
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to update liked events');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Liked events updated successfully:', data);
-      })
-      .catch(error => {
-        console.error('Error updating liked events:', error);
-      });
-  };
   const handleEventManagement = () => {
     navigate(`/eventManagement`);
   };
