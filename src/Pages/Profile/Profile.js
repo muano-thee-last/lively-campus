@@ -162,7 +162,7 @@ export default function Profile() {
                     </div>
                     <div className="card-second-row">
                       <img src={profile} alt="Profile" className="profile-image" />
-                      <p className="event-organizer">{event.organizer}</p>
+                      <p className="event-organizer">{event.organizerName}</p>
                     </div>
                     <div className="card-third-row">
                       <img className="event-images" src={event.imageUrl} alt="Event" />

@@ -7,6 +7,10 @@
   --secondary-color: #85714d;
 }
 
+.upload-image-section{
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
 .container{
   display: flex;
   padding-top: 2%;

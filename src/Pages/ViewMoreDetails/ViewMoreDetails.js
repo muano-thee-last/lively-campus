@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Header from '../dashboard/header'; // Adjust the path
 import SideBar from '../dashboard/side-bar'; // Adjust the path
-import MainContent from './MainContent'; // Adjust the path
-import './ViewMoreDetails.css';
+import EventDetails from './EventDetails'; // Adjust the path
+//import './ViewMoreDetails.css';
 
 function ViewMoreDetails() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -17,7 +17,7 @@ function ViewMoreDetails() {
         <Header toggleSidebar={toggleSidebar} />
         <div id='content'>
           <SideBar isSidebarOpen={isSidebarOpen} />
-          <MainContent />
+          <EventDetails />
         </div>
       </div>
     </div>
