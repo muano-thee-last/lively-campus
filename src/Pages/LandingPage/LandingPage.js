@@ -128,13 +128,14 @@ function EventsSection({ title, images, currentIndex, handleDotClick, showBookNo
 
 
   useEffect(() => {
+    const sectionElement = sectionRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           // Add the visible class to trigger the animation
           sectionRef.current.classList.add('visible');
           // Stop observing after the animation has been triggered once
-          observer.unobserve(sectionRef.current);
+          observer.unobserve(sectionElement);
         }
       },
       {
@@ -143,12 +144,12 @@ function EventsSection({ title, images, currentIndex, handleDotClick, showBookNo
     );
   
     if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+      observer.observe(sectionElement);
     }
   
     return () => {
       if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+        observer.unobserve(sectionElement);
       }
     };
   }, []);
