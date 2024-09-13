@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef,useState, useEffect } from 'react';
 import './LandingPage.css';
 import logo from '../../asserts/logo.png';
-import upcomingEventsImg from '../../asserts/beer-garden.jpg';
-import upcomingEventsImg2 from '../../asserts/festival.jpeg'
-import upcomingEventsImg3 from '../../asserts/parade.jpeg'
-import previousEventsImg2 from '../../asserts/img.jpg'
+import upcomingEventsImg from '../../asserts/pater.jpeg';
+import upcomingEventsImg2 from '../../asserts/gospel.jpg'
+import upcomingEventsImg3 from '../../asserts/centenary-wits-landscape-scaled.jpg'
+import previousEventsImg2 from '../../asserts/couple.jpg'
 import previousEventImg from '../../asserts/previous-event.webp';
 import Login from '../Login/login';
 import Footer from '../dashboard/footer'
+import { FaBars } from 'react-icons/fa';
 
 // Main component for the Landing Page
 function LandingPage() {
@@ -22,11 +23,11 @@ function LandingPage() {
   useEffect(() => {
     const upcomingInterval = setInterval(() => {
       setCurrentUpcomingIndex((prevIndex) => (prevIndex + 1) % upcomingImages.length);
-    }, 3000);
+    }, 6500);
 
     const previousInterval = setInterval(() => {
       setCurrentPreviousIndex((prevIndex) => (prevIndex + 1) % previousImages.length);
-    }, 3000);
+    }, 6500);
 
     return () => {
       clearInterval(upcomingInterval);
@@ -41,8 +42,9 @@ function LandingPage() {
 
   return (
     <div className="LandingPage">
-      <div className="card1">
+      <div className="header-card">
         <div className={`background-blur ${showLogin ? 'active' : ''}`}></div>
+        <div className='image-blur'></div>
         <Header handleButtonClick={handleButtonClick} />
         <HeroSection />
       </div>
@@ -50,6 +52,7 @@ function LandingPage() {
       <EventsSection
         title="Upcoming Events"
         images={upcomingImages}
+        handleButtonClick={handleButtonClick}
         currentIndex={currentUpcomingIndex}
         handleDotClick={handleUpcomingDotClick}
         showBookNow
@@ -73,13 +76,19 @@ function LandingPage() {
 
 // Header component containing logo and navigation
 function Header({ handleButtonClick }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Toggle the hamburger menu
+  const toggleMenu = () => {
+    setIsMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen);
+  };
   return (
-    <header className="header">
+<header className="landing-page-header">
       <div className="logo-container">
         <img src={logo} alt="LivelyCampus Logo" className="logo-image" />
         <div className="logo-text">LivelyCampus</div>
       </div>
-      <nav>
+      <nav className={`landing-page-nav-menu ${isMenuOpen ? 'open' : ''}`}>
         <ul>
           <li><a href="#ticket">Ticket</a></li>
           <li><a href="#contact">Contact</a></li>
@@ -87,6 +96,10 @@ function Header({ handleButtonClick }) {
           <li><button className="btn-secondary" onClick={handleButtonClick}>Login</button></li>
         </ul>
       </nav>
+      {/* Hamburger Icon using react-icons */}
+      <FaBars className="hamburger-icon" onClick={toggleMenu} />
+      {/* Navigation items - displayed conditionally based on screen size */}
+   
     </header>
   );
 }
@@ -96,12 +109,12 @@ function HeroSection() {
   return (
     <div className="hero-card">
       <section className="hero">
-        <h4>BEER GARDEN SHOW TICKET PACKAGE</h4>
+        <h1>Ignite Your Campus</h1>
+        <h1>Experience!</h1>
         <p>
-          Look no further! Our BEER GARDEN SHOW tickets are the simplest way to experience different artists performing live.
+        Connecting you with the best campus events and activities. Discover, engage, and celebrate!
         </p>
         <div className="hero-buttons">
-          <button className="btn-primary">Get Ticket</button>
           <button className="btn-secondary">Learn More</button>
         </div>
       </section>
@@ -110,22 +123,62 @@ function HeroSection() {
 }
 
 // Events section component for displaying upcoming or previous events
-function EventsSection({ title, images, currentIndex, handleDotClick, showBookNow, titles }) {
+function EventsSection({ title, images, currentIndex, handleDotClick, showBookNow, titles,handleButtonClick }) {
+  const sectionRef = useRef(null);
+
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Add the visible class to trigger the animation
+          sectionRef.current.classList.add('visible');
+          // Stop observing after the animation has been triggered once
+          observer.unobserve(sectionRef.current);
+        }
+      },
+      {
+        threshold: 0.1, // Adjust this if necessary
+      }
+    );
+  
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+  
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+  
   return (
-    <section className="events-section">
-      <h3>{title}</h3>
+    <section ref={sectionRef} className="landing-page-events-section">
+      <h1>{title}</h1>
+      
       <div
         className="card"
         style={{
           backgroundImage: `url(${images[currentIndex]})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+         
         }}
       >
+        
         <div className="event-content">
+          <div className='event-card-description'>
+
+          <h2>Name of the event
+        </h2>
+        <p>
+         Medium description about the event, or even the full description of the event,  I live this up to the groups discussion
+        </p>
+          </div>
+        
+      
           {showBookNow ? (
-            <button className="btn-primary">Book Now</button>
+            
+            <button className="btn-primary" onClick={handleButtonClick}>Get Ticket</button>
           ) : (
             <h2>{titles[currentIndex]}</h2>
           )}
