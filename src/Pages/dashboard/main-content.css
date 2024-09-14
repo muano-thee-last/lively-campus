@@ -4,7 +4,7 @@
   width: 100%;
   gap: 1%;
   padding-bottom: 4%;
-  overflow: hidden;
+
   flex: 1;
 }
 
@@ -43,15 +43,15 @@
 }
 
 .dashboard-card {
-  flex: 0 0 30%; /* Adjust width to fit 3 cards */
-  height: 42vh; /* Increased height */
+  flex: 0 0 25%; /* Adjust width to fit 3 cards */
+  height: 40vh; /* Increased height */
   background: #ffffff;
   border: none;
   border-radius: 8px;
   display: flex;
   
   transition: background 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0px 0px 6px 1px rgba(121, 121, 121, 0.6);
+  box-shadow: 0px 0px 6px 1px rgba(10, 81, 114, 0.6);
 
   overflow: hidden;
   position: relative;
@@ -188,7 +188,9 @@
   padding: 5%;
   transition: background-color 0.3s ease;
 }
-
+.dashboard-tags{
+  margin-left: 2%;
+}
 .like-icon {
   fill: rgb(134, 134, 134);
   
@@ -291,7 +293,7 @@
     
   }
   .dashboard-card {
-    flex: 0 0 85%; /* Make each card take up the full width */
+    flex: 0 0 80%; /* Make each card take up the full width */
     height: 42vh; /* Adjust height to fit the screen better */
   }
   .dashboard-card:hover {
@@ -305,6 +307,9 @@
     
    
   } 
+  #dashboard-main-content{
+    margin-bottom: 12%;
+  }
   
 
 }
