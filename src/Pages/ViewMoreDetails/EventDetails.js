@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'; 
 import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaTicketAlt } from 'react-icons/fa'; 
-import './MainContent.css'; 
+import './EventDetails.css';
+import '../EventCreation/styles/EventCreationStyles.css'; 
 
-function MainContent() {
-  const { id } = useParams(); 
+export default function EventDetails(){
+  const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [googleMapsApiKey, setGoogleMapsApiKey] = useState(null); 
 
   useEffect(() => {
-    fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${id}`)
-      .then(response => {
+    fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${id}`).then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -41,47 +41,69 @@ function MainContent() {
 
     getGoogleKey();
   }, []); 
+  let [colors, setColors] = React.useState({});
+
+  function randomColor(tagName) {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    if (tagName in colors) {
+      return colors[tagName];
+    }
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 11)];
+    }
+    setColors({ ...colors, [tagName]: color });
+    return color;
+  }
+
 
   if (!event || !googleMapsApiKey) {
     return <p>Loading...</p>; 
   }
 
   return (
-    <div className="view-more-details">
-      <div className="event-image">
-        <img src={event.imageUrl} alt={event.title} />
+    <div className="event-creation-container">
+      <div className="upload-image-section" style={{ backgroundImage: `url(${event.imageUrl})` }}>
       </div>
 
       <div className="event-header">
-        <h1>{event.title}</h1>
-        <div className="event-tags">
-          <span className="tag music">Music</span>
-          <span className="tag age-restriction">18+</span>
-        </div>
+        <h1 className='event-name-view'>{event.title}</h1>
+        <div className="eventTags chosenTags">
+                  {
+                    event.tags.map((tagName) => {
+                      return (
+                        <div
+                          className="chosenTag"
+                          style={{ backgroundColor: randomColor(tagName) }}
+                        >
+                          <p>{tagName}</p>
+                        </div>
+                      );
+                    })}
+                </div>
       </div>
 
       <div className="event-info">
         <div className="info-item">
-          <FaMapMarkerAlt /> {event.location}
+          <FaMapMarkerAlt className="icon"/>   {event.location}
         </div>
         <div className="info-item">
-          <FaCalendarAlt /> {new Date(event.date).toLocaleDateString()} {new Date(event.date).toLocaleTimeString()}
+          <FaCalendarAlt className="icon"/> {new Date(event.date).toLocaleDateString()} {new Date(event.date).toLocaleTimeString()}
         </div>
         <div className="info-item">
-          <FaUsers /> Capacity: {event.capacity}
+          <FaUsers className="icon"/> Capacity: {event.capacity}
         </div>
         <div className="info-item">
-          <FaTicketAlt /> Available Tickets: {event.availableTickets}
+          <FaTicketAlt className="icon"/> Available Tickets: {event.availableTickets}
         </div>
       </div>
 
       <div className="event-description">
-        <h2>Description</h2>
+        <h3>Description</h3>
         <p>{event.description}</p>
       </div>
-
       <div className="event-venue-location">
-        <h2>Venue and Location</h2>
+        <h3>Venue and Location</h3>
         <div className="map-container">
           <iframe
             title={`Map showing location of ${event.location}`}
@@ -91,14 +113,12 @@ function MainContent() {
         </div>
       </div>
 
-      <div className="event-footer">
-        <p><strong>Ticket Price:</strong> {event.ticketPrice}</p>
-        <button className="buy-ticket-button">Buy Ticket</button>
+      <div className="event-buy-tickets">
+        <p><strong>Ticket Price: <span >R</span> {event.ticketPrice} </strong></p>
+        <button className="create-button">Buy Ticket</button>
       </div>
     </div>
   );
 }
-
-export default MainContent;
 
 
