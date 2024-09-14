@@ -18,7 +18,7 @@
 .event-creation-container {
   display: flex;
   flex-direction: column;
-  flex: auto;
+  flex: 1;
 
 }
 .upload-image-section {
