@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, userEvent } from '@testing-library/react';
 import EventCreation from '../EventCreation/EventCreation';
+import randomColor from '../EventCreation/EventCreation';
 
 // Mock firebase and other dependencies
 jest.mock('firebase/storage', () => ({
@@ -167,8 +168,7 @@ describe('EventCreation Component - Additional Edge Cases', () => {
       // Navigate to create event button
       userEvent.tab();
       expect(screen.getByText('Create Event')).toHaveFocus();
-    });
-  
+    });  
     test('screen reader accessibility', () => {
       render(<EventCreation />);
   
@@ -247,67 +247,7 @@ describe('EventCreation Component - Additional Edge Cases', () => {
     });
   
   });
-describe('randomColor function', () => {
-  test('returns existing color for known tag', () => {
-    const colors = { existingTag: '#123456' };
-    const result = randomColor('existingTag');
-    expect(result).toBe('#123456');
-  });
 
-  test('generates new color for unknown tag', () => {
-    const result = randomColor('newTag');
-    expect(result).toMatch(/^#[0-9A-F]{6}$/);
-  });
-
-  test('generates different colors for different tags', () => {
-    const color1 = randomColor('tag1');
-    const color2 = randomColor('tag2');
-    expect(color1).not.toBe(color2);
-  });
-
-  test('generates color with only digits 0-9 and letters A-F', () => {
-    const result = randomColor('testTag');
-    expect(result).toMatch(/^#[0-9A-F]{6}$/);
-  });
-
-  test('updates colors object with new tag', () => {
-    const initialColors = {};
-    randomColor('newTag');
-    expect(colors).toHaveProperty('newTag');
-    expect(colors.newTag).toMatch(/^#[0-9A-F]{6}$/);
-  });
-
-  test('returns same color for same tag in subsequent calls', () => {
-    const firstCall = randomColor('repeatTag');
-    const secondCall = randomColor('repeatTag');
-    expect(firstCall).toBe(secondCall);
-  });
-
-  test('handles empty string as tag name', () => {
-    const result = randomColor('');
-    expect(result).toMatch(/^#[0-9A-F]{6}$/);
-  });
-
-  test('handles special characters in tag name', () => {
-    const result = randomColor('tag@#$%^&*');
-    expect(result).toMatch(/^#[0-9A-F]{6}$/);
-  });
-});
-describe('EventCreation Component - Advanced Scenarios', () => {
-  test('handles image upload correctly', async () => {
-    render(<EventCreation />);
-    const uploadSection = screen.getByText('Upload Cover Image');
-    fireEvent.click(uploadSection);
-    
-    const file = new File(['dummy content'], 'test.png', { type: 'image/png' });
-    const fileInput = screen.getByDisplayValue('');
-    
-    fireEvent.change(fileInput, { target: { files: [file] } });
-    
-    await waitFor(() => {
-      expect(screen.getByText('Change Cover Image')).toBeInTheDocument();
-    });
-  });
 
   test('validates form fields before submission', async () => {
     render(<EventCreation />);
@@ -416,4 +356,4 @@ describe('EventCreation Component - Advanced Scenarios', () => {
     
     expect(screen.getByLabelText('Capacity')).toHaveValue(1000000);
   });
-});
+

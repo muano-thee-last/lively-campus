@@ -191,7 +191,7 @@ function MainContent() {
                       alt="Profile"
                       className="profile-image"
                     />
-                    <p className="event-organizer">{event.organizer}</p>
+                    <p className="event-organizer">{event.organizerName}</p>
                   </div>
                   <div className="card-third-row">
                     <img

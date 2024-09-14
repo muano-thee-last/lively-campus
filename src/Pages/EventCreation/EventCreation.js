@@ -9,30 +9,26 @@ import locationButton from "./images-logos/location-button.svg";
 import "./styles/EventCreationStyles.css";
 import PopupCard from "./components/PopupCard";
 import person from "./images-logos/person.svg";
-import {storage} from "../../Pages/Login/config";
+import { storage } from "../../Pages/Login/config";
 import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
-import {useNavigate} from "react-router-dom"
-import Footer from "../dashboard/footer"
+import { useNavigate } from "react-router-dom";
+import Footer from "../dashboard/footer";
 
 const EVENTS_API =
   "https://us-central1-witslivelycampus.cloudfunctions.net/app/events";
-const MAP_API_KEY = process.env.REACT_APP_GOOGLE_MAP_API_KEY;
-
-
-
-
 
 export default function EventCreation() {
   let availableVenues;
   const navigate = useNavigate();
+  const [MAP_API_KEY, SET_MAP_API_KEY] = React.useState("");
   const [isSidebarOpen, setSidebarOpen] = React.useState(false);
 
   const toggleSidebar = () => {
-    setSidebarOpen(prev => !prev);
+    setSidebarOpen((prev) => !prev);
     console.log(sessionStorage.getItem("uid"));
   };
-  
+
   const [eventData, setEventData] = React.useState({
     eventName: "",
     eventDescription: "",
@@ -81,8 +77,8 @@ export default function EventCreation() {
   availableVenues = [
     {
       features: ["WiFi", "Projector"],
-      name: "Great Hall",
-      location: "Great+Hall",
+      name: "The Great Hall",
+      location: "Wits University",
       id: "GH001",
       capacity: 500,
       time: "10:00 AM - 8:00 PM",
@@ -90,7 +86,7 @@ export default function EventCreation() {
     {
       features: ["Air Conditioning", "Sound System"],
       name: "Senate Room",
-      location: "Senate+Room, 2nd Floor",
+      location: "Senate Room, 2nd Floor",
       id: "SR002",
       capacity: 100,
       time: "10:00 - 00:00 ",
@@ -98,17 +94,17 @@ export default function EventCreation() {
     {
       features: ["WiFi", "Video Conferencing"],
       name: "Computer Lab 1",
-      location: "The+Wits+Science+Stadium",
+      location: "The Wits Science Stadium",
       id: "CL003",
       capacity: 40,
       time: "10:00 - 12:00",
     },
     {
       features: ["Whiteboard", "Natural Light"],
-      name: "Seminar Room 3",
-      location: "Education+Campus",
+      name: "Sturrock Park",
+      location: "Wits University",
       id: "SR004",
-      capacity: 30,
+      capacity: 1000,
       time: "10:00 - 22:00",
     },
   ];
@@ -164,6 +160,24 @@ export default function EventCreation() {
       .querySelector(".event-creation-container")
       .classList.remove("blurred");
   }
+  React.useEffect(() => {
+    const getGoogleKey = async () => {
+      const url =
+        "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvgoogle";
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+        const json = await response.json();
+        SET_MAP_API_KEY(json.value);
+      } catch (error) {
+        console.error("Error fetching Google Maps API key:", error);
+      }
+    };
+
+    getGoogleKey();
+  }, []);
 
   async function handleSubmitButton() {
     // Validation: Check if all required fields are filled
@@ -181,23 +195,23 @@ export default function EventCreation() {
       console.error("All fields must be filled out before submission.");
       return; // Stop execution if any field is empty
     }
-  
+
     const imageRef = ref(storage, `images/${image.name}`);
-  
+
     try {
       // Upload image and get download URL
       await uploadBytes(imageRef, image);
       console.log("Uploaded a blob or file!");
-  
+
       const url = await getDownloadURL(imageRef);
       console.log("Image Download URL:", url);
-  
+
       let headersList = {
         Accept: "*/*",
         "User-Agent": "lively-campus",
         "Content-Type": "application/json",
       };
-  
+
       let bodyContent = JSON.stringify({
         organizerName: user.displayName,
         organizerId: sessionStorage.getItem("userId"),
@@ -214,14 +228,14 @@ export default function EventCreation() {
         likes: 0,
         comments: [],
       });
-  
+
       // Send the POST request
       let response = await fetch(EVENTS_API, {
         method: "POST",
         headers: headersList,
         body: bodyContent,
       });
-  
+
       console.log("Response Status:", response.status);
       navigate("/Dashboard");
     } catch (error) {
@@ -229,7 +243,6 @@ export default function EventCreation() {
       navigate("/");
     }
   }
-  
 
   // async function getAvailableVenues() {
   //   let headersList = {
@@ -275,12 +288,15 @@ export default function EventCreation() {
         {availableVenues.map((venue) => (
           <div className="venue-card" key={venue.id}>
             <div className="venue-details">
-              <img
-                src={`https://maps.googleapis.com/maps/api/staticmap?center=${venue.location},Wits+University, Johannesburg, South+Africa&zoom=16&size=220x115&format=png&markers=color:red%7C${venue.location},Wits+University, Johannesburg, South+Africa&key=${MAP_API_KEY}`}
+              <iframe
+                title={`Map showing location of ${venue.location}`}
+                src={`https://www.google.com/maps/embed/v1/place?key=${MAP_API_KEY}&q=${encodeURIComponent(
+                  venue.location + " "+ venue.name
+                )}`}
+                allowFullScreen
                 height="115"
                 width="220"
-                alt="mapImage"
-              />
+              ></iframe>
               <div className="venue-info">
                 <div className="logo-name">
                   <img src={location} alt="logo" height="25" width="25" />
@@ -332,9 +348,9 @@ export default function EventCreation() {
 
   return (
     <div>
-      <Header  toggleSidebar={toggleSidebar}/>  
+      <Header toggleSidebar={toggleSidebar} />
       <div className="container">
-        <SideBar isSidebarOpen={isSidebarOpen}/>
+        <SideBar isSidebarOpen={isSidebarOpen} />
         {isPopupTagOpen && (
           <PopupCard
             title="Select Tags"
@@ -361,10 +377,15 @@ export default function EventCreation() {
             }}
           >
             <img src={upload} alt="upload-image-logo" id="upload-img" />
-            {imageUrlLocal ? <p>Change Cover Image</p> : <p>Upload Cover Image</p>}
+            {imageUrlLocal ? (
+              <p>Change Cover Image</p>
+            ) : (
+              <p>Upload Cover Image</p>
+            )}
           </div>
           <input
             type="file"
+            accept="image/*"
             ref={fileInputRef}
             onChange={handleFileChange}
             style={{ display: "none" }}
@@ -492,7 +513,9 @@ export default function EventCreation() {
                   <img src={location} alt="location" />
                 </label>
                 <div className="add-selected-location">
-                  {eventData.eventLocation && <h4>{eventData.eventLocation}</h4>}
+                  {eventData.eventLocation && (
+                    <h4>{eventData.eventLocation}</h4>
+                  )}
                   <button
                     className="buttons small-font"
                     onClick={openLocationPopup}

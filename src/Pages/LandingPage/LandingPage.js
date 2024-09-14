@@ -8,6 +8,7 @@ import previousEventsImg2 from '../../asserts/couple.jpg'
 import previousEventImg from '../../asserts/previous-event.webp';
 import Login from '../Login/login';
 import Footer from '../dashboard/footer'
+import { FaBars } from 'react-icons/fa';
 
 
 // Main component for the Landing Page
