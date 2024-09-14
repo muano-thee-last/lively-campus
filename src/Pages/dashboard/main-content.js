@@ -8,6 +8,7 @@ import { useCallback } from "react";
 function MainContent() {
   const [events, setEvents] = useState([]);
   const [liked, setLiked] = useState([]);
+  const [showFeedback, setShowFeedback] = useState(false);
   const upcomingSlider = useRef(null);
   const navigate = useNavigate();
   const userId = sessionStorage.getItem("uid");
@@ -41,16 +42,32 @@ function MainContent() {
   }, [userId, events, setLiked]);
 
   useEffect(() => {
-    // Fetch events and user's liked events
     fetchEvents();
   }, []);
 
   useEffect(() => {
-    // Fetch user's liked events after events are fetched
     if (events.length > 0) {
       fetchUserLikedEvents();
     }
   }, [events, fetchUserLikedEvents]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolledPercentage =
+        (window.scrollY / (document.body.scrollHeight - window.innerHeight)) *
+        100;
+
+      if (scrolledPercentage > 50) {
+        setShowFeedback(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const fetchEvents = () => {
     fetch("https://us-central1-witslivelycampus.cloudfunctions.net/app/events")
@@ -68,7 +85,6 @@ function MainContent() {
       });
   };
 
-  // Function to increment like
   const incrementLike = (eventId) => {
     return fetch(
       `https://us-central1-witslivelycampus.cloudfunctions.net/app/like`,
@@ -82,7 +98,6 @@ function MainContent() {
     );
   };
 
-  // Function to decrement like
   const decrementLike = (eventId) => {
     return fetch(
       `https://us-central1-witslivelycampus.cloudfunctions.net/app/unlike`,
@@ -109,19 +124,16 @@ function MainContent() {
     const eventId = events[index].id;
     const isLiked = !liked[index];
 
-    // Optimistic UI update
     const updatedLiked = [...liked];
     updatedLiked[index] = isLiked;
     setLiked(updatedLiked);
 
-    
     const updatedEvents = [...events];
     if (isLiked) {
       updatedEvents[index].likes += 1;
 
       incrementLike(eventId).then((response) => {
         if (!response.ok) {
-          // Undo optimistic update if the request fails
           updatedEvents[index].likes -= 1;
           setEvents(updatedEvents);
           console.error("Failed to increment like:", response.json());
@@ -132,7 +144,6 @@ function MainContent() {
 
       decrementLike(eventId).then((response) => {
         if (!response.ok) {
-          // Undo optimistic update if the request fails
           updatedEvents[index].likes += 1;
           setEvents(updatedEvents);
           console.error("Failed to decrement like:", response.json());
@@ -144,6 +155,17 @@ function MainContent() {
   const handleViewDetails = (id) => {
     navigate(`/details/${id}`);
   };
+
+  const handleFeedbackClick = () => {
+    const email = "livelycampus@gmail.com";  // Replace with your website email
+    const subject = "Feedback";
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
+    
+    window.location.href = mailtoLink;
+  };
+  
+
+
 
   return (
     <div id="dashboard-main-content">
@@ -222,6 +244,13 @@ function MainContent() {
           </button>
         </div>
       </div>
+
+      {showFeedback && (
+        <div className="feedback-box">
+          <p onClick={handleFeedbackClick}>Send us your feedback!</p>
+       
+        </div>
+      )}
     </div>
   );
 }

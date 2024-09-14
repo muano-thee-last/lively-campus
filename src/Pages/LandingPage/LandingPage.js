@@ -8,7 +8,7 @@ import previousEventsImg2 from '../../asserts/couple.jpg'
 import previousEventImg from '../../asserts/previous-event.webp';
 import Login from '../Login/login';
 import Footer from '../dashboard/footer'
-import { FaBars } from 'react-icons/fa';
+
 
 // Main component for the Landing Page
 function LandingPage() {
@@ -97,7 +97,13 @@ function Header({ handleButtonClick }) {
         </ul>
       </nav>
       {/* Hamburger Icon using react-icons */}
-      <FaBars className="hamburger-icon" onClick={toggleMenu} />
+      <label className="burger" htmlFor="burger" >
+     <input type="checkbox" id="burger" onClick={toggleMenu} />
+      <span></span> 
+      <span></span>
+      <span></span>
+</label>
+      
       {/* Navigation items - displayed conditionally based on screen size */}
    
     </header>
@@ -139,7 +145,7 @@ function EventsSection({ title, images, currentIndex, handleDotClick, showBookNo
         }
       },
       {
-        threshold: 0.1, // Adjust this if necessary
+        threshold: 0.01, // Adjust this if necessary
       }
     );
   
