@@ -5,11 +5,11 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-    
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
@@ -23,6 +23,11 @@ jobs:
         npm test || true
       continue-on-error: true
 
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: coverage/lcov.info
+
     - name: List files in directory
       run: ls -R
 
@@ -31,6 +36,6 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: coverage/test-report.html # Adjust the path as needed
+        path: coverage/test-report.html # Adjust the path if necessary
         if-no-files-found: warn
         include-hidden-files: false
