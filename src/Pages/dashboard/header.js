@@ -8,7 +8,8 @@ import './header.css';
 function Header({ toggleSidebar }) {
     const [showFilters] = useState(false);
     const navigate = useNavigate();
-    
+    const [searchText, setSearchText] = useState("");
+
     const handleNotificationsClick = () => {
         navigate('/Notifications');
     };
@@ -17,6 +18,12 @@ function Header({ toggleSidebar }) {
         navigate('/dashboard');
     };
     
+
+    const handleChange = (event) => {
+        setSearchText(event.target.value);
+        console.log(searchText);
+      };
+
     return (
         <div id='header'>
             <section className='header-right-section'>
@@ -39,6 +46,7 @@ function Header({ toggleSidebar }) {
                     type="text" 
                     className="search" 
                     placeholder="Search" 
+                    onChange={handleChange}
                     //onClick={handleSearchClick} // Show filters on click
                 />
                 <button className='search-button'>
