@@ -8,6 +8,18 @@ const port = 3001;
 app.use(cors());
 app.use(bodyParser.json());
 
+    // Generate a unique 10-character alphanumeric ticket code
+    function generateTicketCode() {
+        const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let ticketCode = '';
+        for (let i = 0; i < 10; i++) {
+            ticketCode += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return ticketCode;
+    }
+
+    const ticketCode = generateTicketCode();
+
 // Configure the SMTP transporter
 const transporter = nodemailer.createTransport({
     service: 'gmail', 
@@ -79,6 +91,7 @@ app.post('/send-confirmation-email', (req, res) => {
                     <li><strong>Amount:</strong> ${amount}</li>
                     <li><strong>Date:</strong> ${date}</li>
                     <li><strong>Payment Method:</strong> ${method}</li>
+                     <li><strong>Your Unique Ticket Code:</strong> ${ticketCode}</li>
                 </ul>
                 <p>If you have any questions, please contact us.</p>
             </div>
