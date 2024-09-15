@@ -1,6 +1,6 @@
 name: Run Tests and Coverage
 
-on: [push, pull_request]
+on: [push, pull_request, merge]
 
 jobs:
   test:
