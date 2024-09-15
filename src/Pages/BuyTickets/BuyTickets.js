@@ -237,7 +237,6 @@ function BuyTickets({ event, onClose }) {
       )}
 
       <p className="total-price">Total: R{ticketCount * event.ticketPrice}</p>
-      <p className="available-tickets">Available Tickets: {availableTickets}</p>
 
       <button
         className="confirm-purchase-button"
