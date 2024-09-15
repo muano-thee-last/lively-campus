@@ -3,7 +3,7 @@
   flex-direction: column;
   width: 100%;
   gap: 1%;
-  padding-bottom: 4%;
+  padding-bottom: 15%;
   overflow: hidden;
   flex: 1;
 }
@@ -43,8 +43,8 @@
 }
 
 .dashboard-card {
-  flex: 0 0 30%; /* Adjust width to fit 3 cards */
-  height: 42vh; /* Increased height */
+  flex: 0 0 25%; /* Adjust width to fit 3 cards */
+  height: 40vh; /* Increased height */
   background: #ffffff;
   border: none;
   border-radius: 8px;
@@ -188,7 +188,9 @@
   padding: 5%;
   transition: background-color 0.3s ease;
 }
-
+.dashboard-tags{
+  margin-left: 2%;
+}
 .like-icon {
   fill: rgb(134, 134, 134);
   
@@ -212,6 +214,54 @@
   font-weight: bold;
   color: #003B5C;
   white-space: nowrap;
+}
+.feedback-box {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  background-color: #003B5C;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.feedback-box p {
+  margin: 0;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.feedback-form textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  resize: vertical;
+}
+
+.feedback-form button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.feedback-form button:hover {
+  background-color: #0056b3;
 }
 
 
@@ -243,7 +293,7 @@
     
   }
   .dashboard-card {
-    flex: 0 0 85%; /* Make each card take up the full width */
+    flex: 0 0 80%; /* Make each card take up the full width */
     height: 42vh; /* Adjust height to fit the screen better */
   }
   .dashboard-card:hover {
@@ -257,6 +307,11 @@
     
    
   } 
+  #dashboard-main-content{
+  
+   padding-bottom: 55%;
+  }
+
   
 
 }
