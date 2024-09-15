@@ -1,3 +1,5 @@
+[![Run Tests](https://github.com/muano-thee-last/lively-campus/actions/workflows/test.yml/badge.svg)](https://github.com/muano-thee-last/lively-campus/actions/workflows/test.yml)
+
 link of the website : https://witslivelycampus.web.app/
 
 link to the firebase project : https://console.firebase.google.com/u/1/project/witslivelycampus/overview
