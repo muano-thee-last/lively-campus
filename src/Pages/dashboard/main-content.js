@@ -26,32 +26,35 @@ const tagGroups = {
 
 function MainContent() {
   const [events, setEvents] = useState([]);
-  const [liked, setLiked] = useState([]);
+  const [liked, setLiked] = useState({});
   const [showFeedback, setShowFeedback] = useState(false);
   const navigate = useNavigate();
   const userId = sessionStorage.getItem("uid");
 
   const sliderRefs = useRef({});
-
   const fetchUserLikedEvents = useCallback(async () => {
     if (!userId) return;
-
+  
     try {
       const response = await fetch(
         `https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`
       );
-
+  
       if (!response.ok) {
         throw new Error("Failed to fetch user liked events");
       }
-
+  
       const data = await response.json();
-
+  
       if (data && Array.isArray(data.likedEvents)) {
         const likedEvents = data.likedEvents;
-        const likedStatuses = events.map((event) =>
-          likedEvents.includes(event.id)
-        );
+        
+        // Set the liked state based on the event ID
+        const likedStatuses = {};
+        likedEvents.forEach((eventId) => {
+          likedStatuses[eventId] = true; // Mark the event as liked
+        });
+        
         setLiked(likedStatuses);
       } else {
         console.error("Invalid data structure:", data);
@@ -59,7 +62,8 @@ function MainContent() {
     } catch (error) {
       console.error("Error fetching user liked events:", error);
     }
-  }, [userId, events, setLiked]);
+  }, [userId, setLiked]);
+  
 
   useEffect(() => {
     fetchEvents();
@@ -140,37 +144,40 @@ function MainContent() {
     }
   };
 
-  const handleLike = (index) => {
-    const eventId = events[index].id;
-    const isLiked = !liked[index];
-
-    const updatedLiked = [...liked];
-    updatedLiked[index] = isLiked;
-    setLiked(updatedLiked);
-
+  const handleLike = (eventId) => {
+    const isLiked = !liked[eventId]; // Toggle the like state for the specific event
+  
+    setLiked((prevLiked) => ({
+      ...prevLiked,
+      [eventId]: isLiked, // Update the like state for the clicked event
+    }));
+  
     const updatedEvents = [...events];
+    const eventIndex = events.findIndex((event) => event.id === eventId);
+  
     if (isLiked) {
-      updatedEvents[index].likes += 1;
-
+      updatedEvents[eventIndex].likes += 1;
+      
       incrementLike(eventId).then((response) => {
         if (!response.ok) {
-          updatedEvents[index].likes -= 1;
+          updatedEvents[eventIndex].likes -= 1; // Revert like count on failure
           setEvents(updatedEvents);
           console.error("Failed to increment like:", response.json());
         }
       });
     } else {
-      updatedEvents[index].likes -= 1;
-
+      updatedEvents[eventIndex].likes -= 1;
+      
       decrementLike(eventId).then((response) => {
         if (!response.ok) {
-          updatedEvents[index].likes += 1;
+          updatedEvents[eventIndex].likes += 1; // Revert like count on failure
           setEvents(updatedEvents);
           console.error("Failed to decrement like:", response.json());
         }
       });
     }
   };
+  
 
   const handleViewDetails = (id) => {
     navigate(`/details/${id}`);
@@ -241,22 +248,22 @@ function MainContent() {
                       </div>
                       <div className="card-fourth-row">
                         <div className="like-comment">
-                          <button
-                            className={`like-button ${
-                              liked[index] ? "active" : ""
-                            }`}
-                            onClick={() => handleLike(index)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              width="24"
-                              height="24"
-                              className="like-icon"
-                            >
-                              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                          </button>
+                        <button
+  className={`like-button ${liked[event.id] ? "active" : ""}`}
+  onClick={() => handleLike(event.id)}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    className="like-icon"
+  >
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+  </svg>
+</button>
+
+
                           <img
                             src={comments}
                             alt="Comments"
