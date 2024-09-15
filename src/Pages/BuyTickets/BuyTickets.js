@@ -1,21 +1,25 @@
-import './BuyTickets.css';
 import React, { useState, useEffect } from 'react';
+import './BuyTickets.css';
 import applePayLogo from '../../asserts/apple-pay.jpg';
 import googlePayLogo from '../../asserts/google-pay.webp';
 import samsungPayLogo from '../../asserts/samsung-pay.webp';
 import cardPaymentLogo from '../../asserts/card-payment.png';
 import kuduBucksLogo from '../../asserts/logo.png';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getDatabase, ref, update } from 'firebase/database';
 
-function BuyTickets() {
+function BuyTickets({ event, onClose }) {
   const [ticketCount, setTicketCount] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState('');
-  const [devicePaymentMethod, setDevicePaymentMethod] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('Google Pay');
+  const [devicePaymentMethod, setDevicePaymentMethod] = useState('Google Pay');
   const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvc: '' });
   const [icamNumber, setIcamNumber] = useState('');
   const [googleInfo, setGoogleInfo] = useState('');
   const [email, setEmail] = useState('');
+  const [availableTickets, setAvailableTickets] = useState(event?.availableTickets || 0);
 
   useEffect(() => {
+    // Set device-specific payment method
     if (window.ApplePaySession) {
       setDevicePaymentMethod('Apple Pay');
     } else if (window.SamsungPay) {
@@ -23,13 +27,32 @@ function BuyTickets() {
     } else {
       setDevicePaymentMethod('Google Pay');
     }
-  }, []);
+
+    // Fetch current user's email
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setEmail(user.email);
+        setGoogleInfo('Google Pay linked');
+      }
+    });
+
+    // Update available tickets if event data changes
+    if (event) {
+      setAvailableTickets(event.availableTickets);
+    }
+  }, [event]);
 
   const handlePaymentMethodClick = (method) => {
     setPaymentMethod(method);
   };
 
   const sendConfirmationEmail = (paymentDetails) => {
+    if (!email) {
+      alert('Email is not available.');
+      return;
+    }
+
     fetch('http://localhost:3001/send-confirmation-email', {
       method: 'POST',
       headers: {
@@ -37,7 +60,10 @@ function BuyTickets() {
       },
       body: JSON.stringify({
         email: email,
-        paymentDetails: JSON.stringify(paymentDetails),
+        paymentDetails: {
+          ...paymentDetails,
+          eventTitle: event.title, // Add event title here
+        },
       }),
     })
       .then((response) => response.json())
@@ -63,29 +89,48 @@ function BuyTickets() {
       }
     } else if (paymentMethod === 'Google Pay') {
       if (!googleInfo) {
-        alert('Please enter your Google Pay information');
+        alert('Google Pay information missing.');
         return;
       }
     } else if (paymentMethod !== devicePaymentMethod) {
-      alert('Please select a payment method');
+      alert('Please select a valid payment method');
+      return;
+    }
+
+    if (ticketCount > availableTickets) {
+      alert('Not enough tickets available');
       return;
     }
 
     const paymentDetails = {
-      amount: `$${ticketCount * 100}`,
+      amount: `R${ticketCount * event.ticketPrice}`,
       date: new Date().toLocaleString(),
       method: paymentMethod,
     };
 
-    setTimeout(() => {
-      alert('Payment processed successfully!');
+    const db = getDatabase();
+    const eventRef = ref(db, `events/${event.id}`);
+    const newAvailableTickets = availableTickets - ticketCount;
+
+    update(eventRef, {
+      availableTickets: newAvailableTickets,
+    }).then(() => {
+      setAvailableTickets(newAvailableTickets);
+      alert('Payment processed successfully! Tickets have been purchased.');
       sendConfirmationEmail(paymentDetails);
-    }, 1000);
+      onClose(); 
+    }).catch((error) => {
+      console.error('Error updating available tickets:', error);
+    });
   };
+
+  if (!event) {
+    return <p>Loading event details...</p>;
+  }
 
   return (
     <div className="buy-tickets-modal">
-      <h2>Purchase Tickets</h2>
+      <h2>Purchase Tickets for {event.title}</h2>
 
       <div className="ticket-selection">
         <label htmlFor="ticketCount">Number of Tickets:</label>
@@ -94,7 +139,8 @@ function BuyTickets() {
           id="ticketCount"
           value={ticketCount}
           min="1"
-          onChange={(e) => setTicketCount(Math.max(1, parseInt(e.target.value) || 1))}
+          max={availableTickets}
+          onChange={(e) => setTicketCount(Math.max(1, Math.min(parseInt(e.target.value) || 1, availableTickets)))}
         />
       </div>
 
@@ -151,19 +197,19 @@ function BuyTickets() {
             type="text"
             placeholder="Card Number"
             value={cardDetails.number}
-            onChange={(e) => setCardDetails({...cardDetails, number: e.target.value})}
+            onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value })}
           />
           <input
             type="text"
             placeholder="Expiry Date"
             value={cardDetails.expiry}
-            onChange={(e) => setCardDetails({...cardDetails, expiry: e.target.value})}
+            onChange={(e) => setCardDetails({ ...cardDetails, expiry: e.target.value })}
           />
           <input
             type="text"
             placeholder="CVC"
             value={cardDetails.cvc}
-            onChange={(e) => setCardDetails({...cardDetails, cvc: e.target.value})}
+            onChange={(e) => setCardDetails({ ...cardDetails, cvc: e.target.value })}
           />
         </div>
       )}
@@ -190,25 +236,16 @@ function BuyTickets() {
         </div>
       )}
 
-      <div className="email-input">
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
+      <p className="total-price">Total: R{ticketCount * event.ticketPrice}</p>
+      <p className="available-tickets">Available Tickets: {availableTickets}</p>
 
-      <button 
-        className="confirm-purchase-button" 
+      <button
+        className="confirm-purchase-button"
         onClick={handleBuyTickets}
         disabled={!paymentMethod || !email}
       >
         Confirm Purchase
       </button>
-
-      <p className="total-price">Total: ${ticketCount * 100}</p>
     </div>
   );
 }

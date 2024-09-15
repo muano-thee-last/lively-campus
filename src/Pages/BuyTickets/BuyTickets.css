@@ -63,3 +63,17 @@
     background-color: #cccccc;
     cursor: not-allowed;
   }
+
+  .total-price, .available-tickets {
+    font-size: 1.2em;
+    margin: 10px 0;
+    font-weight: bold;
+  }
+  
+  .total-price {
+    color: #2a9d8f; /* Adjust color as needed */
+  }
+  
+  .available-tickets {
+    color: #e76f51; /* Adjust color as needed */
+  }

@@ -6,55 +6,31 @@ import BuyTickets from '../BuyTickets/BuyTickets';
 import { Modal, Button } from '@mui/material'; 
 
 function MainContent() {
-  const { id } = useParams(); 
+  const { id } = useParams();  // Get event ID from URL parameters
   const [event, setEvent] = useState(null);
   const [googleMapsApiKey, setGoogleMapsApiKey] = useState(null); 
   const [isModalOpen, setIsModalOpen] = useState(false); 
 
+  // Fetch event details using Cloud Function
   useEffect(() => {
     fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${id}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setEvent(data);
-      })
-      .catch(error => {
-        console.error('Error fetching event details:', error);
-      });
+      .then(response => response.json())
+      .then(data => setEvent(data))
+      .catch(error => console.error('Error fetching event details:', error));
   }, [id]);
 
+  // Fetch Google Maps API key
   useEffect(() => {
-    const getGoogleKey = async () => {
-      const url = "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvgoogle"; 
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-        }
-        const json = await response.json();
-        setGoogleMapsApiKey(json.value);
-      } catch (error) {
-        console.error('Error fetching Google Maps API key:', error);
-      }
-    };
-
-    getGoogleKey();
+    fetch("https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvgoogle")
+      .then(response => response.json())
+      .then(json => setGoogleMapsApiKey(json.value))
+      .catch(error => console.error('Error fetching Google Maps API key:', error));
   }, []); 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
-  if (!event || !googleMapsApiKey) {
-    return <p>Loading...</p>; 
-  }
+  if (!event || !googleMapsApiKey) return <p>Loading...</p>;
 
   return (
     <div className="view-more-details">
@@ -71,18 +47,10 @@ function MainContent() {
       </div>
 
       <div className="event-info">
-        <div className="info-item">
-          <FaMapMarkerAlt /> {event.location}
-        </div>
-        <div className="info-item">
-          <FaCalendarAlt /> {new Date(event.date).toLocaleDateString()} {new Date(event.date).toLocaleTimeString()}
-        </div>
-        <div className="info-item">
-          <FaUsers /> Capacity: {event.capacity}
-        </div>
-        <div className="info-item">
-          <FaTicketAlt /> Available Tickets: {event.availableTickets}
-        </div>
+        <div className="info-item"><FaMapMarkerAlt /> {event.location}</div>
+        <div className="info-item"><FaCalendarAlt /> {new Date(event.date).toLocaleDateString()} {new Date(event.date).toLocaleTimeString()}</div>
+        <div className="info-item"><FaUsers /> Capacity: {event.capacity}</div>
+        <div className="info-item"><FaTicketAlt /> Available Tickets: {event.availableTickets}</div>
       </div>
 
       <div className="event-description">
@@ -102,21 +70,15 @@ function MainContent() {
       </div>
 
       <div className="event-footer">
-        <p><strong>Ticket Price:</strong> {event.ticketPrice}</p>
+        <p><strong>Ticket Price:</strong> R{event.ticketPrice}</p>
         <Button class="buy-ticket-button" variant="contained" color="primary" onClick={handleOpenModal}>
           Buy Ticket
         </Button>
       </div>
 
-      {/* Modal for Buy Tickets */}
-      <Modal
-        open={isModalOpen}
-        onClose={handleCloseModal}
-        aria-labelledby="buy-ticket-modal"
-        aria-describedby="buy-ticket-form"
-      >
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
         <div className="modal-content">
-          <BuyTickets />
+          <BuyTickets event={event} onClose={handleCloseModal} />
           <Button variant="contained" color="secondary" onClick={handleCloseModal}>
             Close
           </Button>
@@ -127,5 +89,3 @@ function MainContent() {
 }
 
 export default MainContent;
-
-
