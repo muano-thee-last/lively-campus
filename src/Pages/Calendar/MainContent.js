@@ -47,8 +47,6 @@ const MainContent = () => {
   });
 
   // Calculate the number of days needed to fill the calendar grid
-  const totalDays = firstDayOfMonth + daysInMonth;
-  const emptyDaysAfter = (7 - (totalDays % 7)) % 7;
 
   // Sort events by date
   const upcomingEvents = events
