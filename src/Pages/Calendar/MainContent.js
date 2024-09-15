@@ -46,7 +46,10 @@ const MainContent = () => {
     return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
   });
 
+<<<<<<< HEAD
   // Calculate the number of days needed to fill the calendar grid
+=======
+>>>>>>> b82d794b3d0e3608a1139436a91a6cf098005569
 
   // Sort events by date
   const upcomingEvents = events
