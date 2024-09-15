@@ -10,7 +10,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
@@ -36,14 +35,13 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: coverage-report
-        path: coverage/lcov-report # Adjust this path based on your coverage report location
+        path: coverage/lcov-report # Ensure this path matches where your coverage report is generated
 
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: coverage/test-report.html # Adjust this path if necessary
-        path: coverage/test-report.html # Adjust the path if necessary
+        path: coverage/test-report.html # Ensure this path matches where your test results are generated
         if-no-files-found: warn
         include-hidden-files: false
