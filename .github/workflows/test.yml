@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Tests and Coverage
 
 on: [push, pull_request]
 
@@ -9,7 +9,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-    
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
@@ -20,17 +20,23 @@ jobs:
 
     - name: Run tests
       run: |
-        npm test || true
+        npm test -- --coverage
+        # Capture exit code of tests to handle failure
+        echo "TEST_EXIT_CODE=$?" >> $GITHUB_ENV
       continue-on-error: true
 
-    - name: List files in directory
-      run: ls -R
+    - name: Upload coverage report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage/lcov-report # Adjust this path based on your coverage report location
 
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: coverage/test-report.html # Adjust the path as needed
+        path: coverage/test-report.html # Adjust this path if necessary
         if-no-files-found: warn
         include-hidden-files: false
