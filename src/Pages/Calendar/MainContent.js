@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './MainContent.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -44,9 +46,6 @@ const MainContent = () => {
     return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
   });
 
-  // Calculate the number of days needed to fill the calendar grid
-  const totalDays = firstDayOfMonth + daysInMonth;
-  const emptyDaysAfter = (7 - (totalDays % 7)) % 7;
 
   // Sort events by date
   const upcomingEvents = events
@@ -54,53 +53,118 @@ const MainContent = () => {
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .slice(0, 5); // Show only the next 5 events
 
+  const formatEventDateTime = (date) => {
+    const eventDate = new Date(date);
+    const formattedDate = eventDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const formattedTime = eventDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    return `${formattedDate}, ${formattedTime}`;
+  };
+
+  const formatEventTime = (date) => {
+    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  // New function to check if a day has events
+  const dayHasEvents = (day) => {
+    return eventsInCurrentMonth.some(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.getDate() === day;
+    });
+  };
+
+  const renderMiniCalendar = () => {
+    const miniCalendarDays = [...Array(daysInMonth).keys()].map(day => day + 1);
+    const paddedDays = [...Array(firstDayOfMonth).fill(null), ...miniCalendarDays];
+    
+    return (
+      <div className="mini-calendar">
+        <div className="mini-calendar-row">
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
+            <span key={day}>{day}</span>
+          ))}
+        </div>
+        <div className="mini-calendar-dates">
+          {paddedDays.map((day, index) => (
+            <div 
+              key={index} 
+              className={`mini-date ${
+                day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() 
+                  ? 'highlight' 
+                  : day && dayHasEvents(day) 
+                    ? 'has-events' 
+                    : ''
+              }`}
+            >
+              {day}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // New function to get today's events
+  const getTodayEvents = () => {
+    return events.filter(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.toDateString() === today.toDateString();
+    });
+  };
+
   return (
     <div className="calendar-container">
       <div className="sidebar">
         <div className="month-header">
-          <p className='current-month'>{months[currentMonth]}</p>
-          <p className='current-year'>{currentYear}</p>
+          <span className='current-month'>{months[currentMonth]} </span>
+          <span className='current-year'>{currentYear}</span>
         </div>
 
-        <div className="mini-calendar">
-          <div className="mini-calendar-row">
-            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-          </div>
-          <div className="mini-calendar-dates">
-            {/* Align start of month */}
-            {Array(firstDayOfMonth).fill(null).map((_, i) => (
-              <div key={`empty-${i}`} className="mini-date empty"></div>
-            ))}
-            {/* Display correct number of days */}
-            {[...Array(daysInMonth).keys()].map(day => (
-              <div key={day} className={`mini-date ${day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() ? 'highlight' : ''}`}>
-                {day + 1}
-              </div>
-            ))}
-            {/* Fill remaining days to complete the week */}
-            {Array(emptyDaysAfter).fill(null).map((_, i) => (
-              <div key={`end-empty-${i}`} className="mini-date empty"></div>
-            ))}
-          </div>
+        {renderMiniCalendar()}
+
+        <div className="today-events">
+          <h4>
+            <FontAwesomeIcon icon={faCalendarAlt} /> Today
+          </h4>
+          {getTodayEvents().length > 0 ? (
+            <ul className="today-event-list">
+              {getTodayEvents().map(event => (
+                <li key={event.id} className="today-event">
+                  <Link to={`/details/${event.id}`}>
+                    <div className="today-event-title">{event.title}</div>
+                    <div className="today-event-time">{formatEventTime(event.date)}</div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No events today</p>
+          )}
         </div>
 
         <div className="upcoming-events">
-          <h4>Upcoming Events</h4>
-          <ul>
-            {upcomingEvents.map(event => (
-              <li key={event.id} className="upcoming-event">
-                <Link to={`/details/${event.id}`}>
-                  <span>{event.title}</span> - <span>{new Date(event.date).toLocaleDateString()}</span> - <span>{new Date(event.date).toLocaleTimeString()}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <h4>
+            <FontAwesomeIcon icon={faCalendarAlt} /> Upcoming Events
+          </h4>
+          {upcomingEvents.length > 0 ? (
+            <ul className="upcoming-event-list">
+              {upcomingEvents.map(event => (
+                <li key={event.id} className="upcoming-event">
+                  <Link to={`/details/${event.id}`}>
+                    <div className="upcoming-event-title">{event.title}</div>
+                    <div className="upcoming-event-datetime">{formatEventDateTime(event.date)}</div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No upcoming events</p>
+          )}
         </div>
       </div>
 
       <div className="calendar">
         <div className="calendar-header">
-          <h2 className='viewing-month'>{months[currentMonth]}</h2>
+          <h2 className='viewing-month'>{months[currentMonth]} {currentYear}</h2>
           <select className='select-month' onChange={handleMonthChange} value={currentMonth}>
             {months.map((month, index) => (
               <option key={month} value={index}>{month}</option>
@@ -113,29 +177,28 @@ const MainContent = () => {
             <div key={day} className="day-name">{day}</div>
           ))}
 
-          {/* Empty slots for days before the first of the month */}
           {Array(firstDayOfMonth).fill(null).map((_, index) => (
-            <div key={`empty-${index}`} className="day empty"></div>
+            <div key={`empty-${index}`} className="day"></div>
           ))}
 
-          {/* Render calendar days with events */}
           {[...Array(daysInMonth).keys()].map(day => {
             const dayEvents = eventsInCurrentMonth.filter(event => {
               const eventDate = new Date(event.date).getDate();
               return eventDate === day + 1;
             });
 
+            const isToday = day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
+
             return (
-              <div key={day} className={`day ${day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() ? 'highlight-day' : ''}`}>
-                <span>{day + 1}</span>
-                {/* Render events on this day */}
+              <div key={day} className={`day ${isToday ? 'highlight-day' : ''} ${dayEvents.length > 0 ? 'has-events' : ''}`}>
+                <span className="day-number">{day + 1}</span>
                 {dayEvents.length > 0 && (
                   <div className="events-container">
                     {dayEvents.map(event => (
                       <Link key={event.id} to={`/details/${event.id}`}>
-                        <div className="event-details">
+                        <div className="event-details" title={`${event.title} - ${formatEventDateTime(event.date)}`}>
                           <span className="event-title">{event.title}</span>
-                          <span className="event-time">{new Date(event.date).toLocaleTimeString()}</span>
+                          <span className="event-time">{formatEventTime(event.date)}</span>
                         </div>
                       </Link>
                     ))}
