@@ -92,7 +92,7 @@ function BuyTickets({ event, onClose }) {
         email: email,
         paymentDetails: {
           ...paymentDetails,
-          eventTitle: event.title, // Add event title here
+          eventTitle: event.title, 
         },
       }),
     })
