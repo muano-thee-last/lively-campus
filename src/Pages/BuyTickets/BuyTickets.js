@@ -8,6 +8,32 @@ import kuduBucksLogo from '../../asserts/logo.png';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, update } from 'firebase/database';
 
+
+function updateTicketsAvailable(eventId){
+
+  fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/decrementAvailableTickets', {
+    method : 'PUT',
+    headers : {
+      'Content-Type' : 'application/json',
+    },
+    body : JSON.stringify({'eventId' :eventId})
+  })
+
+  //after increment ticket purchases for the event
+
+}
+
+function incrementTicketSalse(eventId){
+
+  fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/incrementTicketSales', {
+    method : 'POST',
+    headers : {
+      'Content-Type': 'application/json'
+    }, 
+    body : JSON.stringify({'eventId' : eventId})
+})
+}
+
 function BuyTickets({ event, onClose }) {
   const [ticketCount, setTicketCount] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('Google Pay');
@@ -17,6 +43,9 @@ function BuyTickets({ event, onClose }) {
   const [googleInfo, setGoogleInfo] = useState('');
   const [email, setEmail] = useState('');
   const [availableTickets, setAvailableTickets] = useState(event?.availableTickets || 0);
+
+
+  console.log(event);
 
   useEffect(() => {
     // Set device-specific payment method
@@ -52,6 +81,7 @@ function BuyTickets({ event, onClose }) {
       alert('Email is not available.');
       return;
     }
+
 
     fetch('http://localhost:3001/send-confirmation-email', {
       method: 'POST',
@@ -102,6 +132,9 @@ function BuyTickets({ event, onClose }) {
       return;
     }
 
+    <img src={kuduBucksLogo} alt="KuduBucks" className="payment-logo" />
+
+
     const paymentDetails = {
       amount: `R${ticketCount * event.ticketPrice}`,
       date: new Date().toLocaleString(),
@@ -118,6 +151,8 @@ function BuyTickets({ event, onClose }) {
       setAvailableTickets(newAvailableTickets);
       alert('Payment processed successfully! Tickets have been purchased.');
       sendConfirmationEmail(paymentDetails);
+      updateTicketsAvailable(event.id);
+      incrementTicketSalse(event.id);
       onClose(); 
     }).catch((error) => {
       console.error('Error updating available tickets:', error);
