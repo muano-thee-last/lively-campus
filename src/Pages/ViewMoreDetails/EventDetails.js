@@ -91,7 +91,7 @@ export default function EventDetails(){
 
       <div className="event-info">
         <div className="info-item">
-          <FaMapMarkerAlt className="icon"/>   {event.location}
+          <FaMapMarkerAlt className="icon"/>   {event.venue}
         </div>
         <div className="info-item">
           <FaCalendarAlt className="icon"/> {new Date(event.date).toLocaleDateString()} {new Date(event.date).toLocaleTimeString()}
@@ -112,7 +112,7 @@ export default function EventDetails(){
         <h3>Venue and Location</h3>
         <div className="map-container">
           <iframe
-            title={`Map showing location of ${event.location}`}
+            title={`Map showing location of ${event.venue}`}
             src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(event.location)}`}
             allowFullScreen
           ></iframe>

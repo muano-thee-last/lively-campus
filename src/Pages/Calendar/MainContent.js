@@ -9,9 +9,18 @@ const months = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
+// Update eventTypes to match the tags in your database
+const eventTypes = [
+  'Seminar', 'Conference', 'Workshop', 'Sports', 'Music', 'Dance',
+  'Celebration', 'Fundraising', 'Networking', 'Educational', 'Club Meeting'
+];
+
 const MainContent = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState([]);
+  const [filterDate, setFilterDate] = useState('');
+  const [filterType, setFilterType] = useState('');
+  const [filterLocation, setFilterLocation] = useState('');
 
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
@@ -25,6 +34,10 @@ const MainContent = () => {
       try {
         const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events');
         const data = await response.json();
+        console.log('Fetched events:', data);
+        // Log unique event types
+        const uniqueTypes = [...new Set(data.map(event => event.type))];
+        console.log('Unique event types:', uniqueTypes);
         setEvents(data);
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -40,15 +53,26 @@ const MainContent = () => {
     setCurrentDate(newDate);
   };
 
-  // Filter events for the current month and year
-  const eventsInCurrentMonth = events.filter(event => {
+  const handleFilterDateChange = (e) => setFilterDate(e.target.value);
+  const handleFilterTypeChange = (e) => setFilterType(e.target.value);
+  const handleFilterLocationChange = (e) => setFilterLocation(e.target.value);
+
+  const filteredEvents = events.filter(event => {
     const eventDate = new Date(event.date);
-    return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+    const matchesDate = filterDate ? eventDate.toDateString() === new Date(filterDate).toDateString() : true;
+    
+    // Check if the event's tags include the selected filter type
+    const matchesType = filterType ? event.tags.some(tag => tag.toLowerCase() === filterType.toLowerCase()) : true;
+    
+    // Update this line to use the venue field
+    const matchesLocation = filterLocation ? event.venue.toLowerCase().includes(filterLocation.toLowerCase()) : true;
+    return matchesDate && matchesType && matchesLocation;
   });
 
+  // Log the filtered events
+  console.log('Filtered events:', filteredEvents);
 
-  // Sort events by date
-  const upcomingEvents = events
+  const upcomingEvents = filteredEvents
     .filter(event => new Date(event.date) >= today)
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .slice(0, 5); // Show only the next 5 events
@@ -66,9 +90,11 @@ const MainContent = () => {
 
   // New function to check if a day has events
   const dayHasEvents = (day) => {
-    return eventsInCurrentMonth.some(event => {
+    return filteredEvents.some(event => {
       const eventDate = new Date(event.date);
-      return eventDate.getDate() === day;
+      return eventDate.getDate() === day && 
+             eventDate.getMonth() === currentMonth && 
+             eventDate.getFullYear() === currentYear;
     });
   };
 
@@ -79,14 +105,14 @@ const MainContent = () => {
     return (
       <div className="mini-calendar">
         <div className="mini-calendar-row">
-          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-            <span key={day}>{day}</span>
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+            <span key={`header-${index}`}>{day}</span>
           ))}
         </div>
         <div className="mini-calendar-dates">
           {paddedDays.map((day, index) => (
             <div 
-              key={index} 
+              key={`mini-${index}`} 
               className={`mini-date ${
                 day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() 
                   ? 'highlight' 
@@ -105,7 +131,7 @@ const MainContent = () => {
 
   // New function to get today's events
   const getTodayEvents = () => {
-    return events.filter(event => {
+    return filteredEvents.filter(event => {
       const eventDate = new Date(event.date);
       return eventDate.toDateString() === today.toDateString();
     });
@@ -120,6 +146,23 @@ const MainContent = () => {
         </div>
 
         {renderMiniCalendar()}
+
+        <div className="filters">
+          <h4>Filters</h4>
+          <input type="date" value={filterDate} onChange={handleFilterDateChange} />
+          <select value={filterType} onChange={handleFilterTypeChange}>
+            <option value="">All Types</option>
+            {eventTypes.map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+          <input 
+            type="text" 
+            placeholder="location" 
+            value={filterLocation} 
+            onChange={handleFilterLocationChange} 
+          />
+        </div>
 
         <div className="today-events">
           <h4>
@@ -137,7 +180,7 @@ const MainContent = () => {
               ))}
             </ul>
           ) : (
-            <p>No events today</p>
+            <p className='no-events-today'>No events today</p>
           )}
         </div>
 
@@ -157,7 +200,7 @@ const MainContent = () => {
               ))}
             </ul>
           ) : (
-            <p>No upcoming events</p>
+            <p className='no-events'>No upcoming events</p>
           )}
         </div>
       </div>
@@ -182,9 +225,11 @@ const MainContent = () => {
           ))}
 
           {[...Array(daysInMonth).keys()].map(day => {
-            const dayEvents = eventsInCurrentMonth.filter(event => {
-              const eventDate = new Date(event.date).getDate();
-              return eventDate === day + 1;
+            const dayEvents = filteredEvents.filter(event => {
+              const eventDate = new Date(event.date);
+              return eventDate.getDate() === day + 1 && 
+                     eventDate.getMonth() === currentMonth && 
+                     eventDate.getFullYear() === currentYear;
             });
 
             const isToday = day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
