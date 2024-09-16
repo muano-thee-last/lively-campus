@@ -1,7 +1,7 @@
 /* Main container for the whole layout */
 .calendar-container {
   display: flex;
-  width: 100%;
+  width: 92%;
   height: 100vh;
   font-family: 'Inter', sans-serif;
   background-color: #f8f9fa;

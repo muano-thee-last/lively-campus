@@ -189,7 +189,9 @@
   transition: background-color 0.3s ease;
 }
 .dashboard-tags{
-  margin-left: 2%;
+  margin-left: 2.5% !important;
+  color: #003B5C;
+  font-size: larger;
 }
 .like-icon {
   fill: rgb(134, 134, 134);

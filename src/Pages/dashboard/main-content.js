@@ -213,7 +213,7 @@ function MainContent() {
 
         return (
           <div className="dashboard-events-section" key={idx}>
-            <h2 className="dashboard-tags">{group}</h2>
+            <p className="dashboard-tags">{group}</p>
             <div className="dashboard-slider-container">
               <button
                 className="arrow-button left"
