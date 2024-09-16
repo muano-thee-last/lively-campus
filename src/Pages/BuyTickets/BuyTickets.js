@@ -50,7 +50,6 @@ async function setTicketCode() {
 }
 
 
-
 async function uploadTicketInformation(eventId, price) {
   // Get the userId from localStorage
   const ticketCode = await setTicketCode();

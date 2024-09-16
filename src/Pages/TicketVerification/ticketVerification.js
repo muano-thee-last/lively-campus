@@ -31,22 +31,45 @@ function VerifyTicket(ticketNum){
 }
 
 
-function TicketVerification(){
+function TicketVerification(ticketID){
 
-    const ticket = {
-        name : "evnnAME",
-        buyer : "eventBuer",
-        price: "$50",
-        purchaseDate: "2024-09-16",
-        code: "ABC123XYZ",
-      };
+
+let ticket;
+
+  const ticketId = ticketID; 
+
+fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/verifyTicket?ticketId=${ticketId}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        ticket = {
+            buyer: "eventBuer", 
+            price: `$${data.price}`, // Use the price from the API response
+            purchaseDate: data.purchaseDate, // Use the purchaseDate from the API response
+            code: data.ticketCode, // Use the ticketCode from the API response
+        };
+
+        console.log("Ticket data:", ticket);
+        // Do something with the ticket data (e.g., update UI or process further)
+    })
+    .catch(error => {
+        console.error("Error fetching ticket:", error);
+    });
+
+
+
+
 
     return(
 
         <div>
             <Header></Header>
 
-<input placeholder="Enter ticke code" className="input" name="email" type="email" id="ticketCode"></input>
+<input placeholder="Enter ticke code" className="input" name="email" type="email" id=""></input>
    <button className="button" >Verify</button> 
             
    <TicketInfo ticket={ticket} />
