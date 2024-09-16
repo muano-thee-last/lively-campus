@@ -2,15 +2,13 @@ import React from 'react';
 import './TicketInfo.css'; 
 
 const TicketInfo = ({ ticket }) => {
+  // Check if ticket exists before rendering
+  if (!ticket) {
+    return <div className="ticket-info">No ticket information available</div>;
+  }
+
   return (
     <div className="ticket-info">
-      <div className="ticket-item">
-        <strong>Ticket Buyer</strong>
-        <span>{ticket.beyer}</span>
-      </div>     <div className="ticket-item">
-        <strong>Event Name:</strong>
-        <span>{ticket.name}</span>
-      </div>
       <div className="ticket-item">
         <strong>Ticket Price:</strong>
         <span>{ticket.price}</span>
