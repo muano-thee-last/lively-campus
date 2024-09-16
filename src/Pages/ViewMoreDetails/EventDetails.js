@@ -3,11 +3,14 @@ import { useParams } from 'react-router-dom';
 import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaTicketAlt } from 'react-icons/fa'; 
 import './EventDetails.css';
 import '../EventCreation/styles/EventCreationStyles.css'; 
+import BuyTickets from '../BuyTickets/BuyTickets';
+import { Modal, Button } from '@mui/material'; 
 
 export default function EventDetails(){
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [googleMapsApiKey, setGoogleMapsApiKey] = useState(null); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
 
   useEffect(() => {
     fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${id}`).then(response => {
@@ -56,6 +59,9 @@ export default function EventDetails(){
     return color;
   }
 
+  
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   if (!event || !googleMapsApiKey) {
     return <p>Loading...</p>; 
@@ -115,8 +121,16 @@ export default function EventDetails(){
 
       <div className="event-buy-tickets">
         <p><strong>Ticket Price: <span >R</span> {event.ticketPrice} </strong></p>
-        <button className="create-button">Buy Ticket</button>
+        <button className="create-button" onClick={handleOpenModal}>Buy Ticket</button>
       </div>
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
+        <div className="modal-content">
+          <BuyTickets event={event} onClose={handleCloseModal} />
+          <Button variant="contained" color="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }
