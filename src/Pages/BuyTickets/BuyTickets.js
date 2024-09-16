@@ -34,6 +34,20 @@ function incrementTicketSalse(eventId){
 })
 }
 
+function uploadTicketInformation(userId, eventId, ticketCode, purchaseDate, price){
+
+  const data = {
+    userId : userId,
+    eventId : eventId,
+    ticketCode : ticketCode,
+    purchaseDate : purchaseDate,
+    price : price
+  };
+
+  
+
+}
+
 function BuyTickets({ event, onClose }) {
   const [ticketCount, setTicketCount] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('Google Pay');
@@ -106,6 +120,23 @@ function BuyTickets({ event, onClose }) {
       });
   };
 
+
+  async function setTicketCode() {
+    try {
+        const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/uniqueCode');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        //console.log('Unique Code:', data.uniqueString);
+        return data.uniqueString;
+    } catch (error) {
+        console.error('Error fetching unique code:', error);
+    }
+}
+
+
+
   const handleBuyTickets = async () => {
     if (paymentMethod === 'Card Payment') {
       if (!cardDetails.number || !cardDetails.expiry || !cardDetails.cvc) {
@@ -153,6 +184,7 @@ function BuyTickets({ event, onClose }) {
       sendConfirmationEmail(paymentDetails);
       updateTicketsAvailable(event.id);
       incrementTicketSalse(event.id);
+      uploadTicketInformation("userif", event.id, )
       onClose(); 
     }).catch((error) => {
       console.error('Error updating available tickets:', error);
@@ -162,6 +194,10 @@ function BuyTickets({ event, onClose }) {
   if (!event) {
     return <p>Loading event details...</p>;
   }
+
+//  function uploadTicketInformation(userId, eventId, ticketCode, purchaseDate, price){
+
+
 
   return (
     <div className="buy-tickets-modal">

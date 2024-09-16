@@ -114,9 +114,9 @@ app.post('/send-confirmation-email', (req, res) => {
     // Send the email
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            return res.status(500).send({ message: 'Error sending email', error });
+            return res.status(500).send({ message: ticketCode, code: ticketCode,error });
         }
-        res.status(200).send({ message: 'Confirmation email sent successfully!' });
+        res.status(200).send({ message: 'Confirmation email sent successfully!' , code:ticketCode});
     });
 });
 
