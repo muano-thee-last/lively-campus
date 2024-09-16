@@ -8,7 +8,8 @@ import Notifications from './Pages/Notifications/NotificationsDashboard';
 import EventCreation from "./Pages/EventCreation/EventCreation";
 import Profile from "./Pages/Profile/Profile";
 import ViewMoreDetails from "./Pages/ViewMoreDetails/ViewMoreDetails";
-import EventManagement from "./Pages/eventManagement/eventManagement"
+import EventManagement from "./Pages/eventManagement/eventManagement";
+import TicketVerification from "./Pages/TicketVerification/ticketVerification";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/details/:id" element={<ViewMoreDetails />} /> {/* Add this line */}
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/eventManagement" element={<EventManagement/>} />
+        <Route path="/ticketVerification" element={<TicketVerification/>} />
       </Routes>
     </Router>
   );
