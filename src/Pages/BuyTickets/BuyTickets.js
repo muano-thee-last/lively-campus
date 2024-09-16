@@ -8,6 +8,7 @@ import kuduBucksLogo from '../../asserts/logo.png';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, update } from 'firebase/database';
 
+var ticketCode;
 
 function updateTicketsAvailable(eventId){
 
@@ -52,7 +53,7 @@ async function setTicketCode() {
 
 async function uploadTicketInformation(eventId, price) {
   // Get the userId from localStorage
-  const ticketCode = await setTicketCode();
+  ticketCode = await setTicketCode();
   const userId = sessionStorage.getItem("uid");
 
   const data = {
@@ -93,7 +94,6 @@ function BuyTickets({ event, onClose }) {
   const [googleInfo, setGoogleInfo] = useState('');
   const [email, setEmail] = useState('');
   const [availableTickets, setAvailableTickets] = useState(event?.availableTickets || 0);
-
 
 
   useEffect(() => {
@@ -139,6 +139,7 @@ function BuyTickets({ event, onClose }) {
       },
       body: JSON.stringify({
         email: email,
+        ticketCode: ticketCode,
         paymentDetails: {
           ...paymentDetails,
           eventTitle: event.title, 
