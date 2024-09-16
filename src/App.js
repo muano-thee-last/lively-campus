@@ -8,7 +8,25 @@ import Notifications from './Pages/Notifications/NotificationsDashboard';
 import EventCreation from "./Pages/EventCreation/EventCreation";
 import Profile from "./Pages/Profile/Profile";
 import ViewMoreDetails from "./Pages/ViewMoreDetails/ViewMoreDetails";
-import EventManagement from "./Pages/eventManagement/eventManagement"
+import EventManagement from "./Pages/eventManagement/eventManagement";
+
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getPerformance } from 'firebase/performance';
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  // ... your config here ...
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Initialize Firestore
+const db = getFirestore(app);
+
+// Initialize Performance Monitoring
+const perf = getPerformance(app);
 
 function App() {
   return (
