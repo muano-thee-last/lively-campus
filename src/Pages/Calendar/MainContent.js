@@ -72,12 +72,6 @@ const MainContent = () => {
   // Log the filtered events
   console.log('Filtered events:', filteredEvents);
 
-  // Update the existing event filtering logic to use filteredEvents
-  const eventsInCurrentMonth = filteredEvents.filter(event => {
-    const eventDate = new Date(event.date);
-    return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
-  });
-
   const upcomingEvents = filteredEvents
     .filter(event => new Date(event.date) >= today)
     .sort((a, b) => new Date(a.date) - new Date(b.date))
