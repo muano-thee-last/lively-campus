@@ -2,29 +2,33 @@ import React from "react";
 import "./ticketVerification.css";
 import Header from "../dashboard/header";
 import TicketInfo from "./ticketDetails";
+
 //enter the ticket code
 //search the database if the ticket exists.
 //accepts verification if it exists. 
 //returns info about the tickest
 
-// function VerifyTicket(userId){
+function VerifyTicket(ticketNum){
     
-
-//     const res = fetch('url', {
-//         method: 'GET',
-//         headers : {
-//             'Content-Type': 'application/json',
-//         },
-
-//         body : JSON.stringify({'userId': userId})
-//     }).then(response => response.json()).then(data => console.log(data))
+    const data = {
+      ticketNum : ticketNum
+    };
 
 
-//     if(res.error){
-//         //unable to get the checkForTickets
-//     }
+    const res = fetch('url', {
+        method: 'GET',
+        headers : {
+            'Content-Type': 'application/json',
+        },
+
+        body : JSON.stringify({data})
+    }).then(response => response.json()).then(data => console.log(data))
+
+
+    if(res.error){
+    }
     
-// }
+}
 
 
 function TicketVerification(){
@@ -42,7 +46,7 @@ function TicketVerification(){
         <div>
             <Header></Header>
 
-<input placeholder="Enter ticke code" className="input" name="email" type="email"></input>
+<input placeholder="Enter ticke code" className="input" name="email" type="email" id="ticketCode"></input>
    <button className="button" >Verify</button> 
             
    <TicketInfo ticket={ticket} />
