@@ -44,7 +44,7 @@ function TicketVerification() {
   return (
     <div>
       <div className="main-container">
-        <div className="container">
+        <div className="ticket-verification-container">
           <input
             placeholder="Enter ticket code"
             className="input"
