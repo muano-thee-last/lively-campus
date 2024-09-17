@@ -103,6 +103,7 @@
   transform: translateZ(5rem);
   backface-visibility: hidden;
    align-items: center;
+
 }
 
 .feedback1-title {
@@ -150,7 +151,7 @@
 .feedback1-buttons {
   display: flex;
 align-items: center;
-  justify-content: center;
+ gap: 30%;;
 }
 
 
@@ -160,11 +161,54 @@ align-items: center;
 
  
   border-radius: 0.5rem;
-  padding-top: 13%;
-  padding-bottom: 13%;
-  padding-right: 15%;
-  padding-left: 15%;
+  padding-top: 7%;
+  padding-bottom: 7%;
+  padding-right: 10%;
+  padding-left: 10%;
   transition: background-color 0.3s, color 0.3s;
+}
+.view-comments{
+  color: white;
+  background-color: #003B5C;
+  border: none;
+  padding: 5%;
+  border-radius: 5%;
+  cursor: pointer;
+ 
+}
+.comments-list-container {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.comments-list-container h2 {
+  margin: 0 0 10px;
+}
+
+.close-comments-button {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.comments-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.comment {
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.comment:last-child {
+  border-bottom: none;
 }
 
 .feedback-button1:hover,
@@ -342,6 +386,15 @@ align-items: center;
 .like-count{
   position: absolute;
   left: -10%;
+  bottom:-25%;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #003B5C;
+  white-space: nowrap;
+}
+.comment-count{
+  position: absolute;
+  right: 10%;
   bottom:-25%;
   font-size: 0.8rem;
   font-weight: bold;
