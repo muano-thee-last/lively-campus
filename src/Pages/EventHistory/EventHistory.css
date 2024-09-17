@@ -1,0 +1,44 @@
+.event-history-container {
+    padding: 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+  }
+  
+  .no-events-message {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #ff4d4d;
+    margin-top: 50px;
+  }
+  
+  .event-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .event-card h2 {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+  
+  .event-card p {
+    margin: 5px 0;
+    color: #555;
+  }
+  
+  .eventView {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .eventImage {
+    margin-top: 10px;
+    max-width: 100%;
+    border-radius: 5px;
+  }
+  
