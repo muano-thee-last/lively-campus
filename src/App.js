@@ -9,6 +9,8 @@ import EventCreation from "./Pages/EventCreation/EventCreation";
 import Profile from "./Pages/Profile/Profile";
 import ViewMoreDetails from "./Pages/ViewMoreDetails/ViewMoreDetails";
 import EventManagement from "./Pages/eventManagement/eventManagement";
+import TicketVerification from "./Pages/TicketVerification/ticketVerification";
+import TicketHistory from "./Pages/TicketHistory/ticketHistory";
 
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
@@ -28,6 +30,7 @@ const db = getFirestore(app);
 // Initialize Performance Monitoring
 const perf = getPerformance(app);
 
+
 function App() {
   return (
     <Router>
@@ -41,6 +44,9 @@ function App() {
         <Route path="/details/:id" element={<ViewMoreDetails />} /> {/* Add this line */}
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/eventManagement" element={<EventManagement/>} />
+        <Route path="/ticketVerification" element={<TicketVerification/>} />
+        <Route path="/ticket-history" element={<TicketHistory/>} />
+
       </Routes>
     </Router>
   );

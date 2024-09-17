@@ -18,7 +18,7 @@ app.use(bodyParser.json());
         return ticketCode;
     }
 
-    const ticketCode = generateTicketCode();
+   // const ticketCode = generateTicketCode();
 
 // Configure the SMTP transporter
 const transporter = nodemailer.createTransport({
@@ -30,7 +30,7 @@ const transporter = nodemailer.createTransport({
 });
 
 app.post('/send-confirmation-email', (req, res) => {
-    const { email, paymentDetails } = req.body;
+    const { ticketCode, email, paymentDetails } = req.body;
     const { amount, date, method, eventTitle } = paymentDetails;
 
     // Construct the email body with HTML template literals
@@ -114,9 +114,9 @@ app.post('/send-confirmation-email', (req, res) => {
     // Send the email
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            return res.status(500).send({ message: 'Error sending email', error });
+            return res.status(500).send({ message: ticketCode, code: ticketCode,error });
         }
-        res.status(200).send({ message: 'Confirmation email sent successfully!' });
+        res.status(200).send({ message: 'Confirmation email sent successfully!' , code:ticketCode});
     });
 });
 

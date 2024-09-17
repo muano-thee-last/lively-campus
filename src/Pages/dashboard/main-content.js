@@ -24,9 +24,11 @@ const tagGroups = {
   "Club Meetings": ["Club Meeting"]
 };
 
+
 function MainContent() {
   const [events, setEvents] = useState([]);
   const [liked, setLiked] = useState({});
+  const [flippedCards, setFlippedCards] = useState({});
   const [showFeedback, setShowFeedback] = useState(false);
   const navigate = useNavigate();
   const userId = sessionStorage.getItem("uid");
@@ -134,6 +136,12 @@ function MainContent() {
       }
     );
   };
+  const handleFlip = (eventId) => {
+    setFlippedCards((prevFlipped) => ({
+      ...prevFlipped,
+      [eventId]: !prevFlipped[eventId], // Toggle the flip state for this event
+    }));
+  };
 
   const handleScroll = (slider, direction) => {
     if (slider && slider.current) {
@@ -199,6 +207,7 @@ function MainContent() {
     );
   };
 
+
   return (
     <div id="dashboard-main-content">
       {Object.keys(tagGroups).map((group, idx) => {
@@ -228,57 +237,101 @@ function MainContent() {
                 >
                   {groupedEvents.map((event, index) => (
                     <div className="dashboard-card" key={index}>
-                      <div className="card-first-row">
-                        <h4 className="event-title">{event.title}</h4>
-                      </div>
-                      <div className="card-second-row">
-                        <img
-                          src={profile}
-                          alt="Profile"
-                          className="profile-image"
-                        />
-                        <p className="event-organizer">{event.organizerName}</p>
-                      </div>
-                      <div className="card-third-row">
-                        <img
-                          className="event-images"
-                          src={event.imageUrl}
-                          alt="Event"
-                        />
-                      </div>
-                      <div className="card-fourth-row">
-                        <div className="like-comment">
-                        <button
-  className={`like-button ${liked[event.id] ? "active" : ""}`}
-  onClick={() => handleLike(event.id)}
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width="24"
-    height="24"
-    className="like-icon"
-  >
-    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-  </svg>
-</button>
-
-
-                          <img
-                            src={comments}
-                            alt="Comments"
-                            className="comments-image"
-                          />
-                          <p className="like-count">likes {event.likes}</p>
+                      <div
+                        className={`card-inner ${
+                          flippedCards[event.id] ? "is-flipped" : ""
+                        }`}
+                      >
+                        {/* Front Side */}
+                        <div className="card-front">
+                          <div className="card-first-row">
+                            <h4 className="event-title">{event.title}</h4>
+                          </div>
+                          <div className="card-second-row">
+                            <img
+                              src={profile}
+                              alt="Profile"
+                              className="profile-image"
+                            />
+                            <p className="event-organizer">
+                              {event.organizerName}
+                            </p>
+                          </div>
+                          <div className="card-third-row">
+                            <img
+                              className="event-images"
+                              src={event.imageUrl}
+                              alt="Event"
+                            />
+                          </div>
+                          <div className="card-fourth-row">
+                            <div className="like-comment">
+                              <button
+                                className={`like-button ${
+                                  liked[event.id] ? "active" : ""
+                                }`}
+                                onClick={() => handleLike(event.id)}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 24 24"
+                                  width="24"
+                                  height="24"
+                                  className="like-icon"
+                                >
+                                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg>
+                              </button>
+                              <img
+                                src={comments}
+                                alt="Comments"
+                                className="comments-image"
+                                onClick={() => handleFlip(event.id)} // Flip the card when comments icon is clicked
+                              />
+                              <p className="like-count">
+                                likes {event.likes}
+                              </p>
+                            </div>
+                            <button
+                              className="details-button"
+                              onClick={() => handleViewDetails(event.id)}
+                            >
+                              View more details
+                            </button>
+                          </div>
                         </div>
-                        <button
-                          className="details-button"
-                          onClick={() => handleViewDetails(event.id)}
-                        >
-                          View more details
-                        </button>
+
+                        {/* Back Side (Comment Section) */}
+                        <div className="card-back">
+                        <div className="feedback1-container">
+                          
+            <h1 className="feedback1-title">Leave a comment
+            <button
+                            className="close-comment-button"
+                            onClick={() => handleFlip(event.id)} // Close the comment section
+                          >
+                            X
+                          </button>
+            </h1>
+            <textarea
+              className="feedback1-textarea"
+              placeholder="post a comment"
+            ></textarea>
+            <div className="feedback1-buttons">
+              
+                 <button className="submit1-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24" fill="none">
+                  <path d="M7.39999 6.32003L15.89 3.49003C19.7 2.22003 21.77 4.30003 20.51 8.11003L17.68 16.6C15.78 22.31 12.66 22.31 10.76 16.6L9.91999 14.08L7.39999 13.24C1.68999 11.34 1.68999 8.23003 7.39999 6.32003Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                  <path d="M10.11 13.6501L13.69 10.0601" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                </svg>
+              </button>
+            </div>
+            
+          </div>
+        </div>
+                        </div>
                       </div>
-                    </div>
+                   
                   ))}
                 </div>
               </div>

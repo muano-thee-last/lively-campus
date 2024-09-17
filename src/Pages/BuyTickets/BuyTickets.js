@@ -8,6 +8,7 @@ import kuduBucksLogo from '../../asserts/logo.png';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, update } from 'firebase/database';
 
+var ticketCode;
 
 function updateTicketsAvailable(eventId){
 
@@ -34,6 +35,56 @@ function incrementTicketSalse(eventId){
 })
 }
 
+
+async function setTicketCode() {
+  try {
+      const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/uniqueCode');
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      //console.log('Unique Code:', data.uniqueString);
+      return data.uniqueString;
+  } catch (error) {
+      console.error('Error fetching unique code:', error);
+  }
+}
+
+
+async function uploadTicketInformation(eventId, price) {
+  // Get the userId from localStorage
+  ticketCode = await setTicketCode();
+  const userId = sessionStorage.getItem("uid");
+
+  const data = {
+    userId: userId,
+    eventId: eventId,
+    ticketCode: ticketCode,
+    purchaseDate: "17 September 2024",
+    price: price
+  };
+
+  try {
+    const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/addTicket', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result.message);
+  } catch (error) {
+    console.error('Error uploading ticket information:', error);
+  }
+}
+
+
 function BuyTickets({ event, onClose }) {
   const [ticketCount, setTicketCount] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('Google Pay');
@@ -44,8 +95,6 @@ function BuyTickets({ event, onClose }) {
   const [email, setEmail] = useState('');
   const [availableTickets, setAvailableTickets] = useState(event?.availableTickets || 0);
 
-
-  console.log(event);
 
   useEffect(() => {
     // Set device-specific payment method
@@ -90,6 +139,7 @@ function BuyTickets({ event, onClose }) {
       },
       body: JSON.stringify({
         email: email,
+        ticketCode: ticketCode,
         paymentDetails: {
           ...paymentDetails,
           eventTitle: event.title, 
@@ -105,6 +155,9 @@ function BuyTickets({ event, onClose }) {
         alert('There was an error sending the confirmation email.');
       });
   };
+
+
+
 
   const handleBuyTickets = async () => {
     if (paymentMethod === 'Card Payment') {
@@ -150,9 +203,13 @@ function BuyTickets({ event, onClose }) {
     }).then(() => {
       setAvailableTickets(newAvailableTickets);
       alert('Payment processed successfully! Tickets have been purchased.');
+
       sendConfirmationEmail(paymentDetails);
+      console.log(event);
       updateTicketsAvailable(event.id);
       incrementTicketSalse(event.id);
+      uploadTicketInformation(event.id, event.ticketPrice);
+      uploadTicketInformation("userif", event.id, )
       onClose(); 
     }).catch((error) => {
       console.error('Error updating available tickets:', error);
@@ -162,6 +219,10 @@ function BuyTickets({ event, onClose }) {
   if (!event) {
     return <p>Loading event details...</p>;
   }
+
+//  function uploadTicketInformation(userId, eventId, ticketCode, purchaseDate, price){
+
+
 
   return (
     <div className="buy-tickets-modal">
