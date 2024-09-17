@@ -30,6 +30,9 @@ function MainContent() {
   const [liked, setLiked] = useState({});
   const [flippedCards, setFlippedCards] = useState({});
   const [showFeedback, setShowFeedback] = useState(false);
+  const [visibleComments, setVisibleComments] = useState({});
+
+  const [comment, setComment] = useState(""); 
   const navigate = useNavigate();
   const userId = sessionStorage.getItem("uid");
 
@@ -71,6 +74,7 @@ function MainContent() {
     fetchEvents();
   }, []);
 
+  
   useEffect(() => {
     if (events.length > 0) {
       fetchUserLikedEvents();
@@ -136,6 +140,49 @@ function MainContent() {
       }
     );
   };
+    // Function to handle comment submission
+    const handleSubmit = async (eventId) => {
+      try {
+        // Fetch the current comments for the event
+        const response = await fetch(
+          `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${eventId}`
+        );
+    
+        if (!response.ok) {
+          throw new Error("Failed to fetch event details.");
+        }
+    
+        const eventData = await response.json();
+    
+        // Append the new comment to the existing comments
+        const updatedComments = [...eventData.comments, comment];
+    
+        // Update the event's comments
+        const updateResponse = await fetch(
+          `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${eventId}/comments`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              comments: updatedComments, // Send the updated comments array
+            }),
+          }
+        );
+    
+        if (updateResponse.ok) {
+          // Optionally update your local state to reflect the change
+          setComment(""); // Clear the input after submission
+          handleFlip(eventId)
+        } else {
+          console.error("Failed to update comments.");
+        }
+      } catch (error) {
+        console.error("Error submitting comment:", error);
+      }
+    };
+    
   const handleFlip = (eventId) => {
     setFlippedCards((prevFlipped) => ({
       ...prevFlipped,
@@ -197,6 +244,12 @@ function MainContent() {
     const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
     
     window.location.href = mailtoLink;
+  };
+  const toggleCommentsVisibility = (eventId) => {
+    setVisibleComments((prev) => ({
+      ...prev,
+      [eventId]: !prev[eventId]
+    }));
   };
 
   // Function to group events by tag group
@@ -287,9 +340,13 @@ function MainContent() {
                                 alt="Comments"
                                 className="comments-image"
                                 onClick={() => handleFlip(event.id)} // Flip the card when comments icon is clicked
+                               
                               />
                               <p className="like-count">
                                 likes {event.likes}
+                              </p>
+                              <p className="comment-count">
+                                {event.comments.length}
                               </p>
                             </div>
                             <button
@@ -304,31 +361,57 @@ function MainContent() {
                         {/* Back Side (Comment Section) */}
                         <div className="card-back">
                         <div className="feedback1-container">
-                          
-            <h1 className="feedback1-title">Leave a comment
-            <button
-                            className="close-comment-button"
-                            onClick={() => handleFlip(event.id)} // Close the comment section
-                          >
-                            X
-                          </button>
-            </h1>
-            <textarea
-              className="feedback1-textarea"
-              placeholder="post a comment"
-            ></textarea>
-            <div className="feedback1-buttons">
-              
-                 <button className="submit1-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24" fill="none">
-                  <path d="M7.39999 6.32003L15.89 3.49003C19.7 2.22003 21.77 4.30003 20.51 8.11003L17.68 16.6C15.78 22.31 12.66 22.31 10.76 16.6L9.91999 14.08L7.39999 13.24C1.68999 11.34 1.68999 8.23003 7.39999 6.32003Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                  <path d="M10.11 13.6501L13.69 10.0601" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                </svg>
-              </button>
-            </div>
-            
-          </div>
+      <h1 className="feedback1-title">
+        Leave a comment
+        <button
+          className="close-comment-button"
+          onClick={() => handleFlip(event.id)} // Close the comment section
+        >
+          X
+        </button>
+      </h1>
+      <textarea
+        className="feedback1-textarea"
+        placeholder="Post a comment"
+        value={comment} // Bind the textarea to the comment state
+        onChange={(e) => setComment(e.target.value)} // Update state on change
+      ></textarea>
+      <div className="feedback1-buttons">
+        <button className="view-comments" onClick={() => toggleCommentsVisibility(event.id)}>Comments</button>
+        <button className="submit1-button" onClick={() => handleSubmit(event.id)}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24" fill="none">
+            <path d="M7.39999 6.32003L15.89 3.49003C19.7 2.22003 21.77 4.30003 20.51 8.11003L17.68 16.6C15.78 22.31 12.66 22.31 10.76 16.6L9.91999 14.08L7.39999 13.24C1.68999 11.34 1.68999 8.23003 7.39999 6.32003Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+            <path d="M10.11 13.6501L13.69 10.0601" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+          </svg>
+        </button>
+      </div>
+                {/* Conditionally render the comments view */}
+  {visibleComments[event.id] && (
+                <div className="comments-list-container">
+                  <h2>Comments</h2>
+                  <button
+                    className="close-comments-button"
+                    onClick={() => toggleCommentsVisibility(event.id)}
+                  >
+                    Close 
+                  </button>
+                  <div className="comments-list">
+                    {event.comments && event.comments.length > 0 ? (
+                      event.comments.map((com, idx) => (
+                        <div key={idx} className="comment">
+                          {com}
+                        </div>
+                      ))
+                    ) : (
+                      <div>No comments yet.</div>
+                    )}
+                  </div>
+                </div>
+              )}
+    </div>
+
         </div>
+
                         </div>
                       </div>
                    

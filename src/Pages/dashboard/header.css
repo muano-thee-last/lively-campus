@@ -166,11 +166,12 @@ max-width: 100%;
      
  }
  .search-button{
-    background-color: #e8ff84;
+    background-color: #d9db5a;
     border-style: solid;
     border-width: thin;
     margin-left: -1vh;
-    padding: 25px;
+    margin-top: 2vh;
+    padding: 10px;
     border-radius: 0.5vh;
     border-color: rgb(3, 26, 100);
     justify-content: center;
