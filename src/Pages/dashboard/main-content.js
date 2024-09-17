@@ -24,6 +24,7 @@ const tagGroups = {
   "Club Meetings": ["Club Meeting"]
 };
 
+
 function MainContent() {
   const [events, setEvents] = useState([]);
   const [liked, setLiked] = useState({});
