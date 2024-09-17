@@ -11,6 +11,7 @@ import ViewMoreDetails from "./Pages/ViewMoreDetails/ViewMoreDetails";
 import EventManagement from "./Pages/eventManagement/eventManagement";
 import TicketVerification from "./Pages/TicketVerification/ticketVerification";
 import TicketHistory from "./Pages/TicketHistory/ticketHistory";
+import EventHistory from "./Pages/EventHistory/EventHistory";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/eventManagement" element={<EventManagement/>} />
         <Route path="/ticketVerification" element={<TicketVerification/>} />
         <Route path="/ticket-history" element={<TicketHistory/>} />
+        <Route path="/event-history" element={<EventHistory/>} />
 
       </Routes>
     </Router>
