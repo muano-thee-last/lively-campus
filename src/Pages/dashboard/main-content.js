@@ -385,8 +385,7 @@ function MainContent() {
           </svg>
         </button>
       </div>
-    </div>
-  {/* Conditionally render the comments view */}
+                {/* Conditionally render the comments view */}
   {visibleComments[event.id] && (
                 <div className="comments-list-container">
                   <h2>Comments</h2>
@@ -409,7 +408,10 @@ function MainContent() {
                   </div>
                 </div>
               )}
+    </div>
+
         </div>
+
                         </div>
                       </div>
                    
