@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TicketView from './ticketView';
 import NoTicket from './noTickets'; // Import the NoTicket component
+import './TicketHistory.css'; // Import the CSS file
 
 function TicketHistory() {
   const [ticketDetails, setTicketDetails] = useState([]);
@@ -12,6 +13,7 @@ function TicketHistory() {
     fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/getTickets/${userID}`)
       .then((response) => {
         if (!response.ok) {
+            console.log(response);
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
@@ -19,6 +21,14 @@ function TicketHistory() {
       .then((data) => {
         console.log(data);
         setTicketDetails(data); // Set the array of tickets
+        if (ticketDetails.length === 0) {
+            return (
+                <h1>
+                    No Tickets Bought Yet
+                </h1>
+            )
+          }
+        
       })
       .catch((error) => {
         setError(error.message);
@@ -29,13 +39,6 @@ function TicketHistory() {
     return <div>Error: {error}</div>;
   }
 
-  if (ticketDetails.length === 0) {
-    return (
-        <h1>
-            No Tickets Bought Yet
-        </h1>
-    )
-  }
 
   return (
     <div>
