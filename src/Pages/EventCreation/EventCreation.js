@@ -1,4 +1,15 @@
-import React from "react";
+import React, { useEffect, useState, useId, useRef } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Typography,
+} from "@mui/material";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import add from "./images-logos/add.svg";
 import location from "./images-logos/location.svg";
@@ -18,18 +29,22 @@ import Footer from "../dashboard/footer";
 const EVENTS_API =
   "https://us-central1-witslivelycampus.cloudfunctions.net/app/events";
 
+const WIMAN_API = "https://wiman.azurewebsites.net/api/";
+
 export default function EventCreation() {
-  let availableVenues;
+  const [availableVenues, setAvailableVenues] = useState([]);
   const navigate = useNavigate();
-  const [MAP_API_KEY, SET_MAP_API_KEY] = React.useState("");
-  const [isSidebarOpen, setSidebarOpen] = React.useState(false);
+  const [MAP_API_KEY, SET_MAP_API_KEY] = useState("");
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [wimanBearerKey, setWimanBearerKey] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
-    console.log(sessionStorage.getItem("uid"));
   };
 
-  const [eventData, setEventData] = React.useState({
+  const [eventData, setEventData] = useState({
     eventName: "",
     eventDescription: "",
     ticketPrice: 0,
@@ -39,14 +54,15 @@ export default function EventCreation() {
     eventLocation: "",
     eventVenue: "",
   });
-  const id = React.useId();
-  const fileInputRef = React.useRef(null);
-  const [image, setImage] = React.useState("");
-  const [imageUrlLocal, setImageUrlLocal] = React.useState("");
-  const [isPopupTagOpen, setIsPopupTagOpen] = React.useState(false);
-  const [isPopupLocationOpen, setIsPopupLocationOpen] = React.useState(false);
+  const id = useId();
+  const fileInputRef = useRef(null);
+  const [image, setImage] = useState("");
+  const [imageUrlLocal, setImageUrlLocal] = useState("");
+  const [isPopupTagOpen, setIsPopupTagOpen] = useState(false);
+  const [isPopupLocationOpen, setIsPopupLocationOpen] = useState(false);
+  const [isAvailableTimePopup, setIsAvailableTimePopup] = useState(false);
 
-  const [selectedTags, setSelectedTags] = React.useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const aboutTags = [
     "Music",
     "Dance",
@@ -74,40 +90,40 @@ export default function EventCreation() {
     "Networking Event",
   ];
 
-  availableVenues = [
-    {
-      features: ["WiFi", "Projector"],
-      name: "The Great Hall",
-      location: "Wits University",
-      id: "GH001",
-      capacity: 500,
-      time: "10:00 AM - 8:00 PM",
-    },
-    {
-      features: ["Air Conditioning", "Sound System"],
-      name: "Senate Room",
-      location: "Senate Room, 2nd Floor",
-      id: "SR002",
-      capacity: 100,
-      time: "10:00 - 00:00 ",
-    },
-    {
-      features: ["WiFi", "Video Conferencing"],
-      name: "Computer Lab 1",
-      location: "The Wits Science Stadium",
-      id: "CL003",
-      capacity: 40,
-      time: "10:00 - 12:00",
-    },
-    {
-      features: ["Whiteboard", "Natural Light"],
-      name: "Sturrock Park",
-      location: "Wits University",
-      id: "SR004",
-      capacity: 1000,
-      time: "10:00 - 22:00",
-    },
-  ];
+  // availableVenues = [
+  //   {
+  //     features: ["WiFi", "Projector"],
+  //     name: "The Great Hall",
+  //     location: "Wits University",
+  //     id: "GH001",
+  //     capacity: 500,
+  //     time: "10:00 AM - 8:00 PM",
+  //   },
+  //   {
+  //     features: ["Air Conditioning", "Sound System"],
+  //     name: "Senate Room",
+  //     location: "Senate Room, 2nd Floor",
+  //     id: "SR002",
+  //     capacity: 100,
+  //     time: "10:00 - 00:00 ",
+  //   },
+  //   {
+  //     features: ["WiFi", "Video Conferencing"],
+  //     name: "Computer Lab 1",
+  //     location: "The Wits Science Stadium",
+  //     id: "CL003",
+  //     capacity: 40,
+  //     time: "10:00 - 12:00",
+  //   },
+  //   {
+  //     features: ["Whiteboard", "Natural Light"],
+  //     name: "Sturrock Park",
+  //     location: "Wits University",
+  //     id: "SR004",
+  //     capacity: 1000,
+  //     time: "10:00 - 22:00",
+  //   },
+  // ];
   const user = JSON.parse(sessionStorage.getItem("user"));
 
   const handleCheckboxChange = (event) => {
@@ -137,30 +153,54 @@ export default function EventCreation() {
   }
   function openTagPopup() {
     setIsPopupTagOpen(true);
-    document
-      .querySelector(".event-creation-container")
-      .classList.add("blurred");
+    [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
+      (el) => {
+        document.querySelector(el).classList.add("blurred");
+      }
+    );
   }
   function closeTagPopup() {
     setIsPopupTagOpen(false);
-    document
-      .querySelector(".event-creation-container")
-      .classList.remove("blurred");
+    [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
+      (el) => {
+        document.querySelector(el).classList.remove("blurred");
+      }
+    );
   }
 
   function openLocationPopup() {
     setIsPopupLocationOpen(true);
-    document
-      .querySelector(".event-creation-container")
-      .classList.add("blurred");
+    [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
+      (el) => {
+        document.querySelector(el).classList.add("blurred");
+      }
+    );
   }
   function closeLocationPopup() {
     setIsPopupLocationOpen(false);
-    document
-      .querySelector(".event-creation-container")
-      .classList.remove("blurred");
+    [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
+      (el) => {
+        document.querySelector(el).classList.remove("blurred");
+      }
+    );
   }
-  React.useEffect(() => {
+  function openAvailableTimePopup() {
+    setIsAvailableTimePopup(true);
+    [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
+      (el) => {
+        document.querySelector(el).classList.add("blurred");
+      }
+    );
+  }
+  function closeAvailableTimePopup() {
+    setIsAvailableTimePopup(false);
+    [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
+      (el) => {
+        document.querySelector(el).classList.remove("blurred");
+      }
+    );
+  }
+  useEffect(() => {
     const getGoogleKey = async () => {
       const url =
         "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvgoogle";
@@ -178,9 +218,30 @@ export default function EventCreation() {
 
     getGoogleKey();
   }, []);
+  useEffect(() => {
+    const getWimanBearerKey = async () => {
+      const url =
+        "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvWiman";
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+        const json = await response.json();
+        setWimanBearerKey(json.value);
+      } catch (error) {
+        console.error("Error fetching Wiman API key:", error);
+      }
+    };
+
+    getWimanBearerKey();
+  }, []);
 
   async function handleSubmitButton() {
     // Validation: Check if all required fields are filled
+
+
     if (
       !eventData.eventName ||
       !eventData.eventDescription ||
@@ -193,6 +254,7 @@ export default function EventCreation() {
       !image
     ) {
       console.error("All fields must be filled out before submission.");
+      console.log(eventData)
       return; // Stop execution if any field is empty
     }
 
@@ -227,6 +289,23 @@ export default function EventCreation() {
         venue: eventData.eventLocation,
         likes: 0,
         comments: [],
+      }); 
+      let alertCampusBodyContent = JSON.stringify({
+        "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+        "type": "Type 1",
+        "description": "Emergency medical situation",
+        "location": {
+          "latitude": 0,
+          "longitude": 0
+        },
+        "userId": "user123",
+        "createdAt": "2024-08-18T09:12:33.001Z"
+      });
+
+      let notifyCampusSafety = await("https://virtserver.swaggerhub.com/2380759_1/CampusSafety/1.0.0/alerts", {
+        method: "POST",
+        headers: headersList,
+        body: alertCampusBodyContent,
       });
 
       // Send the POST request
@@ -236,32 +315,156 @@ export default function EventCreation() {
         body: bodyContent,
       });
 
+
+
+      console.log("Notify Campus Response Status:", notifyCampusSafety.status);
+
       console.log("Response Status:", response.status);
       navigate("/Dashboard");
     } catch (error) {
       console.error("Error uploading image:", error);
-      navigate("/");
+      navigate("/dashboard");
     }
+
   }
 
-  // async function getAvailableVenues() {
-  //   let headersList = {
-  //     Accept: "*/*",
-  //     "User-Agent": "lively-campus",
-  //   };
-  //   let bodyContent = JSON.stringify({
-  //     date: eventData.eventDate,
-  //     time: eventData.eventTime,
-  //   });
+  useEffect(() => {
+    const getVenues = async () => {
+      try {
+        const response = await fetch(`${WIMAN_API}/venues`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${wimanBearerKey}`,
+          },
+        });
+        const json = await response.json();
+        setAvailableVenues(json);
+        console.log(json);
+      } catch (error) {
+        console.error("Error fetching venues:", error);
+      }
+    };
+    getVenues();
+  }, [wimanBearerKey]);
 
-  //   let response = await fetch(VENUE_API, {
-  //     method: "GET",
-  //     headers: headersList,
-  //     body: bodyContent,
-  //   });
+  const [venueId, setVenueId] = useState("");
+  const [venueAvailabilitySlots, setVenueAvailabilitySlots] = useState([]);
+  useEffect(() => {
+    const getVenueAvailability = async () => {
+      function timeToMinutes(time) {
+        const [hours, minutes] = time.split(":").map(Number);
+        return hours * 60 + minutes;
+      }
 
-  //   availableVenues = await response.json();
-  // }
+      // Helper function to convert minutes back to time string (HH:MM:SS)
+      function minutesToTime(minutes) {
+        const hours = Math.floor(minutes / 60)
+          .toString()
+          .padStart(2, "0");
+        const mins = (minutes % 60).toString().padStart(2, "0");
+        return `${hours}:${mins}:00`;
+      }
+
+      // Helper function to add days to a date
+      function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+      }
+
+      // Helper function to format date as "YYYY-MM-DD"
+      function formatDate(date) {
+        return date.toISOString().split("T")[0];
+      }
+
+      function findAvailableTimeBetweenDates(
+        events,
+        startDate,
+        endDate,
+        startTime = "00:00:00",
+        endTime = "24:00:00"
+      ) {
+        const startOfDay = timeToMinutes(startTime); // Custom start time in minutes
+        const endOfDay = timeToMinutes(endTime); // Custom end time in minutes
+
+        let currentDate = new Date(startDate);
+        const end = new Date(endDate);
+        const availableIntervals = [];
+
+        // Iterate over each day in the date range
+        while (currentDate <= end) {
+          const currentDateString = formatDate(currentDate);
+
+          // Extract occupied time slots for the current date
+          const occupiedSlots =
+            events[currentDateString]?.map((event) => {
+              const [startTime, endTime] = event.time.split("-");
+              return {
+                start: timeToMinutes(startTime),
+                end: timeToMinutes(endTime),
+              };
+            }) || [];
+
+          // Sort occupied slots by start time
+          occupiedSlots.sort((a, b) => a.start - b.start);
+
+          let lastEndTime = startOfDay;
+
+          // Find available intervals between events
+          for (const slot of occupiedSlots) {
+            if (slot.start > lastEndTime) {
+              availableIntervals.push({
+                date: currentDateString,
+                start: minutesToTime(lastEndTime),
+                end: minutesToTime(slot.start),
+              });
+            }
+            lastEndTime = Math.max(lastEndTime, slot.end);
+          }
+
+          // Check for available time after the last event
+          if (lastEndTime < endOfDay) {
+            availableIntervals.push({
+              date: currentDateString,
+              start: minutesToTime(lastEndTime),
+              end: minutesToTime(endOfDay),
+            });
+          }
+
+          // Move to the next day
+          currentDate = addDays(currentDate, 1);
+        }
+
+        return availableIntervals;
+      }
+      try {
+        const response = await fetch(
+          `${WIMAN_API}/venues/${venueId}/reservations`,
+        );
+        const json = await response.json();
+        setVenueAvailabilitySlots(json);
+        console.log(json);
+      } catch (error) {
+        console.error("Error fetching venue availability:", error);
+        const events = {
+          "2024-09-18": [
+            { event_name: "Product Launch", time: "10:00:00-12:00:00" },
+            { event_name: "Client Presentation", time: "14:00:00-15:30:00" },
+          ],
+          "2024-09-17": [
+            { event_name: "Team Standup", time: "09:30:00-10:00:00" },
+            { event_name: "Project Review", time: "11:00:00-12:00:00" },
+            { event_name: "Lunch with Investors", time: "13:00:00-14:30:00" },
+          ],
+        };
+        setVenueAvailabilitySlots(
+          findAvailableTimeBetweenDates(events, startDate, endDate)
+        );
+      }
+    };
+    getVenueAvailability();
+  }, [venueId, startDate, endDate]);
 
   function AddTagContent() {
     return (
@@ -282,16 +485,31 @@ export default function EventCreation() {
       </div>
     );
   }
+
+  const [venueSearchTerm, setVenueSearchTerm] = useState("");
+  function handleVenueSearch(event) {
+    setVenueSearchTerm(event.target.value);
+  }
   function AddLocationContent() {
     return (
       <div className="card-container">
+        <div className="venue-search-bar">
+          <input
+            id="search-bar"
+            type="text"
+            placeholder="Search Venues"
+            value={venueSearchTerm}
+            onChange={handleVenueSearch}
+          />
+          <label htmlFor="search-bar"></label>
+        </div>
         {availableVenues.map((venue) => (
           <div className="venue-card" key={venue.id}>
             <div className="venue-details">
               <iframe
-                title={`Map showing location of ${venue.location}`}
+                title={`Map showing location of ${venue.buildingName} ${venue.venueId}`}
                 src={`https://www.google.com/maps/embed/v1/place?key=${MAP_API_KEY}&q=${encodeURIComponent(
-                  venue.location + " "+ venue.name
+                  `${venue.campusName} ${venue.buildingName} ${venue.venueId}`
                 )}`}
                 allowFullScreen
                 height="115"
@@ -300,7 +518,7 @@ export default function EventCreation() {
               <div className="venue-info">
                 <div className="logo-name">
                   <img src={location} alt="logo" height="25" width="25" />
-                  <span>{venue.name}</span>
+                  <span>{`${venue.campusName} ${venue.buildingName} ${venue.venueId}`}</span>
                 </div>
 
                 <div className="logo-name">
@@ -309,30 +527,217 @@ export default function EventCreation() {
                 </div>
 
                 <div className="logo-name">
-                  <img src={clock} alt="logo" height="25" width="25" />
-                  <span>From {venue.time}</span>
+                  Type:
+                  <span>{venue.type}</span>
                 </div>
               </div>
             </div>
             <button
               className="create-button centered"
               onClick={() => {
+                setVenueId(venue.venueId);
                 handleChange({
-                  target: { name: "eventLocation", value: venue.name },
+                  target: {
+                    name: "eventLocation",
+                    value: `${venue.campusName} ${venue.buildingName} ${venue.venueId}`,
+                  },
+                });
+                handleChange({
+                  target: {
+                    name: "capacity",
+                    value: `${venue.capacity}`
+                  },
                 });
                 closeLocationPopup();
+                openAvailableTimePopup();
               }}
               name="eventLocation"
               value={venue.name}
             >
-              Book Venue
+              Check Venue Availability
             </button>
           </div>
         ))}
       </div>
     );
   }
-  let [colors, setColors] = React.useState({});
+
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [error, setError] = useState("");
+  const [isValidDateTime, setIsValidDateTime] = useState(false);
+
+  function AddVenueTimeContent() {
+    const validateTimeSelection = () => {
+      const startDateTime = new Date(`${startDate}T${startTime}`);
+      const endDateTime = new Date(`${endDate}T${endTime}`);
+
+      // Ensure end time is after start time
+      if (startDateTime >= endDateTime) {
+        setError("End time must be after start time.");
+        setIsValidDateTime(false);
+        return false;
+      }
+
+      // Check if the selected time is within available slots
+      for (const slot of venueAvailabilitySlots) {
+        const slotStart = new Date(`${slot.date}T${slot.start}`);
+        const slotEnd = new Date(`${slot.date}T${slot.end}`);
+
+        // Check if the selected time is outside any slot
+        if (startDateTime >= slotStart && endDateTime <= slotEnd) {
+          setError("");
+          return true;
+        }
+      }
+
+      // If no slot matches
+      setError("The selected time is outside of available slots.");
+      setIsValidDateTime(false);
+      return false;
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+
+      // Check if the time is valid before proceeding
+      if (validateTimeSelection()) {
+        closeAvailableTimePopup(); // Call the function to close the popup if no errors
+        setEventData((prevFormData) => {
+          return { ...prevFormData, eventDate: startDate, eventTime: startTime, eventVenue: venueId };
+        });
+        setIsValidDateTime(true);
+        console.log("Form submitted successfully!");
+      }
+    };
+
+    return (
+      <div className="venue-availability">
+        <form onSubmit={handleSubmit}>
+          <div className="detail-input">
+            <label htmlFor={id + 29} className="name-logo-title">
+              <span>Start Date</span>
+              <img src={calendar} alt="calendar" />
+            </label>
+            <input
+              type="date"
+              onChange={(e) => setStartDate(e.target.value)}
+              name="startDate"
+              value={startDate}
+              className="event-date"
+              id={id + 29}
+              required
+            />
+          </div>
+          <div className="detail-input">
+            <label htmlFor={id + 30} className="name-logo-title">
+              <span>End Date</span>
+              <img src={calendar} alt="calendar" />
+            </label>
+            <input
+              type="date"
+              onChange={(e) => setEndDate(e.target.value)}
+              name="endDate"
+              value={endDate}
+              className="event-date"
+              id={id + 30}
+              required
+            />
+          </div>
+
+          <Typography variant="h6" style={{ marginTop: "20px" }}>
+            Available Slots
+          </Typography>
+
+          {startDate > endDate ? (
+            <Typography color="error" variant="body1">
+              Date Error: Start date cannot be later than end date.
+            </Typography>
+          ) : venueAvailabilitySlots.length > 0 ? (
+            <div>
+              <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Date</TableCell>
+                      <TableCell>Start Time</TableCell>
+                      <TableCell>End Time</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {venueAvailabilitySlots.map((slot, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{slot.date}</TableCell>
+                        <TableCell>{slot.start}</TableCell>
+                        <TableCell>{slot.end}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              <div className="detail-input">
+                <label htmlFor={id + 15} className="name-logo-title">
+                  <span>Start Time</span>
+                  <img src={clock} alt="clock" />
+                </label>
+                <input
+                  type="time"
+                  onChange={(e) => setStartTime(e.target.value)}
+                  name="startTime"
+                  value={startTime}
+                  className="event-date"
+                  id={id + 15}
+                  required
+                />
+              </div>
+
+              <div className="detail-input">
+                <label htmlFor={id + 14} className="name-logo-title">
+                  <span>End Time</span>
+                  <img src={clock} alt="clock" />
+                </label>
+                <input
+                  type="time"
+                  onChange={(e) => setEndTime(e.target.value)}
+                  name="endTime"
+                  value={endTime}
+                  className="event-date"
+                  id={id + 14}
+                  required
+                />
+              </div>
+            </div>
+          ) : (
+            <Typography variant="body1" style={{ marginTop: "10px" }}>
+              No available time slots for the selected dates.
+            </Typography>
+          )}
+
+          {/* Error message */}
+          {error && (
+            <Typography
+              color="error"
+              variant="body1"
+              style={{ marginTop: "10px" }}
+            >
+              {error}
+            </Typography>
+          )}
+
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginTop: "20px" }}
+            type="submit"
+          >
+            Done
+          </Button>
+        </form>
+      </div>
+    );
+  }
+  let [colors, setColors] = useState({});
   function randomColor(tagName) {
     const letters = "0123456789ABCDEF";
     let color = "#";
@@ -361,10 +766,21 @@ export default function EventCreation() {
         )}
         {isPopupLocationOpen && (
           <PopupCard
-            title="Available Venues"
+            title="Wits Venues"
             children={AddLocationContent()}
             notButton={false}
             onClose={closeLocationPopup}
+          />
+        )}
+        {isAvailableTimePopup && (
+          <PopupCard
+            title="Venue Availability"
+            children={AddVenueTimeContent()}
+            notButton={false}
+            onClose={() => {
+              closeAvailableTimePopup();
+              closeLocationPopup();
+            }}
           />
         )}
 
@@ -401,7 +817,7 @@ export default function EventCreation() {
               value={eventData.eventName}
               className="event-name"
             />
-            <div className="event-details">
+            <div className="event-details-block">
               <label htmlFor={id}>Description</label>
               <textarea
                 required
@@ -459,50 +875,6 @@ export default function EventCreation() {
                 />
               </div>
 
-              <div className="detail-input">
-                <label htmlFor={id + 2}>Capacity</label>
-                <input
-                  type="number"
-                  onChange={handleChange}
-                  name={"capacity"}
-                  value={eventData.capacity}
-                  className="capacity"
-                  id={id + 2}
-                  required
-                />
-              </div>
-
-              <div className="detail-input">
-                <label htmlFor={id + 3} className="name-logo-title">
-                  <span>Date</span>
-                  <img src={calendar} alt="calendar" />
-                </label>
-                <input
-                  type="date"
-                  onChange={handleChange}
-                  name={"eventDate"}
-                  value={eventData.eventDate}
-                  className="event-date"
-                  id={id + 3}
-                  required
-                />
-              </div>
-              <div className="detail-input">
-                <label htmlFor={id + 6} className="name-logo-title">
-                  <span>Time</span>
-                  <img src={clock} alt="clock" />
-                </label>
-                <input
-                  type="time"
-                  onChange={handleChange}
-                  name={"eventTime"}
-                  value={eventData.eventTime}
-                  className="event-time"
-                  id={id + 6}
-                  required
-                />
-              </div>
-
               <div className="venue-selected">
                 <label
                   htmlFor={id + 7}
@@ -531,6 +903,53 @@ export default function EventCreation() {
                   </button>
                 </div>
               </div>
+              {isValidDateTime ? (
+                <div>
+                  <div className="detail-input">
+                    <label htmlFor={id + 3} className="name-logo-title">
+                      <span>Date</span>
+                      <img src={calendar} alt="calendar" />
+                    </label>
+                    <h4
+                      className="selected-el"
+                    >
+                      {startDate === endDate ? (
+                        <span>{startDate}</span>
+                      ) : (
+                        <span>
+                          {startDate} - {endDate}
+                        </span>
+                      )}
+                    </h4>
+                  </div>
+
+                  <div className="detail-input">
+                    <label htmlFor={id + 4} className="name-logo-title">
+                      <span>Time</span>
+                      <img src={clock} alt="clock" />
+                    </label>
+                    <h4 className="selected-el">
+                      <span>
+                        {startTime} - {endTime}
+                      </span>
+                    </h4>
+                  </div>
+                  <div className="detail-input">
+                    <label htmlFor={id + "cap"} className="name-logo-title">
+                      <span>Capacity</span>
+                      <img src={person} alt="person" />
+                    </label>
+                    <h4 className="selected-el">
+                      <span>
+                        {eventData.capacity}
+                      </span>
+                    </h4>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+
               <div className="center-button">
                 <button className="create-button" onClick={handleSubmitButton}>
                   Create Event
