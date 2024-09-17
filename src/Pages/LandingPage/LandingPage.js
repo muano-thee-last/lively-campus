@@ -1,40 +1,52 @@
-import React, { useRef,useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './LandingPage.css';
 import logo from '../../asserts/logo.png';
-import upcomingEventsImg from '../../asserts/pater.jpeg';
-import upcomingEventsImg2 from '../../asserts/gospel.jpg'
-import upcomingEventsImg3 from '../../asserts/centenary-wits-landscape-scaled.jpg'
-import previousEventsImg2 from '../../asserts/couple.jpg'
-import previousEventImg from '../../asserts/previous-event.webp';
 import Login from '../Login/login';
-import Footer from '../dashboard/footer'
-
-
+import Footer from '../dashboard/footer';
 
 // Main component for the Landing Page
 function LandingPage() {
   const [showLogin, setShowLogin] = useState(false);
   const [currentUpcomingIndex, setCurrentUpcomingIndex] = useState(0);
   const [currentPreviousIndex, setCurrentPreviousIndex] = useState(0);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [previousEvents, setPreviousEvents] = useState([]);
 
-  const upcomingImages = [upcomingEventsImg, upcomingEventsImg2, upcomingEventsImg3];
-  const previousImages = [previousEventImg, previousEventsImg2];
-  const previousTitles = ["Wits Concert", "Wits Annual Parade"];
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const today = new Date(); // Move the `today` variable inside useEffect
+      try {
+        const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events');
+        const data = await response.json();
+
+        // Filter upcoming and previous events
+        const upcoming = data.filter(event => new Date(event.date) > today);
+        const previous = data.filter(event => new Date(event.date) < today);
+
+        setUpcomingEvents(upcoming);
+        setPreviousEvents(previous);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []); // Remove `today` from the dependency array
 
   useEffect(() => {
     const upcomingInterval = setInterval(() => {
-      setCurrentUpcomingIndex((prevIndex) => (prevIndex + 1) % upcomingImages.length);
+      setCurrentUpcomingIndex((prevIndex) => (prevIndex + 1) % upcomingEvents.length);
     }, 6500);
 
     const previousInterval = setInterval(() => {
-      setCurrentPreviousIndex((prevIndex) => (prevIndex + 1) % previousImages.length);
+      setCurrentPreviousIndex((prevIndex) => (prevIndex + 1) % previousEvents.length);
     }, 6500);
 
     return () => {
       clearInterval(upcomingInterval);
       clearInterval(previousInterval);
     };
-  }, [upcomingImages.length, previousImages.length]);
+  }, [upcomingEvents.length, previousEvents.length]);
 
   const handleButtonClick = () => setShowLogin(true);
   const handleCloseLogin = () => setShowLogin(false);
@@ -44,33 +56,29 @@ function LandingPage() {
   return (
     <div className="LandingPage">
       <div className="header-card">
-        <div className={`background-blur ${showLogin ? 'active' : ''}`}></div>
-        <div className='image-blur'></div>
         <Header handleButtonClick={handleButtonClick} />
         <HeroSection />
       </div>
 
       <EventsSection
         title="Upcoming Events"
-        images={upcomingImages}
-        handleButtonClick={handleButtonClick}
+        events={upcomingEvents}
         currentIndex={currentUpcomingIndex}
         handleDotClick={handleUpcomingDotClick}
         showBookNow
+        handleButtonClick={handleButtonClick}
       />
 
       <EventsSection
         title="Previous Events"
-        images={previousImages}
+        events={previousEvents}
         currentIndex={currentPreviousIndex}
         handleDotClick={handlePreviousDotClick}
-        titles={previousTitles}
       />
 
       <Footer />
 
       {showLogin && <LoginModal handleCloseLogin={handleCloseLogin} />}
-   
     </div>
   );
 }
@@ -79,12 +87,11 @@ function LandingPage() {
 function Header({ handleButtonClick }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Toggle the hamburger menu
   const toggleMenu = () => {
     setIsMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen);
   };
   return (
-<header className="landing-page-header">
+    <header className="landing-page-header">
       <div className="logo-container">
         <img src={logo} alt="LivelyCampus Logo" className="logo-image" />
         <div className="logo-text">LivelyCampus</div>
@@ -97,16 +104,12 @@ function Header({ handleButtonClick }) {
           <li><button className="btn-secondary" onClick={handleButtonClick}>Login</button></li>
         </ul>
       </nav>
-      {/* Hamburger Icon using react-icons */}
       <label className="burger" htmlFor="burger" >
-     <input type="checkbox" id="burger" onClick={toggleMenu} />
-      <span></span> 
-      <span></span>
-      <span></span>
-</label>
-      
-      {/* Navigation items - displayed conditionally based on screen size */}
-   
+        <input type="checkbox" id="burger" onClick={toggleMenu} />
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
     </header>
   );
 }
@@ -119,7 +122,7 @@ function HeroSection() {
         <h1>Ignite Your Campus</h1>
         <h1>Experience!</h1>
         <p>
-        Connecting you with the best campus events and activities. Discover, engage, and celebrate!
+          Connecting you with the best campus events and activities. Discover, engage, and celebrate!
         </p>
         <div className="hero-buttons">
           <button className="btn-secondary">Learn More</button>
@@ -130,86 +133,72 @@ function HeroSection() {
 }
 
 // Events section component for displaying upcoming or previous events
-function EventsSection({ title, images, currentIndex, handleDotClick, showBookNow, titles,handleButtonClick }) {
+function EventsSection({ title, events, currentIndex, handleDotClick, showBookNow, handleButtonClick }) {
   const sectionRef = useRef(null);
-
 
   useEffect(() => {
     const sectionElement = sectionRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // Add the visible class to trigger the animation
           sectionElement.classList.add('visible');
-          // Stop observing after the animation has been triggered once
           observer.unobserve(sectionElement);
         }
       },
-      {
-        threshold: 0.01, // Adjust this if necessary
-      }
+      { threshold: 0.01 }
     );
-  
+
     if (sectionElement) {
       observer.observe(sectionElement);
     }
-  
+
     return () => {
       if (sectionElement) {
         observer.unobserve(sectionElement);
       }
     };
   }, []);
-  
+
+  const currentEvent = events[currentIndex];
+
   return (
     <section ref={sectionRef} className="landing-page-events-section">
       <h1>{title}</h1>
       
-      <div
-        className="card"
-        style={{
-          backgroundImage: `url(${images[currentIndex]})`,
-         
-        }}
-      >
-        
-        <div className="event-content">
-          <div className='event-card-description'>
-
-          <h2>Name of the event
-        </h2>
-        <p>
-         Medium description about the event, or even the full description of the event,  I live this up to the groups discussion
-        </p>
+      {currentEvent ? (
+        <div
+          className="card"
+          style={{
+            backgroundImage: `url(${currentEvent.imageUrl})`,
+          }}
+        >
+          <div className="event-content">
+            <div className='event-card-description'>
+              <h2>{currentEvent.title}</h2>
+              <p>{currentEvent.description}</p>
+            </div>
+            {showBookNow ? (
+              <button className="btn-primary" onClick={handleButtonClick}>Get Ticket</button>
+            ) : (
+              <h2>{currentEvent.title}</h2>
+            )}
           </div>
-        
-      
-          {showBookNow ? (
-            
-            <button className="btn-primary" onClick={handleButtonClick}>Get Ticket</button>
-          ) : (
-            <h2>{titles[currentIndex]}</h2>
-          )}
+          <div className="dots">
+            {events.map((_, index) => (
+              <span
+                key={index}
+                className={`dot ${currentIndex === index ? 'active' : ''}`}
+                onClick={() => handleDotClick(index)}
+              />
+            ))}
+          </div>
         </div>
-        <div className="dots">
-          {images.map((_, index) => (
-            <span
-              key={index}
-              className={`dot ${currentIndex === index ? 'active' : ''}`}
-              onClick={() => handleDotClick(index)}
-            />
-          ))}
-        </div>
-      </div>
+      ) : (
+        <p>No events available</p>
+      )}
     </section>
   );
 }
-
-// Footer component with logo, links, and newsletter signup
-
-
-// Footer section component for rendering a list of items
-
 
 // Login modal component for displaying the login form
 function LoginModal({ handleCloseLogin }) {
