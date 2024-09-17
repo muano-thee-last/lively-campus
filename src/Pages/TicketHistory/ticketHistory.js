@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import TicketView from './ticketView';
+import TicketView from './ticketView'; // Adjust the import path as needed
 import NoTicket from './noTickets'; // Import the NoTicket component
 import './TicketHistory.css'; // Import the CSS file
 
@@ -10,25 +10,15 @@ function TicketHistory() {
   useEffect(() => {
     const userID = sessionStorage.getItem('uid');
 
-    fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/getTickets/${userID}`)
+    fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/getTicketsx/${userID}`)
       .then((response) => {
         if (!response.ok) {
-            console.log(response);
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
       })
       .then((data) => {
-        console.log(data);
-        setTicketDetails(data); // Set the array of tickets
-        if (ticketDetails.length === 0) {
-            return (
-                <h1>
-                    No Tickets Bought Yet
-                </h1>
-            )
-          }
-        
+        setTicketDetails(data);
       })
       .catch((error) => {
         setError(error.message);
@@ -39,18 +29,24 @@ function TicketHistory() {
     return <div>Error: {error}</div>;
   }
 
+  // Filter tickets to exclude those with "Title not found"
+  const validTickets = ticketDetails.filter(ticket => ticket.eventTitle !== 'Title not found');
 
   return (
-    <div>
-      {ticketDetails.map((ticket) => (
-        <TicketView
-          key={ticket.id}
-          eventName={ticket.eventId || 'N/A'} // Adjust these fields based on your actual data
-          ticketPrice={ticket.price}
-          purchaseDate={ticket.purchaseDate}
-          ticketCode={ticket.ticketCode}
-        />
-      ))}
+    <div className="ticket-history">
+      {validTickets.length > 0 ? (
+        validTickets.map(ticket => (
+          <TicketView
+            key={ticket.id}
+            eventName={ticket.eventTitle || 'N/A'}
+            ticketPrice={ticket.price}
+            purchaseDate={ticket.purchaseDate}
+            ticketCode={ticket.ticketCode}
+          />
+        ))
+      ) : (
+        <NoTicket message="No Tickets Bought Yet" />
+      )}
     </div>
   );
 }

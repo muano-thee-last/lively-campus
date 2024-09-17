@@ -5,7 +5,7 @@ function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode }) {
     <div style={styles.ticketContainer}>
       <h2 style={styles.eventName}>{eventName}</h2>
       <div style={styles.detailsContainer}>
-        <p style={styles.eventName}>${ticketPrice}</p>
+        <p style={styles.eventName}>R{ticketPrice}</p>
         <p style={styles.eventName}><strong>Purchase Date:</strong> {new Date(purchaseDate).toLocaleDateString()}</p>
         <p style={styles.eventName}><strong>Ticket Code:</strong> {ticketCode}</p>
       </div>
