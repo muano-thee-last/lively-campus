@@ -10,6 +10,7 @@ import Profile from "./Pages/Profile/Profile";
 import ViewMoreDetails from "./Pages/ViewMoreDetails/ViewMoreDetails";
 import EventManagement from "./Pages/eventManagement/eventManagement";
 import TicketVerification from "./Pages/TicketVerification/ticketVerification";
+import TicketHistory from "./Pages/TicketHistory/ticketHistory";
 
 function App() {
   return (
@@ -25,6 +26,8 @@ function App() {
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/eventManagement" element={<EventManagement/>} />
         <Route path="/ticketVerification" element={<TicketVerification/>} />
+        <Route path="/ticket-history" element={<TicketHistory/>} />
+
       </Routes>
     </Router>
   );
