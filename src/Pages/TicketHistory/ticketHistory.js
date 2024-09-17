@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TicketView from './ticketView'; // Adjust the import path as needed
 import NoTicket from './noTickets'; // Import the NoTicket component
-import './TicketHistory.css'; // Import the CSS file
 import Header from "../dashboard/header"
 
 function TicketHistory() {
@@ -48,7 +47,7 @@ return (
               purchaseDate={ticket.purchaseDate}
               ticketCode={ticket.ticketCode}
             />
-    
+
           </div>
         ))
       ) : (
