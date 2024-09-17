@@ -30,7 +30,6 @@ const db = getFirestore(app);
 // Initialize Performance Monitoring
 const perf = getPerformance(app);
 
-
 function App() {
   return (
     <Router>
