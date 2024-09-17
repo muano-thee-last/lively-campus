@@ -30,3 +30,15 @@
     color: #555;
   }
   
+
+  .ticketView{
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+
+  }
+
+  .qrImage{
+    margin-left: 20px;
+    padding-left: 20px;
+  }

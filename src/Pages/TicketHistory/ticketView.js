@@ -8,7 +8,12 @@ function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode }) {
         <p style={styles.eventName}>R{ticketPrice}</p>
         <p style={styles.eventName}><strong>Purchase Date:</strong> {new Date(purchaseDate).toLocaleDateString()}</p>
         <p style={styles.eventName}><strong>Ticket Code:</strong> {ticketCode}</p>
+        <img 
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticketCode}`} 
+              alt={`QR code for ticket ${ticketCode}`}
+            />
       </div>
+
     </div>
   );
 }
