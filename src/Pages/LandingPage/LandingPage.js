@@ -9,18 +9,15 @@ function LandingPage() {
   const [showLogin, setShowLogin] = useState(false);
   const [currentUpcomingIndex, setCurrentUpcomingIndex] = useState(0);
   const [currentPreviousIndex, setCurrentPreviousIndex] = useState(0);
-  const [ events, setEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [previousEvents, setPreviousEvents] = useState([]);
 
-  const today = new Date();
-
   useEffect(() => {
     const fetchEvents = async () => {
+      const today = new Date(); // Move the `today` variable inside useEffect
       try {
         const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events');
         const data = await response.json();
-        setEvents(data);
 
         // Filter upcoming and previous events
         const upcoming = data.filter(event => new Date(event.date) > today);
@@ -34,7 +31,7 @@ function LandingPage() {
     };
 
     fetchEvents();
-  }, [today]);
+  }, []); // Remove `today` from the dependency array
 
   useEffect(() => {
     const upcomingInterval = setInterval(() => {
