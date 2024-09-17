@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./ticketVerification.css";
-import Header from "../dashboard/header";
 import TicketInfo from "./ticketDetails";
 
 function TicketVerification() {
@@ -44,7 +43,6 @@ function TicketVerification() {
 
   return (
     <div>
-      <Header />
       <div className="main-container">
         <div className="container">
           <input
