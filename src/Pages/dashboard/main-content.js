@@ -174,6 +174,7 @@ function MainContent() {
         if (updateResponse.ok) {
           // Optionally update your local state to reflect the change
           setComment(""); // Clear the input after submission
+          handleFlip(eventId)
         } else {
           console.error("Failed to update comments.");
         }
