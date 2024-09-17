@@ -10,6 +10,20 @@ import { getDatabase, ref, update } from 'firebase/database';
 
 var ticketCode;
 
+function formatDate(date) {
+  const day = date.getDate(); 
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June', 
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]; 
+  const month = monthNames[date.getMonth()]; 
+  const year = date.getFullYear(); 
+
+  // Return formatted string
+  return `${day}-${month}-${year}`;
+}
+
+
 function updateTicketsAvailable(eventId){
 
   fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/decrementAvailableTickets', {
@@ -56,6 +70,12 @@ async function uploadTicketInformation(eventId, price) {
   ticketCode = await setTicketCode();
   const userId = sessionStorage.getItem("uid");
 
+
+  const currentDate = new Date();
+  const formatedDate = formatDate(currentDate);
+
+
+
   const data = {
     userId: userId,
     eventId: eventId,
@@ -78,7 +98,7 @@ async function uploadTicketInformation(eventId, price) {
     }
 
     const result = await response.json();
-    console.log(result.message);
+ //   console.log(result.message);
   } catch (error) {
     console.error('Error uploading ticket information:', error);
   }
@@ -205,7 +225,7 @@ function BuyTickets({ event, onClose }) {
       alert('Payment processed successfully! Tickets have been purchased.');
 
       sendConfirmationEmail(paymentDetails);
-      console.log(event);
+     // console.log(event);
       updateTicketsAvailable(event.id);
       incrementTicketSalse(event.id);
       uploadTicketInformation(event.id, event.ticketPrice);

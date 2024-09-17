@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import TicketView from './ticketView'; // Adjust the import path as needed
-import './TicketHistory.css'; // Import the CSS file
+import TicketView from './ticketView';
+import './TicketHistory.css'; 
 import Header from "../dashboard/header"
 
 function TicketHistory() {
   const [ticketDetails, setTicketDetails] = useState([]);
   const [error, setError] = useState(null);
+  const [noTicet, setNoTicket] = useState("");
 
   useEffect(() => {
     const userID = sessionStorage.getItem('uid');
@@ -32,7 +33,11 @@ function TicketHistory() {
   // Filter tickets to exclude those with "Title not found"
 
   const validTickets = ticketDetails.filter(ticket => ticket.eventTitle !== 'Title not found');
-  console.log(validTickets)
+
+  // if(validTickets.length == 0){
+  //   setNoTicket("No tickets purchased");
+  // }
+  //console.log(validTickets)
 
 return (
   <div>
@@ -51,7 +56,7 @@ return (
           </div>
         ))
       ) : (
-        <h1>No tickets</h1>
+        <h1>{noTicet}</h1>
       )}
     </div>
   </div>
