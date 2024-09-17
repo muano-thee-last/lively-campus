@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TicketView from './ticketView';
-import noTickets from './noTickets';
+import NoTicket from './noTickets'; // Import the NoTicket component
+
 function TicketHistory() {
   const [ticketDetails, setTicketDetails] = useState([]);
   const [error, setError] = useState(null);
@@ -29,7 +30,11 @@ function TicketHistory() {
   }
 
   if (ticketDetails.length === 0) {
-    return <div>Loading...</div>;
+    return (
+        <h1>
+            No Tickets Bought Yet
+        </h1>
+    )
   }
 
   return (
