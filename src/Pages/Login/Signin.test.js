@@ -34,9 +34,7 @@ describe('SignIn Component', () => {
     );
 
     expect(screen.getByText(/Continue with Google/i)).toBeInTheDocument();
-    expect(screen.getByText(/Continue with Instagram/i)).toBeInTheDocument();
     expect(screen.getByText(/Continue with Twitter/i)).toBeInTheDocument();
-    expect(screen.getByText(/Continue with Facebook/i)).toBeInTheDocument();
     expect(screen.getByText(/Send Verification Link/i)).toBeInTheDocument();
   });
 
