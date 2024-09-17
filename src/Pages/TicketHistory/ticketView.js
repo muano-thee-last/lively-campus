@@ -5,9 +5,9 @@ function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode }) {
     <div style={styles.ticketContainer}>
       <h2 style={styles.eventName}>{eventName}</h2>
       <div style={styles.detailsContainer}>
-        <p><strong>Ticket Price:</strong> ${ticketPrice}</p>
-        <p><strong>Purchase Date:</strong> {new Date(purchaseDate).toLocaleDateString()}</p>
-        <p><strong>Ticket Code:</strong> {ticketCode}</p>
+        <p style={styles.eventName}>${ticketPrice}</p>
+        <p style={styles.eventName}><strong>Purchase Date:</strong> {new Date(purchaseDate).toLocaleDateString()}</p>
+        <p style={styles.eventName}><strong>Ticket Code:</strong> {ticketCode}</p>
       </div>
     </div>
   );
@@ -26,10 +26,12 @@ const styles = {
     fontSize: '1.5rem',
     textAlign: 'center',
     marginBottom: '20px',
+    color: 'black', 
   },
   detailsContainer: {
     fontSize: '1rem',
     marginBottom: '20px',
+    color: 'black', 
   }
 };
 

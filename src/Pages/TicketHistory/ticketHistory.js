@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TicketView from './ticketView';
-
+import noTickets from './noTickets';
 function TicketHistory() {
   const [ticketDetails, setTicketDetails] = useState([]);
   const [error, setError] = useState(null);
