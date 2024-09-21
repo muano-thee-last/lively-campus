@@ -1,5 +1,3 @@
-// src/components/About/About.js
-
 import React, { useEffect, useRef, useState } from 'react';
 import './About.css';
 import Footer from '../dashboard/footer';
@@ -48,6 +46,8 @@ function About() {
         <nav className={`about-page-nav-menu ${isMenuOpen ? 'open' : ''}`}>
           <ul>
             <li><a href="/">Home</a></li>
+            <li><a href="#ticket">Ticket</a></li>
+            <li><a href="#contact">Contact</a></li>
             <li><a href="/about">About Us</a></li>
             <li><button className="btn-secondary">Login</button></li>
           </ul>
@@ -82,7 +82,7 @@ function About() {
           <li>Personalized recommendations based on user preferences.</li>
           <li>Google login for fast and secure access.</li>
           <li>Automated email reminders for registered events.</li>
-          <li>Seamless payment system using secure payment gateway for tickets.</li>
+          <li>Seamless payment system using PayFast for tickets.</li>
         </ul>
 
         <h2>How It Works</h2>
@@ -93,7 +93,7 @@ function About() {
         <h2>Contact Us</h2>
         <p>
           Have any questions, suggestions, or want to collaborate with us? Feel free to reach out at:
-          <a href="mailto:livelycampus@gmail.com"> support@witslivelycampus.com</a>.
+          <a href="mailto:support@witslivelycampus.com"> support@witslivelycampus.com</a>.
         </p>
       </section>
 
