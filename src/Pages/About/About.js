@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './About.css';
 import Footer from '../dashboard/footer';
-import logo from '../../asserts/logo.png'; // Adjust the path based on your project structure
+import logo from '../../asserts/logo.png';
 
 function About() {
   const sectionRef = useRef(null);
@@ -93,7 +93,7 @@ function About() {
         <h2>Contact Us</h2>
         <p>
           Have any questions, suggestions, or want to collaborate with us? Feel free to reach out at:
-          <a href="mailto:support@witslivelycampus.com"> support@witslivelycampus.com</a>.
+          <a href="mailto:livelycampus@gmail.com"> support@witslivelycampus.com</a>.
         </p>
       </section>
 
