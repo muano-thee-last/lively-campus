@@ -1,26 +1,71 @@
+/* General styling for ticket info */
 .ticket-info {
-    display: flex;
-    flex-direction: column;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 300px;
-    margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff; /* White background */
+  border-radius: 12px;
+  padding: 35px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  margin: 30px auto;
+  width: 85%;
+  transition: transform 0.3s ease-in-out;
+  border: 1px solid #e0e0e0;
+  border-left: 5px solid #f5c542; /* Yellow border */
+}
+
+.ticket-info:hover {
+  transform: translateY(-5px);
+}
+
+.ticket-header {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #0056b3; /* Blue header */
+  text-align: center;
+}
+
+.ticket-item {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.ticket-item:last-child {
+  border-bottom: none;
+}
+
+.ticket-item strong {
+  color: #0056b3; /* Blue text */
+  flex: 1;
+}
+
+.ticket-item span {
+  color: #f5c542; /* Yellow text */
+  text-align: right;
+  flex: 1;
+}
+
+.empty {
+  text-align: center;
+  color: #888;
+  font-size: 1rem;
+}
+
+/* Add responsiveness */
+@media (max-width: 400px) {
+  .ticket-info {
+    padding: 15px;
+    max-width: 100%;
   }
-  
+
+  .ticket-header {
+    font-size: 1.25rem;
+  }
+
   .ticket-item {
-    margin-bottom: 10px;
-    font-size: 16px;
+    font-size: 0.9rem;
   }
-  
-  .ticket-item strong {
-    color: #333;
-  }
-  
-  .ticket-item span {
-    display: block;
-    color: #555;
-    margin-top: 5px;
-  }
-  
+}

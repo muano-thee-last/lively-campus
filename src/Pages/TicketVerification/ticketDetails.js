@@ -4,11 +4,16 @@ import './TicketInfo.css';
 const TicketInfo = ({ ticket }) => {
   // Check if ticket exists before rendering
   if (!ticket) {
-    return <div className="ticket-info">No ticket information available</div>;
+    return <div className="ticket-info empty">No ticket information available</div>;
   }
 
   return (
     <div className="ticket-info">
+      <h2 className="ticket-header">Ticket Details</h2>
+      <div className="ticket-item">
+        <strong>Bought By:</strong>
+        <span>{ticket.buyerName}</span>
+      </div>
       <div className="ticket-item">
         <strong>Ticket Price:</strong>
         <span>{ticket.price}</span>
@@ -20,6 +25,10 @@ const TicketInfo = ({ ticket }) => {
       <div className="ticket-item">
         <strong>Ticket Code:</strong>
         <span>{ticket.code}</span>
+      </div>
+      <div className="ticket-item">
+        <strong>For Event:</strong>
+        <span>{"someEvent"}</span>
       </div>
     </div>
   );
