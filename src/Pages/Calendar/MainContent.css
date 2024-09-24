@@ -328,6 +328,15 @@
   color: black;
 }
 
+.past-day {
+  background-color: #f0f0f0; /* Light gray background for past days */
+}
+
+.past-event {
+  background-color: #d3d3d3; /* Darker gray for past events */
+  color: #666; /* Slightly muted text color */
+}
+
 
 
 
