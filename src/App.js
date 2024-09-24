@@ -24,7 +24,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/event-calendar" element={<Calendar />} />
-        <Route path="/details/:id" element={<ViewMoreDetails />} /> {/* Add this line */}
+        <Route path="/view-more-details/:id" element={<ViewMoreDetails />} />
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/eventManagement" element={<EventManagement/>} />
         <Route path="/ticketVerification" element={<TicketVerification/>} />

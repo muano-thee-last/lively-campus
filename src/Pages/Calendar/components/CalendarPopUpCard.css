@@ -49,12 +49,22 @@
 
 .calendar-popup-event {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 15px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 10px;
   background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Use the default text color */
+}
+
+.calendar-popup-event:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .event-image {
@@ -66,13 +76,21 @@
 }
 
 .pop-up-details {
-  background-color: #f8f9fa; /* Change background color to white */
+  flex-grow: 1;
+  background-color: #f8f9fa;
   margin: 0 0 5px 0;
 }
 
-.pop-up-details p {
-  margin: 2px 0;
+.pop-up-details h5 {
+  margin: 0 0 10px 0;
   color: #003B5C;
+  font-size: 18px;
+}
+
+.pop-up-details p {
+  margin: 5px 0;
+  color: #333;
+  font-size: 14px;
 }
 
 .pop-up-details p strong {
@@ -84,4 +102,9 @@
   font-size: 16px;
   color: #666;
   padding: 20px;
+}
+
+/* Add this new style to ensure text is not underlined */
+.calendar-popup-event * {
+  text-decoration: none;
 }
