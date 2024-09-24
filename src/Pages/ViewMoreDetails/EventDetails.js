@@ -69,7 +69,8 @@ export default function EventDetails(){
 
   return (
     <div className="event-creation-container">
-      <div className="upload-image-section" style={{ backgroundImage: `url(${event.imageUrl})` }}>
+      <div className={""}>
+         <img src={event.imageUrl} alt='event-picture' className="event-picture"/>
       </div>
 
       <div className="event-header">
