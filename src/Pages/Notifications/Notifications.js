@@ -15,28 +15,40 @@ function Notifications() {
 
         const detailedNotifications = await Promise.all(
           notificationsData.map(async (notification) => {
-            const eventResponse = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${notification.eventId}`);
-            const eventData = await eventResponse.json();
-            
-            // Convert the timestamp to a readable date format
-            const timestampDate = new Date(notification.timestamp._seconds * 1000);
+            try {
+              const eventResponse = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${notification.eventId}`);
+              if (!eventResponse.ok) {
+                console.log(`Event not found for notification: ${notification.id}`);
+                return null;
+              }
+              const eventData = await eventResponse.json();
+              
+              // Convert the timestamp to a readable date format
+              const timestampDate = new Date(notification.timestamp._seconds * 1000);
 
-            // Format the date as "7 September 2024"
-            const formattedDate = timestampDate.toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            });
-            
-            return { ...notification, ...eventData, dateObject: timestampDate, formattedDate };
+              // Format the date as "7 September 2024"
+              const formattedDate = timestampDate.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              });
+              
+              return { ...notification, ...eventData, dateObject: timestampDate, formattedDate };
+            } catch (error) {
+              console.error(`Error fetching event for notification ${notification.id}:`, error);
+              return null;
+            }
           })
         );
 
+        // Filter out null values (notifications without events)
+        const validNotifications = detailedNotifications.filter(notification => notification !== null);
+
         // Sort notifications by date (newest first)
-        detailedNotifications.sort((a, b) => b.dateObject - a.dateObject);
+        validNotifications.sort((a, b) => b.dateObject - a.dateObject);
 
         // Group notifications by formattedDate
-        const groupedNotifications = detailedNotifications.reduce((acc, notification) => {
+        const groupedNotifications = validNotifications.reduce((acc, notification) => {
           const dateKey = notification.formattedDate;
           if (!acc[dateKey]) {
             acc[dateKey] = [];
@@ -101,4 +113,3 @@ function Notifications() {
 }
 
 export default Notifications;
-

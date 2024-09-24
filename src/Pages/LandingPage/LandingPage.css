@@ -4,21 +4,54 @@ body {
   font-family: Arial, sans-serif;
 }
 
+
 /* Header Styles */
 /* Positions the header at the top of the page and styles it */
-.header {
-  position: absolute;
-  top: 0;
-  width: 80%;
-  z-index: 3;
+/* position: absolute;
+width: 100%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color: transparent;
+padding: 12%; */
+.header-card {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  background-color: transparent;
-  transition: padding 0.3s ease;
+  flex-direction: column;
+  width: 100%;
+  height: 75vh;
+  position: relative;
 }
 
+/* Adds a semi-transparent overlay to the hero section */
+.header-card::before {
+  /* Background image and color overlay */
+  content: '';
+  background: 
+    url('../../asserts/blackout.jpg') no-repeat center center;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Adjust the blur level */
+  z-index: -1; 
+  /* Put this layer below the content */
+}
+.landing-page-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  z-index: 3;
+  flex: 1;
+
+}
+.landing-page-header > * {
+  margin: 0 6% !important;  /* Adjust this value to control spacing */
+  padding-top: 1%;
+}
 /* Styles the logo container */
 .logo-container {
   display: flex;
@@ -39,7 +72,7 @@ body {
 }
 
 /* Styles the navigation menu */
-nav ul {
+ .landing-page-nav-menu ul {
   list-style: none;
   display: flex;
   margin: 0;
@@ -48,148 +81,253 @@ nav ul {
 }
 
 /* Styles individual navigation menu items */
-nav ul li {
+.landing-page-nav-menu ul li {
   margin-left: 20px;
 }
 
 /* Styles navigation menu links */
-nav ul li a {
+.landing-page-nav-menu ul li a {
   text-decoration: none;
   color: white;
+  font-weight: bold;
+  display: inline-block; /* Needed for transform to work */
+  transition: transform 0.3s ease; 
 }
 
 /* Adds underline on hover for navigation links */
-nav ul li a:hover {
-  text-decoration: underline;
+.landing-page-nav-menu ul li a:hover {
+  transform: scale(1.2);
+  color: #036197;
 }
 
 /* Styles secondary buttons */
-.btn-secondary {
+/* .btn-secondary {
   background-color: transparent;
   color: #fff;
   border: 2px solid #003B5C;
-  border-radius: 20px;
+  border-radius: 2px;
   cursor: pointer;
   padding: 10px 20px;
   font-size: 12px;
-}
+  font-size: medium;
+  border-radius: 6%;
+  font-weight: bold;
+} */
 
 /* Adds hover effect to secondary buttons */
-.btn-secondary:hover {
+/* .btn-secondary:hover {
   background-color: rgba(90, 98, 104, 0.5);
-}
-
-/* Hero Section */
-/* Styles the main hero section */
-.card1 {
-  width: 100%;
-  min-height: 120px;
-  margin: auto;
-  padding: 16px;
-  height: 40vh;
+} */
+.btn-secondary {
+  padding: 1em 1em;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: white;
+  transition: all 1000ms;
+  font-size: 12px;
   position: relative;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: url('../../asserts/topimage.jpg') no-repeat center center;
-  background-size: cover;
-  transition: padding 0.3s ease;
-  z-index: 2;
+  outline: 2px solid #003B5C;
+  background-color: transparent;
+}
+.btn-secondary:hover {
+  color: #ffffff;
+  transform: scale(1.1);
+  outline: 2px solid #003B5C;
+  box-shadow: 4px 5px 17px -4px #1c59ff;
 }
 
-/* Adds a semi-transparent overlay to the hero section */
-.card1::before {
+.btn-secondary::before {
   content: "";
+  position: absolute;
+  left: -50px;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: #003B5C;
+  transform: skewX(45deg);
+  z-index: -1;
+  
+  transition: width 1000ms;
+}
+
+.btn-secondary:hover::before {
+  width: 250%;
+}
+/* Hero Section */
+/* Styles the main hero section */
+
+.image-blur {
+   /* Semi-transparent blue color overlay */
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(20, 9, 87, 0.5);
-  backdrop-filter: blur(3px);
-  z-index: 1;
+  z-index: 1; /* Ensure this is above the blurred image */
 }
+
 
 /* Styles the hero card */
 .hero-card {
   position: absolute;
-  right: 15%;
-  width: 20%;
-  height: 30%;
-  padding: 20px;
+  top: 25%;
   z-index: 2;
-}
+  flex: 1;
 
+
+}
+.hero-card > * {
+  margin: 0 12% !important;  /* Adjust this value to control spacing */
+  padding-top: 1%;
+}
 /* Styles the hero section heading */
-.hero h4 {
-  font-size: 16px;
-  margin-bottom: 16px;
+.hero h1 {
+  font-size:xxx-large;
+  margin-bottom: 10px;
   color: white;
+  white-space: nowrap;
 }
 
 /* Styles the hero section paragraph */
 .hero p {
   color: white;
-  font-size: 12px;
+  font-size: 16px;
   margin-bottom: 20px;
 }
 
 /* Styles the container for hero buttons */
 .hero-buttons {
   display: flex;
-  justify-content: center;
+  
   gap: 10px;
 }
 
 /* Styles both primary and secondary buttons */
-.btn-primary, .btn-secondary {
-  padding: 10px 20px;
-  height: 40px;
-  font-size: 12px;
-  border-radius: 20px;
+.btn-primary {
+  padding: 1em 1em;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  text-transform: uppercase;
   cursor: pointer;
-  z-index: 2;
-  width: auto;
-  max-width: 100%;
+  color: white;
+  transition: all 1000ms;
+  font-size: 12px;
+  position: relative;
+  overflow: hidden;
+  outline: 2px solid #003B5C;
+  background-color: #003B5C;
 }
 
 /* Styles primary buttons */
-.btn-primary {
-  background-color: #003B5C;
-  color: #fff;
-  border: none;
-}
 
 /* Adds hover effect to primary buttons */
 .btn-primary:hover {
-  background-color: #002b43;
+  color: #ffffff;
+  transform: scale(1.1);
+  outline: 2px solid #003B5C;
+  box-shadow: 4px 5px 17px -4px #1c59ff;
+}
+.btn-primary::before{
+  content: "";
+  position: absolute;
+  left: -50px;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  transform: skewX(45deg);
+  z-index: -1;
+  transition: width 1000ms;
+}
+.btn-primary:hover::before {
+  width: 250%;
 }
 
 /* Events Section */
 /* Styles the events section */
-.events-section {
+.landing-page-events-section {
+  position: relative;
   text-align: center;
   margin-bottom: 30px;
+  opacity: 0;
+  transform: translateX(-90%);
+  transition: transfrom 0.8s ease, opacity 0.8s ease;
+
+}
+.landing-page-events-section.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.landing-page-events-section h1 {
+  opacity: 0;
+  transform: translateY(-20px); /* Moves title from slightly above */
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  transition-delay: 0.2s; /* Delay for a more sequential effect */
+}
+
+.landing-page-events-section.visible h1 {
+  opacity: 1;
+  transform: translateY(0);
+}
+.landing-page-events-section .card {
+  opacity: 0;
+  transform: translateY(20px); /* Moves card slightly from below */
+  transition: transform 0.8s ease, opacity 0.8s ease;
+  transition-delay: 0.4s; /* Delay after title */
+}
+.landing-page-events-section.visible .card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.landing-page-events-section .event-content {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  transition-delay: 0.6s; /* Delay after the card appears */
+ 
+}
+.landing-page-events-section.visible .event-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+.landing-page-events-section .dots {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  transition-delay: 0.8s; /* Delay after the event content */
+}
+
+.landing-page-events-section.visible .dots {
+  opacity: 1;
+  
 }
 
 /* Styles the events section heading */
-.events-section h3 {
+.landing-page-events-section h1 {
   text-align: left;
   margin-left: 2%;
+  margin-top: 2%;
   color: #003B5C;
+  font-size: xx-large;
 }
 
 /* Styles the events section subheading */
-.events-section h2 {
+.landing-page-events-section h2 {
   color: white;
 }
 
 /* Styles individual event cards */
 .card {
   width: 100%;
-  height: 30vh;
-  min-height: 200px;
+  height: 70vh;
   border: none;
   border-radius: 8px;
   position: relative;
@@ -197,45 +335,41 @@ nav ul li a:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 20px auto;
   display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Adds a blurred background to event cards */
-.card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  filter: blur(8px);
-  z-index: 0;
-  opacity: 0.6;
+  flex-direction: column;
 }
+
+
+
 
 /* Styles the content within event cards */
 .card .event-content {
-  position: relative;
-  z-index: 1;
-  padding: 20px;
-  text-align: right;
-  margin-right: auto;
-  margin-bottom: -10%;
+  display: flex;
+  flex: 1;
+  padding-left: 7%;
+  flex-direction: column;
+  align-items: start;
+  justify-content:space-around;
+  
+  
 }
+.card .event-content h2{
+  font-size: xxx-large;
+}
+.event-card-description{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 43%;
+}
+.event-card-description p{
+ font-weight: bold;
+ text-align: left;
+} 
 
 /* Positions the button in upcoming events */
-.upcoming-events button {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
-  width: auto;
-  max-width: 90%;
-}
 
 /* Styles the dots for event navigation */
 .dots {
@@ -389,34 +523,16 @@ nav ul li a:hover {
 
 /* Responsive Design */
 /* Adjusts layout for screens up to 1200px wide */
-@media (max-width: 1200px) {
-  .header, .footer {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .footer-section {
-    flex: 1 1 100%;
-    text-align: center;
-    margin-left: 0;
-  }
-
-  .hero-card {
-    right: 1%;
-    width: 20%;
-    height: 30%;
-  }
-}
 
 /* Adjusts layout for screens up to 900px wide */
 @media (max-width: 900px) {
-  .btn-primary, .btn-secondary {
+  .btn-primary {
     width: auto;
     max-width: 100%;
     margin: 5px 0;
   }
 
-  .events-section {
+  .landing-page-events-section {
     padding: 0 10px;
   }
 
@@ -424,29 +540,172 @@ nav ul li a:hover {
     width: 95%;
     padding: 15px;
   }
+ 
+}
 
-  .card1 {
-    padding: 8px;
+/* Style for the hamburger icon */
+.hamburger-icon {
+  display: none; /* Hidden on larger screens */
+  font-size: 2rem;
+  cursor: pointer;
+  color: #333;
+}
+.burger {
+  
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hamburger-icon {
+    display: block; /* Show the hamburger icon on small screens */
   }
-
-  .header {
-    padding: 8px;
+  .burger {
+    position: relative;
+    width: 28px;
+    height: 18px;
+    background: transparent;
+    cursor: pointer;
+    display: block;
   }
-
-  .hero-card {
+  
+  .burger input {
     display: none;
   }
+  
+  .burger span {
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: #003B5C;
+    border-radius: 9px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+  }
+  
+  .burger span:nth-of-type(1) {
+    top: 0px;
+    transform-origin: left center;
+  }
+  
+  .burger span:nth-of-type(2) {
+    top: 50%;
+    transform: translateY(-50%);
+    transform-origin: left center;
+  }
+  
+  .burger span:nth-of-type(3) {
+    top: 100%;
+    transform-origin: left center;
+    transform: translateY(-100%);
+  }
+  
+  .burger input:checked ~ span:nth-of-type(1) {
+    transform: rotate(45deg);
+    top: 0px;
+    left: 5px;
+  }
+  
+  .burger input:checked ~ span:nth-of-type(2) {
+    width: 0%;
+    opacity: 0;
+  }
+  
+  .burger input:checked ~ span:nth-of-type(3) {
+    transform: rotate(-45deg);
+    top: 20px;
+    left: 5px;
+  }
+  .landing-page-nav-menu {
+    display: none; /* Hide the menu by default */
+     
+  }
+
+  .landing-page-nav-menu.open {
+    
+    display: block; /* Show the menu when open */
+ /* Slide in */
+ 
+  }
+
+  .landing-page-nav-menu ul {
+    display: flex;
+    flex-direction: column;
+    background-color: #003B5C;
+    position: absolute;
+    top: 90%; /* Hidden off-screen initially */
+    width: 35%; /* Full height of the screen */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10000; 
+    /* Make sure it’s above other content */
+    align-items: start;
+    padding-top: 3%;
+    
+  }
+
+  .landing-page-nav-menu.open ul {
+    right: 0; /* Slide-in effect when menu is opened */
+  }
+
+  .landing-page-nav-menu ul li {
+    margin-bottom: 20px; /* Space between nav items */
+  }
+
+  .landing-page-nav-menu ul a {
+    font-size: 1.1rem;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s ease; /* Smooth transition on hover */
+  }
+
+  .landing-page-nav-menu ul a:hover {
+    color: #007bff; /* Change color smoothly when hovered */
+  }
+  .header-card {
+    height: 44vh;
+  }
+  .hero h1 {
+    font-size: large;
+  }
+  .hero p{
+    font-size: small;
+  }
+  .card .event-content h2{
+    font-size: large;
+  }
+  .event-card-description p{
+   text-align: left;
+   font-size: small;
+  } 
+  .hero-card{
+     left: 20%;
+      top: 34%;
+  }
+  .header-card::before {
+  
+    background: 
+      url('../../asserts/blackout.jpg') no-repeat bottom ;
+   
+    /* Put this layer below the content */
+  }
+  .landing-page-header .btn-secondary{
+    font-size: 1.1rem;
+    padding: 0;
+  }
+ .card{
+  height: 44vh;
+ }
+
 }
+
 
 /* Adjusts layout for screens up to 614px tall */
 @media (max-height: 614px) {
-  .btn-primary, .btn-secondary {
-    width: auto;
-    max-width: 100%;
-    margin: 5px 0;
-  }
+ 
 
-  .events-section {
+  .landing-page-events-section {
     padding: 0 10px;
   }
 
@@ -455,17 +714,6 @@ nav ul li a:hover {
     padding: 15px;
   }
 
-  .card1 {
-    padding: 8px;
-  }
-
-  .header {
-    padding: 8px;
-  }
-
-  .hero-card {
-    display: none;
-  }
 }
 
 /* Adjusts layout for screens up to 480px wide */
@@ -474,24 +722,10 @@ nav ul li a:hover {
     font-size: 1.2em;
   }
 
-  nav ul {
-    flex-direction: column;
-    align-items: center;
-  }
 
-  nav ul li {
-    margin: 10px 0;
-  }
+ 
 
-  .footer-section {
-    flex: 1 1 100%;
-  }
-
-  .hero-card {
-    width: 60%;
-  }
-
-  .btn-primary, .btn-secondary {
+  .btn-primary{
     width: auto;
     max-width: 100%;
     font-size: 10px;

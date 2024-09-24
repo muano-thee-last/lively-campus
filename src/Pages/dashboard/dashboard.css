@@ -8,12 +8,12 @@ body {
   
   }
   html, body {
-    min-height: 100vh;
+    height: 100%;
     margin: 0;
     display: flex;
   flex-direction: column;
 }
-  #dashboard p,#dashboard h1,#dashboard h2,#dashboard h3,#dashboard h4,#dashboard h5{
+  #dashboard p, h1, h2, h3, h4, h5{
     margin: 0;
   }
   
@@ -44,7 +44,7 @@ body {
  #main-footer-separator{
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
  }
  @media (max-width: 600px) {
   #dashboard{
