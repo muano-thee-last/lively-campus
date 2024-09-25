@@ -2,12 +2,10 @@ import React from 'react';
 import './TicketInfo.css'; 
 
 const TicketInfo = ({ ticket }) => {
-  // Check if ticket exists before rendering
   if (!ticket) {
     return <div className="ticket-info empty">No ticket information available</div>;
   }
 
-  console.log("the ticket is",ticket)
 
   return (
     <div className="ticket-info">
