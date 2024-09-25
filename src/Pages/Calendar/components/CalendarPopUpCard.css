@@ -1,0 +1,110 @@
+.calendar-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.calendar-popup-card {
+  background: white;
+  border-radius: 20px;
+  width: 80%;
+  max-width: 800px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.calendar-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-popup-header h3 {
+  margin: 0;
+  color: #003B5C;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #003B5C;
+}
+
+.calendar-popup-content h4 {
+  margin-bottom: 10px;
+  color: #003B5C;
+}
+
+.calendar-popup-event {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Use the default text color */
+}
+
+.calendar-popup-event:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-right: 15px;
+}
+
+.pop-up-details {
+  flex-grow: 1;
+  background-color: #f8f9fa;
+  margin: 0 0 5px 0;
+}
+
+.pop-up-details h5 {
+  margin: 0 0 10px 0;
+  color: #003B5C;
+  font-size: 18px;
+}
+
+.pop-up-details p {
+  margin: 5px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.pop-up-details p strong {
+  color: #003B5C;
+}
+
+.no-events-message {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  padding: 20px;
+}
+
+/* Add this new style to ensure text is not underlined */
+.calendar-popup-event * {
+  text-decoration: none;
+}
