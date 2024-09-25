@@ -3,6 +3,9 @@
     max-width: 100%;
 
 }
+.pointer:hover{
+    cursor: pointer;
+}
 .lively-campus-logo{
     height:7vh;
     max-width: 100%;

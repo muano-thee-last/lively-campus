@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import './MainContent.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import CalendarPopUpCard from './components/CalendarPopUpCard';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -21,6 +22,7 @@ const MainContent = () => {
   const [filterDate, setFilterDate] = useState('');
   const [filterType, setFilterType] = useState('');
   const [filterLocation, setFilterLocation] = useState('');
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
@@ -137,6 +139,26 @@ const MainContent = () => {
     });
   };
 
+  const handleDateClick = (day) => {
+    const clickedDate = new Date(currentYear, currentMonth, day);
+    setSelectedDate(clickedDate);
+  };
+
+  const handleClosePopup = () => {
+    setSelectedDate(null);
+  };
+
+  const getEventsForDate = (date) => {
+    return filteredEvents.filter(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.toDateString() === date.toDateString();
+    });
+  };
+
+  const isPastEvent = (eventDate) => {
+    return new Date(eventDate) < new Date().setHours(0, 0, 0, 0);
+  };
+
   return (
     <div className="calendar-container">
       <div className="sidebar">
@@ -233,19 +255,26 @@ const MainContent = () => {
             });
 
             const isToday = day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
+            const isPastDay = new Date(currentYear, currentMonth, day + 1) < new Date().setHours(0, 0, 0, 0);
 
             return (
-              <div key={day} className={`day ${isToday ? 'highlight-day' : ''} ${dayEvents.length > 0 ? 'has-events' : ''}`}>
+              <div 
+                key={day} 
+                className={`day ${isToday ? 'highlight-day' : ''} ${dayEvents.length > 0 ? 'has-events' : ''} ${isPastDay ? 'past-day' : ''}`}
+                onClick={() => handleDateClick(day + 1)}
+              >
                 <span className="day-number">{day + 1}</span>
                 {dayEvents.length > 0 && (
                   <div className="events-container">
                     {dayEvents.map(event => (
-                      <Link key={event.id} to={`/details/${event.id}`}>
-                        <div className="event-details" title={`${event.title} - ${formatEventDateTime(event.date)}`}>
-                          <span className="event-title">{event.title}</span>
-                          <span className="event-time">{formatEventTime(event.date)}</span>
-                        </div>
-                      </Link>
+                      <div 
+                        key={event.id} 
+                        className={`event-details ${isPastEvent(event.date) ? 'past-event' : ''}`} 
+                        title={`${event.title} - ${formatEventDateTime(event.date)}`}
+                      >
+                        <span className="event-title">{event.title}</span>
+                        <span className="event-time">{formatEventTime(event.date)}</span>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -254,6 +283,14 @@ const MainContent = () => {
           })}
         </div>
       </div>
+
+      {selectedDate && (
+        <CalendarPopUpCard
+          date={selectedDate.toDateString()}
+          events={getEventsForDate(selectedDate)}
+          onClose={handleClosePopup}
+        />
+      )}
     </div>
   );
 };
