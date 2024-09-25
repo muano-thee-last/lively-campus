@@ -18,25 +18,28 @@ function TicketVerification() {
 
     fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/verifyTicket?ticketCode=${ticketNum}`)
       .then((response) => {
-        setIsLoading(false); 
+        setIsLoading(false);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        console.log(response.json)
-        return response.json();
+        return response.json(); // Properly handling the JSON response here
       })
       .then((data) => {
+        console.log(data);
+        console.log(data.userName)
         const ticketData = {
-          price: `R${data.price}`,  
+          price: `R${data.price}`,
+          userName: data.userName, 
           purchaseDate: data.purchaseDate,
           code: data.ticketCode,
         };
         setTicket(ticketData);
       })
+      
       .catch((error) => {
         console.error("Error fetching ticket:", error);
         setError("Unable to verify ticket. Please try again.");
-        setTicket(null); 
+        setTicket(null); // Clear ticket data in case of error
         setIsLoading(false); 
       });
   };

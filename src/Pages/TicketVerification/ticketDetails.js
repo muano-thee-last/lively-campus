@@ -7,12 +7,14 @@ const TicketInfo = ({ ticket }) => {
     return <div className="ticket-info empty">No ticket information available</div>;
   }
 
+  console.log("the ticket is",ticket)
+
   return (
     <div className="ticket-info">
       <h2 className="ticket-header">Ticket Details</h2>
       <div className="ticket-item">
         <strong>Bought By:</strong>
-        <span>{ticket.buyerName}</span>
+        <span>{ticket.userName}</span>
       </div>
       <div className="ticket-item">
         <strong>Ticket Price:</strong>
@@ -25,10 +27,6 @@ const TicketInfo = ({ ticket }) => {
       <div className="ticket-item">
         <strong>Ticket Code:</strong>
         <span>{ticket.code}</span>
-      </div>
-      <div className="ticket-item">
-        <strong>For Event:</strong>
-        <span>{"someEvent"}</span>
       </div>
     </div>
   );
