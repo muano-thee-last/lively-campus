@@ -64,20 +64,49 @@ async function uploadTicketInformation(eventId, price) {
     price: price
   };
 
-  try {
-    const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/addTicket', {
+  // try {
+  //   const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/addTicket', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(data),
+  //   });
+
+    
+
+  try{
+
+    const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/getPaymentUrl', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({amount : data.price}),
     });
+
+    
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
+    //redirect to the payment url
+
     const result = await response.json();
+
+    const redirectUrl = result.redirectUrl;
+
+    function RedirectToExternal() {
+      const handleRedirect = () => {
+        window.open(redirectUrl, '_blank'); 
+      };
+    
+      return <button onClick={handleRedirect}>Open the payment page</button>;
+    }
+    
+    RedirectToExternal();
+
     console.log(result.message);
   } catch (error) {
     console.error('Error uploading ticket information:', error);
