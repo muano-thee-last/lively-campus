@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaTicketAlt } from 'react-icons/fa'; 
 import './EventDetails.css';
 import '../EventCreation/styles/EventCreationStyles.css'; 
-import BuyTickets from '../BuyTickets/BuyTickets';
-import { Modal, Button } from '@mui/material'; 
-
+//import BuyTickets from '../BuyTickets/BuyTickets';
+import { Modal } from '@mui/material'; 
+import BuyTicket from '../BuyTickets/purchase';
 export default function EventDetails(){
   const { id } = useParams();
   const [event, setEvent] = useState(null);
@@ -126,10 +126,7 @@ export default function EventDetails(){
       </div>
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <div className="modal-content">
-          <BuyTickets event={event} onClose={handleCloseModal} />
-          <Button variant="contained" color="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
+                    <BuyTicket event={event}/>
         </div>
       </Modal>
     </div>
