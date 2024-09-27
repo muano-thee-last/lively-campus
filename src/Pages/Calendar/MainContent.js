@@ -24,7 +24,6 @@ const MainContent = () => {
   const [filterLocation, setFilterLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const calendarRef = useRef(null);
 
   const currentMonth = currentDate.getMonth();
@@ -185,11 +184,6 @@ const MainContent = () => {
     return new Date(eventDate) < new Date().setHours(0, 0, 0, 0);
   };
 
-  // Function to toggle sidebar visibility
-  const toggleSidebar = () => {
-    setIsSidebarVisible(!isSidebarVisible);
-  };
-
   // Function to handle swipe gestures
   useEffect(() => {
     let touchStartX = 0;
@@ -231,79 +225,74 @@ const MainContent = () => {
 
   return (
     <div className="calendar-container">
-      {isSidebarVisible && (
-        <div className="sidebar">
-          <div className="month-header">
-            <span className='current-month'>{months[currentMonth]} </span>
-            <span className='current-year'>{currentYear}</span>
-          </div>
-
-          {renderMiniCalendar()}
-
-          <div className="filters">
-            <h4>Filters</h4>
-            <input type="date" value={filterDate} onChange={handleFilterDateChange} />
-            <select value={filterType} onChange={handleFilterTypeChange}>
-              <option value="">All Types</option>
-              {eventTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-            <input 
-              type="text" 
-              placeholder="location" 
-              value={filterLocation} 
-              onChange={handleFilterLocationChange} 
-            />
-          </div>
-
-          <div className="today-events">
-            <h4>
-              <FontAwesomeIcon icon={faCalendarAlt} /> Today
-            </h4>
-            {getTodayEvents().length > 0 ? (
-              <ul className="today-event-list">
-                {getTodayEvents().map(event => (
-                  <li key={event.id} className="today-event">
-                    <Link to={`/details/${event.id}`}>
-                      <div className="today-event-title">{event.title}</div>
-                      <div className="today-event-time">{formatEventTime(event.date)}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className='no-events-today'>No events today</p>
-            )}
-          </div>
-
-          <div className="upcoming-events">
-            <h4>
-              <FontAwesomeIcon icon={faCalendarAlt} /> Upcoming Events
-            </h4>
-            {upcomingEvents.length > 0 ? (
-              <ul className="upcoming-event-list">
-                {upcomingEvents.map(event => (
-                  <li key={event.id} className="upcoming-event">
-                    <Link to={`/details/${event.id}`}>
-                      <div className="upcoming-event-title">{event.title}</div>
-                      <div className="upcoming-event-datetime">{formatEventDateTime(event.date)}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className='no-events'>No upcoming events</p>
-            )}
-          </div>
+      <div className="sidebar">
+        <div className="month-header">
+          <span className='current-month'>{months[currentMonth]} </span>
+          <span className='current-year'>{currentYear}</span>
         </div>
-      )}
+
+        {renderMiniCalendar()}
+
+        <div className="filters">
+          <h4>Filters</h4>
+          <input type="date" value={filterDate} onChange={handleFilterDateChange} />
+          <select value={filterType} onChange={handleFilterTypeChange}>
+            <option value="">All Types</option>
+            {eventTypes.map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+          <input 
+            type="text" 
+            placeholder="location" 
+            value={filterLocation} 
+            onChange={handleFilterLocationChange} 
+          />
+        </div>
+
+        <div className="today-events">
+          <h4>
+            <FontAwesomeIcon icon={faCalendarAlt} /> Today
+          </h4>
+          {getTodayEvents().length > 0 ? (
+            <ul className="today-event-list">
+              {getTodayEvents().map(event => (
+                <li key={event.id} className="today-event">
+                  <Link to={`/details/${event.id}`}>
+                    <div className="today-event-title">{event.title}</div>
+                    <div className="today-event-time">{formatEventTime(event.date)}</div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className='no-events-today'>No events today</p>
+          )}
+        </div>
+
+        <div className="upcoming-events">
+          <h4>
+            <FontAwesomeIcon icon={faCalendarAlt} /> Upcoming Events
+          </h4>
+          {upcomingEvents.length > 0 ? (
+            <ul className="upcoming-event-list">
+              {upcomingEvents.map(event => (
+                <li key={event.id} className="upcoming-event">
+                  <Link to={`/details/${event.id}`}>
+                    <div className="upcoming-event-title">{event.title}</div>
+                    <div className="upcoming-event-datetime">{formatEventDateTime(event.date)}</div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className='no-events'>No upcoming events</p>
+          )}
+        </div>
+      </div>
 
       <div className="calendar" ref={calendarRef}>
         <div className="calendar-header">
-          <button onClick={toggleSidebar} className="toggle-sidebar-btn">
-            {isSidebarVisible ? 'Hide Sidebar' : 'Show Sidebar'}
-          </button>
           <h2 className='viewing-month'>{months[currentMonth]} {currentYear}</h2>
           <select className='select-month' onChange={handleMonthChange} value={currentMonth}>
             {months.map((month, index) => (
