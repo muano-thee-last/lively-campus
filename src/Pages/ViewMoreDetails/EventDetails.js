@@ -114,7 +114,7 @@ export default function EventDetails(){
         <div className="map-container">
           <iframe
             title={`Map showing location of ${event.venue}`}
-            src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(event.location)}`}
+            src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(event.venue)}`}
             allowFullScreen
           ></iframe>
         </div>
