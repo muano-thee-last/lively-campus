@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 
 async function getRedirectLink(amount) {
     try {
@@ -35,7 +35,7 @@ function BuyTicket({ event }) {
         };
 
         fetchRedirectLink();
-    }, [event.ticketPrice]);
+    }, [event.ticketPrice,event]);
 
     useEffect(() => {
         if (redirectUrl) {

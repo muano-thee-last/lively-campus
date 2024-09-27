@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaTicketAlt } from 'react-icons/fa'; 
 import './EventDetails.css';
 import '../EventCreation/styles/EventCreationStyles.css'; 
-import BuyTickets from '../BuyTickets/BuyTickets';
-import { Modal, Button } from '@mui/material'; 
+//import BuyTickets from '../BuyTickets/BuyTickets';
+import { Modal } from '@mui/material'; 
 import BuyTicket from '../BuyTickets/purchase';
 export default function EventDetails(){
   const { id } = useParams();
