@@ -28,7 +28,13 @@ export default function EventDetails(){
       .catch(error => {
         console.error('Error fetching event details:', error);
       });
-  }, [id]);
+      try{
+        setApproveEvent(location.state.approveEvent);
+      }
+      catch{
+        setApproveEvent(false);
+      }
+  }, [id, setApproveEvent, location]);
 
   useEffect(() => {
     const getGoogleKey = async () => {
@@ -122,10 +128,31 @@ export default function EventDetails(){
           ></iframe>
         </div>
       </div>
+      {approveEvent &&
+        <div className="response-wiman-section">
+          <h3>Venue Approval Status </h3> {event.isApproved === true ? (
+                  <div className="status-bar">
+                    <div className="green-circle"></div>{" "}
+                    <p className="status">Approved</p>
+                  </div>
+                ) : event.isApproved === false ? (
+                  <div className="status-bar">
+                    {" "}
+                    <div className="red-circle"></div>{" "}
+                    <p className="status">Rejected</p>{" "}
+                  </div>
+                ) : (
+                  <div className="status-bar">
+                    {" "}
+                    <div className="grey-circle"></div>
+                    <p className="status">Waiting Approval</p>
+                  </div>
+                )}
+        </div>}
 
       <div className="event-buy-tickets">
         <p><strong>Ticket Price: <span >R</span> {event.ticketPrice} </strong></p>
-        {approveEvent ? <div className="approve-reject"><button className="button-ap green">Approve</button><button classname="button-rej red">Reject</button></div> : <button className="create-button" onClick={handleOpenModal}>Buy Ticket</button>}
+        {approveEvent ? <div className="approve-reject"><button className="create-button green">Approve</button><button className="create-button red">Reject</button></div> : <button className="create-button" onClick={handleOpenModal}>Buy Ticket</button>}
       </div>
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <div className="modal-content">

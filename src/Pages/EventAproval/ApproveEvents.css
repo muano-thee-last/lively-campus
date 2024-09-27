@@ -33,12 +33,12 @@
 }
 .card-width-height{
     max-width: 400px !important;
-    max-height: 400px !important;
-    min-height: 300px !important;
+    max-height: 380px !important;
+    min-height: 100px !important;
 }
 .status-view-more{
     display: flex;
     align-items: center !important;
     justify-content: space-between;
-    margin:2% 6px;
+   
 }
