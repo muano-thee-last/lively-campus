@@ -26,6 +26,9 @@ function SideBar({ isSidebarOpen }) {
         <img className='history-logos' src={eventhistory} alt="Event History" />
         {isSidebarOpen && <p>Event History</p>}
       </Link>
+      <Link to="/approve-events" className='sidebar-logos'>
+        {isSidebarOpen && <p>Approve Events</p>}
+      </Link>
     </nav>
   );
 }

@@ -291,6 +291,8 @@ export default function EventCreation() {
         venue: eventData.eventLocation,
         likes: 0,
         comments: [],
+        createdAt: new Date().toISOString(),
+        isApproved: null,
       });
       let alertCampusBodyContent = JSON.stringify({
         id: "d290f1ee-6c54-4b01-90e6-d701748f0851",

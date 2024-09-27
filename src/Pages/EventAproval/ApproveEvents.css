@@ -1,0 +1,44 @@
+.green-circle{
+    width: 15px;
+    height: 15px;
+    background-color: #4FBF26;
+    border-radius: 50%;
+}
+.grey-circle{
+    width: 15px;
+    height: 15px;
+    background-color: #3a3a3a;
+    border-radius: 50%;
+}
+.red-circle{
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+}
+.status-bar{
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+}
+.status{
+    color: #585858;
+    font-weight: 600;
+}
+.cards-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+.card-width-height{
+    max-width: 400px !important;
+    max-height: 400px !important;
+    min-height: 300px !important;
+}
+.status-view-more{
+    display: flex;
+    align-items: center !important;
+    justify-content: space-between;
+    margin:2% 6px;
+}

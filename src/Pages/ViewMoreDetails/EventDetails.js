@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; 
+import React, { useState, useEffect, } from 'react';
+import { useParams, useLocation } from 'react-router-dom'; 
 import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaTicketAlt } from 'react-icons/fa'; 
 import './EventDetails.css';
 import '../EventCreation/styles/EventCreationStyles.css'; 
@@ -11,6 +11,9 @@ export default function EventDetails(){
   const [event, setEvent] = useState(null);
   const [googleMapsApiKey, setGoogleMapsApiKey] = useState(null); 
   const [isModalOpen, setIsModalOpen] = useState(false); 
+  const location = useLocation();
+  let [approveEvent, setApproveEvent] = useState(false);
+   
 
   useEffect(() => {
     fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${id}`).then(response => {
@@ -122,7 +125,7 @@ export default function EventDetails(){
 
       <div className="event-buy-tickets">
         <p><strong>Ticket Price: <span >R</span> {event.ticketPrice} </strong></p>
-        <button className="create-button" onClick={handleOpenModal}>Buy Ticket</button>
+        {approveEvent ? <div className="approve-reject"><button className="button-ap green">Approve</button><button classname="button-rej red">Reject</button></div> : <button className="create-button" onClick={handleOpenModal}>Buy Ticket</button>}
       </div>
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <div className="modal-content">

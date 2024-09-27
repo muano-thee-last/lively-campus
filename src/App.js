@@ -13,6 +13,7 @@ import TicketVerification from "./Pages/TicketVerification/ticketVerification";
 import TicketHistory from "./Pages/TicketHistory/ticketHistory";
 import EventHistory from "./Pages/EventHistory/EventHistory";
 import About from "./Pages/About/About";
+import ApproveEvents from "./Pages/EventAproval/ApproveEvents";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/ticket-history" element={<TicketHistory/>} />
         <Route path="/event-history" element={<EventHistory/>} />
         <Route path="/about" element={<About/>} />
+        <Route path="/approve-events" element={<ApproveEvents/>} />
 
       </Routes>
     </Router>
