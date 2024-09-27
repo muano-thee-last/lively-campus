@@ -235,7 +235,7 @@ function MainContent() {
   
 
   const handleViewDetails = (id) => {
-    navigate(`/details/${id}`);
+    navigate(`/view-more-details/${id}`);
   };
 
   const handleFeedbackClick = () => {

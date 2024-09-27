@@ -27,6 +27,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  position: relative; /* Add this to position the close button absolutely within the header */
 }
 
 .calendar-popup-header h3 {
@@ -35,11 +36,28 @@
 }
 
 .close-button {
-  background: none;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #003B5C;
+  color: white;
   border: none;
-  font-size: 1.5rem;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
-  color: #003B5C;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.close-button:hover {
+  background-color: #005580;
+  transform: scale(1.1);
 }
 
 .calendar-popup-content h4 {
