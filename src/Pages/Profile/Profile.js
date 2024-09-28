@@ -14,7 +14,7 @@ import profile from "../dashboard/images-logos/profile-logo.jpg";
 import comments from "../dashboard/images-logos/comments.jpeg";
 
 export default function Profile() {
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const [user, setUser] = useState({});
   const userId = sessionStorage.getItem("uid");
 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -33,6 +33,10 @@ export default function Profile() {
   };
 
   const { myImg, name, title, gender, birthday, email, phone } = userData;
+
+  useEffect(() => {
+    setUser(JSON.parse(sessionStorage.getItem("user")));
+  }, []);
 
   const fetchUserLikedEvents = useCallback(() => {
     fetch(
@@ -68,7 +72,6 @@ export default function Profile() {
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
-    console.log(sessionStorage.getItem("uid"));
   };
 
   const decrementLike = (eventId) => {

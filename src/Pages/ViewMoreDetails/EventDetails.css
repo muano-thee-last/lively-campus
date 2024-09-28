@@ -1,112 +1,145 @@
 :root {
-    --primary-color: #003b5c;
-    --secondary-color: #85714d;
-  }
-
-.upload-image-section{
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-}
-.upload-image-section:hover{
-    cursor: unset;
-}
-.event-header{
-    z-index: 2;
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: -74px;
-    text-align: center;
-    align-items: center;
-}
-.event-picture{
-    width: 100%;
-    height: 40vw;
+  --primary-color: #003b5c;
+  --secondary-color: #85714d;
 }
 
-.event-name-view{
-    color: var(--primary-color);
-    background-color: white;
-    width: fit-content;
-    padding: 25px 6px;
-    border-radius: 5px;
-    margin-left: -3px;
-    object-fit: fit-content;
-    font-size: 1.3rem;
-    padding-right: 20px;
-    /* text-wrap: nowrap; */
+.upload-image-section {
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
-.event-name:hover{
-    border: none;
+.upload-image-section:hover {
+  cursor: unset;
 }
-.tag{
-    position: unset;
+.event-header {
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: -74px;
+  text-align: center;
+  align-items: center;
 }
-.event-info{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 0;
-    flex-wrap: wrap;
-    font-size: 18px;
-    font-weight: 500;
+.event-picture {
+  width: 100%;
+  height: 40vw;
 }
-.event-description p{
-    color: rgb(63, 61, 61);
-    font-size: 18px;
-    font-weight: 600;
-    margin: 5px 0;
+
+.event-name-view {
+  color: var(--primary-color);
+  background-color: white;
+  width: fit-content;
+  padding: 25px 6px;
+  border-radius: 5px;
+  margin-left: -3px;
+  object-fit: fit-content;
+  font-size: 1.3rem;
+  padding-right: 20px;
+  /* text-wrap: nowrap; */
 }
-.info-item{
-    display: flex;
-    gap: 12px;
-    margin: 6px 0;
-    align-items: center;
+.event-name:hover {
+  border: none;
 }
-.info-item .icon{
-    width: 24px;
-    height: 28px;
+.tag {
+  position: unset;
 }
-.event-venue-location h3{
-    margin: 10px 0 10px 0;
+.event-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+  font-size: 18px;
+  font-weight: 500;
 }
-.event-venue-location iframe{
-    width: 95%;
-    height: 300px;
-    margin: 0px 0;
+.event-description p {
+  color: rgb(63, 61, 61);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 5px 0;
 }
-.event-buy-tickets{
-    position: sticky;
-    bottom: 0;
-    height: 80px;
-    width: 100%;
-    background-color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 2px solid #e6e6e6;
-    text-wrap: nowrap;
+.info-item {
+  display: flex;
+  gap: 12px;
+  margin: 6px 0;
+  align-items: center;
 }
-.event-buy-tickets p{
-    font-size: 18px;
-    color: black;
+.info-item .icon {
+  width: 24px;
+  height: 28px;
 }
-.event-buy-tickets button{
-   margin-right: 1vw;
+.event-venue-location h3 {
+  margin: 10px 0 10px 0;
 }
-.red{
-    background-color: red;
+.event-venue-location iframe {
+  width: 95%;
+  height: 300px;
+  margin: 0px 0;
 }
-.green{
-    background-color: green;
+.event-buy-tickets {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  height: 80px;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 2px solid #e6e6e6;
+  text-wrap: nowrap;
 }
-.map-container iframe{
-    border: 3px solid #e6e6e6;
+.centered-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
 }
-.response-wiman-section{
-    margin: 10px 0;
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.modal-content-accept-reject {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.modal-description p{
+  color:black !important;
+}
+.event-buy-tickets p {
+  font-size: 18px;
+  color: black;
+}
+.event-buy-tickets button {
+  margin-right: 1vw;
+}
+.red {
+  background-color: red;
+}
+.green {
+  background-color: green;
+}
+.map-container iframe {
+  border: 3px solid #e6e6e6;
+}
+.response-wiman-section {
+  margin: 10px 0;
 }
 @media screen and (max-width: 500px) {
-    .eventTags{
-      margin-left: 0;
-    }
+  .eventTags {
+    margin-left: 0;
   }
+}
