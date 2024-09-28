@@ -20,14 +20,6 @@ function Header({ toggleSidebar }) {
     navigate("/dashboard");
   };
 
-  useEffect(() => {
-    const user = JSON.parse(sessionStorage.getItem("user"));
-    if (user) {
-      setPictureUrl(user.photoURL);
-      fetchAndCleanNotifications(user.uid);
-    }
-  }, []);
-
   const deleteNotification = async (id) => {
     try {
       await fetch(
@@ -42,7 +34,7 @@ function Header({ toggleSidebar }) {
     }
   };
 
-  const fetchAndCleanNotifications = async (uid) => {
+  const fetchAndCleanNotifications = React.useCallback(async (uid) => {
     try {
       let notificationsData;
       const storedNotifications = sessionStorage.getItem("notifications");
@@ -101,7 +93,7 @@ function Header({ toggleSidebar }) {
       console.error("Error fetching notifications:", error);
       setNotificationCount(0);
     }
-  };
+  }, []);
 
   const fetchViewedNotifications = async (uid) => {
     try {
@@ -124,9 +116,17 @@ function Header({ toggleSidebar }) {
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("user"));
     if (user) {
+      setPictureUrl(user.photoURL);
       fetchAndCleanNotifications(user.uid);
     }
-  }, []);
+  }, [fetchAndCleanNotifications]);
+
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user) {
+      fetchAndCleanNotifications(user.uid);
+    }
+  }, [fetchAndCleanNotifications]);
 
   return (
     <div id="header">
@@ -198,5 +198,4 @@ function Header({ toggleSidebar }) {
     </div>
   );
 }
-
 export default Header;
