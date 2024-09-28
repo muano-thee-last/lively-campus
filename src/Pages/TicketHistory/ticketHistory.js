@@ -4,7 +4,6 @@ import './TicketHistory.css'; // Import the CSS file
 import Header from "../dashboard/header";
 import Footer from '../dashboard/footer';
 import SideBar from '../dashboard/side-bar';
-import TicketModal from './eventCard';
 
 
 function TicketHistory() {
