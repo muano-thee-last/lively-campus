@@ -9,14 +9,13 @@ import {
 import "./EventDetails.css";
 import "../EventCreation/styles/EventCreationStyles.css";
 import { Modal, Button } from "@mui/material";
-import '../EventCreation/styles/EventCreationStyles.css'; 
-import BuyTickets from '../BuyTickets/BuyTickets';
-import BuyTicket from '../BuyTickets/purchase';
-const LIVELY_CAMPUS_API = "https://us-central1-witslivelycampus.cloudfunctions.net/app";
+import "../EventCreation/styles/EventCreationStyles.css";
+import BuyTickets from "../BuyTickets/BuyTickets";
+import BuyTicket from "../BuyTickets/purchase";
+const LIVELY_CAMPUS_API =
+  "https://us-central1-witslivelycampus.cloudfunctions.net/app";
 
-
-  
-export default function EventDetails(){
+export default function EventDetails() {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [googleMapsApiKey, setGoogleMapsApiKey] = useState(null);
@@ -157,8 +156,9 @@ export default function EventDetails(){
         <div className="map-container">
           <iframe
             title={`Map showing location of ${event.venue}`}
-            src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(event.venue)}`}
-
+            src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(
+              event.venue
+            )}`}
             allowFullScreen
           ></iframe>
         </div>
@@ -366,7 +366,7 @@ export default function EventDetails(){
           >
             Close
           </Button>
-                    <BuyTicket event={event}/>
+          <BuyTicket event={event} />
         </div>
       </Modal>
     </div>

@@ -295,8 +295,6 @@ export default function EventCreation() {
         likes: 0,
         comments: [],
         createdAt: new Date().toISOString(),
-        isApproved: null,
-        isVenueApproved: null,
         organizerImg: user.photoURL,
       });
       let alertCampusBodyContent = JSON.stringify({
