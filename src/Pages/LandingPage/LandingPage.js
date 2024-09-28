@@ -48,8 +48,12 @@ function LandingPage() {
     };
   }, [upcomingEvents.length, previousEvents.length]);
 
-  const handleButtonClick = () => setShowLogin(true);
-  const handleCloseLogin = () => setShowLogin(false);
+  const handleButtonClick = () => {setShowLogin(true)
+    document.body.style.overflow = "hidden";
+  };
+  const handleCloseLogin = () => {setShowLogin(false)
+    document.body.style.overflow = "auto";
+  };
   const handleUpcomingDotClick = (index) => setCurrentUpcomingIndex(index);
   const handlePreviousDotClick = (index) => setCurrentPreviousIndex(index);
 
@@ -204,7 +208,7 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
 function LoginModal({ handleCloseLogin }) {
   return (
     <div className="login-modal">
-      <button className="close-button" onClick={handleCloseLogin}>X</button>
+      <button className="landing-close-button" onClick={handleCloseLogin}>X</button>
       <Login />
     </div>
   );
