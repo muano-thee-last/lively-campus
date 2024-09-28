@@ -4,8 +4,9 @@ import "./Notifications.css";
 
 function Notifications() {
   const [notificationsByDate, setNotificationsByDate] = useState({});
-  const [isLoading, setIsLoading] = useState(true); // State to manage loading
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const uid = sessionStorage.getItem("uid");
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -15,6 +16,7 @@ function Notifications() {
 
         if (storedNotifications) {
           notificationsData = JSON.parse(storedNotifications);
+          setIsLoading(true);
         } else {
           console.log("Fetching notifications from the server...");
           const response = await fetch(
@@ -41,12 +43,9 @@ function Notifications() {
               }
               const eventData = await eventResponse.json();
 
-              // Convert the timestamp to a readable date format
               const timestampDate = new Date(
                 notification.timestamp._seconds * 1000
               );
-
-              // Format the date as "7 September 2024"
               const formattedDate = timestampDate.toLocaleDateString("en-GB", {
                 day: "numeric",
                 month: "long",
@@ -69,15 +68,11 @@ function Notifications() {
           })
         );
 
-        // Filter out null values (notifications without events)
         const validNotifications = detailedNotifications.filter(
           (notification) => notification !== null
         );
-
-        // Sort notifications by date (newest first)
         validNotifications.sort((a, b) => b.dateObject - a.dateObject);
 
-        // Group notifications by formattedDate
         const groupedNotifications = validNotifications.reduce(
           (acc, notification) => {
             const dateKey = notification.formattedDate;
@@ -91,18 +86,39 @@ function Notifications() {
         );
 
         setNotificationsByDate(groupedNotifications);
-        setIsLoading(false); // Stop loading once the data is fetched
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching notifications:", error);
-        setIsLoading(false); // Stop loading if there's an error
+        setIsLoading(false);
       }
     };
 
     fetchNotifications();
   }, []);
 
-  const handleViewNotification = (id) => {
-    navigate(`/view-more-details/${id}`);
+  const handleViewNotification = async (notificationId, uid) => {
+    try {
+      // Send a request to update the viewed notification
+      const response = await fetch(
+        `https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications/viewed/${uid}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notificationId }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update viewed notification");
+      }
+
+      // Navigate to the notification details page
+      navigate(`/view-more-details/${notificationId}`);
+    } catch (error) {
+      console.error("Error updating viewed notification:", error);
+    }
   };
 
   const isToday = (dateString) => {
@@ -118,21 +134,20 @@ function Notifications() {
     <div className="notifications-container">
       <h2>Notifications</h2>
       <br />
-      {isLoading ? ( // Display this while loading
+      {isLoading ? (
         <div className="loading-message">Loading notifications...</div>
       ) : (
         Object.keys(notificationsByDate).map((date) => (
           <div key={date}>
             <h3 className="notification-date">
-              {isToday(date) ? "Today" : date}{" "}
-              {/* Show 'Today' if the notification is from today */}
+              {isToday(date) ? "Today" : date}
             </h3>
             <ul className="notifications-list">
               {notificationsByDate[date].map((notification) => (
                 <li
                   key={notification.id}
                   className="notification-item"
-                  onClick={() => handleViewNotification(notification.eventId)}
+                  onClick={() => handleViewNotification(notification.id, uid)} // Pass the uid here
                 >
                   <img
                     src={notification.imageUrl}
@@ -146,7 +161,6 @@ function Notifications() {
                     <p className="notification-message">
                       {notification.message}
                     </p>
-                    {/* Removed the date display here */}
                   </div>
                 </li>
               ))}
