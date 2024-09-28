@@ -136,7 +136,10 @@ export default function EventDetails() {
         <div className="info-item">
           <FaCalendarAlt className="icon" />{" "}
           {new Date(event.date).toLocaleDateString()}{" "}
-          {new Date(event.date).toLocaleTimeString()}
+          {new Date(event.date).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </div>
         <div className="info-item">
           <FaUsers className="icon" /> Capacity: {event.capacity}
@@ -149,7 +152,9 @@ export default function EventDetails() {
 
       <div className="event-description">
         <h3>Description</h3>
-        <p>{event.description}</p>
+        <div style={{ whiteSpace: "pre-wrap", paddingTop: "1vw" }}>
+          <p>{event.description}</p>
+        </div>
       </div>
       <div className="event-venue-location">
         <h3>Venue and Location</h3>
