@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './MainContent.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -23,6 +23,8 @@ const MainContent = () => {
   const [filterType, setFilterType] = useState('');
   const [filterLocation, setFilterLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const calendarRef = useRef(null);
 
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
@@ -47,6 +49,13 @@ const MainContent = () => {
     };
 
     fetchEvents();
+
+    // Get the current user from sessionStorage
+    const userString = sessionStorage.getItem('user');
+    if (userString) {
+      const user = JSON.parse(userString);
+      setCurrentUser(user);
+    }
   }, []);
 
   const handleMonthChange = (e) => {
@@ -100,6 +109,11 @@ const MainContent = () => {
     });
   };
 
+  const isUserEvent = (event) => {
+    return currentUser && event.organizerName === currentUser.displayName;
+  };
+
+  // Update the renderMiniCalendar function
   const renderMiniCalendar = () => {
     const miniCalendarDays = [...Array(daysInMonth).keys()].map(day => day + 1);
     const paddedDays = [...Array(firstDayOfMonth).fill(null), ...miniCalendarDays];
@@ -119,7 +133,7 @@ const MainContent = () => {
                 day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() 
                   ? 'highlight' 
                   : day && dayHasEvents(day) 
-                    ? 'has-events' 
+                    ? dayHasUserEvents(day) ? 'has-user-events' : 'has-events'
                     : ''
               }`}
             >
@@ -129,6 +143,17 @@ const MainContent = () => {
         </div>
       </div>
     );
+  };
+
+  // New function to check if a day has events created by the current user
+  const dayHasUserEvents = (day) => {
+    return filteredEvents.some(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.getDate() === day && 
+             eventDate.getMonth() === currentMonth && 
+             eventDate.getFullYear() === currentYear &&
+             isUserEvent(event);
+    });
   };
 
   // New function to get today's events
@@ -158,6 +183,45 @@ const MainContent = () => {
   const isPastEvent = (eventDate) => {
     return new Date(eventDate) < new Date().setHours(0, 0, 0, 0);
   };
+
+  // Function to handle swipe gestures
+  useEffect(() => {
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const handleTouchStart = (e) => {
+      touchStartX = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = (e) => {
+      touchEndX = e.changedTouches[0].clientX;
+      handleSwipe();
+    };
+
+    const handleSwipe = () => {
+      if (touchStartX - touchEndX > 50) {
+        // Swipe left, go to next month
+        setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
+      }
+      if (touchEndX - touchStartX > 50) {
+        // Swipe right, go to previous month
+        setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
+      }
+    };
+
+    const calendar = calendarRef.current;
+    if (calendar) {
+      calendar.addEventListener('touchstart', handleTouchStart);
+      calendar.addEventListener('touchend', handleTouchEnd);
+    }
+
+    return () => {
+      if (calendar) {
+        calendar.removeEventListener('touchstart', handleTouchStart);
+        calendar.removeEventListener('touchend', handleTouchEnd);
+      }
+    };
+  }, [currentMonth, currentYear]);
 
   return (
     <div className="calendar-container">
@@ -227,7 +291,7 @@ const MainContent = () => {
         </div>
       </div>
 
-      <div className="calendar">
+      <div className="calendar" ref={calendarRef}>
         <div className="calendar-header">
           <h2 className='viewing-month'>{months[currentMonth]} {currentYear}</h2>
           <select className='select-month' onChange={handleMonthChange} value={currentMonth}>
@@ -256,11 +320,12 @@ const MainContent = () => {
 
             const isToday = day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
             const isPastDay = new Date(currentYear, currentMonth, day + 1) < new Date().setHours(0, 0, 0, 0);
+            const hasUserEvents = dayEvents.some(event => isUserEvent(event));
 
             return (
               <div 
                 key={day} 
-                className={`day ${isToday ? 'highlight-day' : ''} ${dayEvents.length > 0 ? 'has-events' : ''} ${isPastDay ? 'past-day' : ''}`}
+                className={`day ${isToday ? 'highlight-day' : ''} ${dayEvents.length > 0 ? hasUserEvents ? 'has-user-events' : 'has-events' : ''} ${isPastDay ? 'past-day' : ''}`}
                 onClick={() => handleDateClick(day + 1)}
               >
                 <span className="day-number">{day + 1}</span>
@@ -269,7 +334,7 @@ const MainContent = () => {
                     {dayEvents.map(event => (
                       <div 
                         key={event.id} 
-                        className={`event-details ${isPastEvent(event.date) ? 'past-event' : ''}`} 
+                        className={`event-details ${isPastEvent(event.date) ? 'past-event' : ''} ${isUserEvent(event) ? 'user-event' : ''}`} 
                         title={`${event.title} - ${formatEventDateTime(event.date)}`}
                       >
                         <span className="event-title">{event.title}</span>
