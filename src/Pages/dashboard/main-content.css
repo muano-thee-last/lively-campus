@@ -203,7 +203,9 @@ body.modal-open {
   opacity: 1; /* Fully visible */
   transform: translateX(0px);  /* Full size */
 }
-
+.overlay-content h2{
+  color: #003B5C;
+}
 .close-overlay-button {
   background: transparent;
   border: none;
@@ -263,7 +265,7 @@ body.modal-open {
   margin-bottom: 10px;
 }
 .commentor{
-  color: #000000;
+  color: #003B5C;
   font-size: medium;
 }
 .comment-text {

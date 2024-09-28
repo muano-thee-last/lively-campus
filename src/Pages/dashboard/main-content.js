@@ -4,16 +4,6 @@ import "./main-content.css";
 import profile from "./images-logos/profile-logo.jpg";
 import comments from "./images-logos/comments.jpeg";
 import { useCallback } from "react";
-
-const user = JSON.parse(sessionStorage.getItem("user"));
-const userData = {
-  name: user.displayName,
-  myImg: user.photoURL,
-};
-
-const { myImg, name} = userData;
-
-
 const tagGroups = {
   "Music & Dance": ["Music", "Dance"],
   "Sports": ["Sports"],
@@ -40,13 +30,24 @@ function MainContent() {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [currentEventId, setCurrentEventId] = useState(null);
   const [contentVisible, setContentVisible] = useState(false);
-
+  const [user, setUser] = useState({});
   const [comment, setComment] = useState(""); 
   const [error, setError] = useState(""); 
   const navigate = useNavigate();
   const userId = sessionStorage.getItem("uid");
 
   const sliderRefs = useRef({});
+  const userData = {
+    name: user.displayName,
+    myImg: user.photoURL,
+  };
+  
+  const { myImg, name} = userData;
+  
+  useEffect(() => {
+    setUser(JSON.parse(sessionStorage.getItem("user")));
+  }, []);
+  
   const fetchUserLikedEvents = useCallback(async () => {
     if (!userId) return;
   
