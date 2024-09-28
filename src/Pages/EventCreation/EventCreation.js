@@ -417,8 +417,13 @@ export default function EventCreation() {
 
       try {
         const response = await fetch(
-          `${WIMAN_API}/venues/${venueId}/reservations`
-        );
+          `${WIMAN_API}/venues/${venueId}/reservations`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${wimanBearerKey}`,
+          }
+        });
         const json = await response.json();
         setVenueAvailabilitySlots(json);
         console.log(json);
