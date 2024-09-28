@@ -1,58 +1,73 @@
 .notifications-container {
-    padding-left: 20px;
-    padding-top: 8px;
-    justify-content: center;
-    width: 100%;
-    padding-right: 20px;
-    margin: 10px;
-    flex: 1;
-
-  }
-  
+  padding-left: 20px;
+  padding-top: 8px;
+  justify-content: center;
+  width: 100%;
+  padding-right: 20px;
+  margin: 10px;
+  flex: 1;
+}
 
 .notifications-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .notification-item {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-    width: 100%;
-  }
-  
-  .notification-item:hover {
-    background-color: #e9e9e9;
-  }
-  
-  .notification-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 15px;
-    object-fit: cover;
-  }
-  
-  .notification-details {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .notification-event {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #333;
-  }
+  list-style-type: none;
+  padding: 0;
+}
 
-  
-  .notification-message {
-    color: #555;
-  }
-  
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  width: 100%;
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  background-color: #e9e9e9;
+}
+
+.notification-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover;
+}
+
+.notification-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-event {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.notification-message {
+  color: #555;
+}
+
+/* Unviewed notification style */
+.unviewed {
+  background-color: #f9f9f9; /* Light background for unviewed notifications */
+  font-weight: bold; /* Emphasize unviewed notifications */
+}
+
+/* Viewed notification style */
+.viewed {
+  background-color: #e9e9e9; /* Slightly darker background for viewed notifications */
+  font-weight: normal; /* Regular weight for viewed notifications */
+}
+
+/* Hover effects for both notification types */
+.notification-item:hover {
+  transform: scale(1.02); /* Slightly scale up on hover */
+  cursor: pointer; /* Change cursor to pointer */
+}
