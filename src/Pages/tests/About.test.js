@@ -50,7 +50,7 @@ describe('LandingPage Component', () => {
     expect(screen.getByText(/Login Mock/i)).toBeInTheDocument();
 
     // Close the modal
-    fireEvent.click(screen.getByLabelText(/Close/i));
+    fireEvent.click(screen.getByLabelText(/landing-close-button/i));
     expect(screen.queryByText(/Login Mock/i)).not.toBeInTheDocument();
   });
 });

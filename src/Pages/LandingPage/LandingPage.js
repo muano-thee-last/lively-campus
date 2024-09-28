@@ -224,7 +224,7 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
 function LoginModal({ handleCloseLogin }) {
   return (
     <div className="login-modal">
-      <button className="landing-close-button" onClick={handleCloseLogin}>X</button>
+      <button className="landing-close-button" onClick={handleCloseLogin} aria-label='landing-close-button'>X</button>
       <Login />
     </div>
   );
