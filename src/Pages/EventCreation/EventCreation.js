@@ -10,6 +10,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+import { FaTicketAlt } from 'react-icons/fa';
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import add from "./images-logos/add.svg";
 import location from "./images-logos/location.svg";
@@ -48,6 +49,7 @@ export default function EventCreation() {
     eventName: "",
     eventDescription: "",
     ticketPrice: 0,
+    availableTickets: 0,
     capacity: 0,
     eventDate: "",
     eventTime: "",
@@ -124,7 +126,10 @@ export default function EventCreation() {
   //     time: "10:00 - 22:00",
   //   },
   // ];
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    setUser(JSON.parse(sessionStorage.getItem("user")));
+  }, []);
 
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -241,7 +246,6 @@ export default function EventCreation() {
   async function handleSubmitButton() {
     // Validation: Check if all required fields are filled
 
-
     if (
       !eventData.eventName ||
       !eventData.eventDescription ||
@@ -251,10 +255,13 @@ export default function EventCreation() {
       !eventData.eventTime ||
       !eventData.eventLocation ||
       !selectedTags.length || // assuming selectedTags is an array
-      !image
+      !image ||
+      eventData.ticketPrice < 0 ||
+      !eventData.availableTickets ||
+      eventData.availableTickets < 0 ||
+      Number(eventData.availableTickets) > Number(eventData.capacity)
     ) {
       console.error("All fields must be filled out before submission.");
-      console.log(eventData)
       return; // Stop execution if any field is empty
     }
 
@@ -263,10 +270,8 @@ export default function EventCreation() {
     try {
       // Upload image and get download URL
       await uploadBytes(imageRef, image);
-      console.log("Uploaded a blob or file!");
 
       const url = await getDownloadURL(imageRef);
-      console.log("Image Download URL:", url);
 
       let headersList = {
         Accept: "*/*",
@@ -276,12 +281,12 @@ export default function EventCreation() {
 
       let bodyContent = JSON.stringify({
         organizerName: user.displayName,
-        organizerId: sessionStorage.getItem("userId"),
+        organizerId: user.uid,
         title: eventData.eventName,
         description: eventData.eventDescription,
         ticketPrice: Number(eventData.ticketPrice),
         capacity: Number(eventData.capacity),
-        availableTickets: Number(eventData.capacity),
+        availableTickets: Number(eventData.availableTickets),
         date: eventData.eventDate,
         time: eventData.eventTime,
         imageUrl: url,
@@ -289,24 +294,28 @@ export default function EventCreation() {
         venue: eventData.eventLocation,
         likes: 0,
         comments: [],
-      }); 
+        createdAt: new Date().toISOString(),
+        organizerImg: user.photoURL,
+      });
       let alertCampusBodyContent = JSON.stringify({
-        "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-        "type": "Type 1",
-        "description": "Emergency medical situation",
-        "location": {
-          "latitude": 0,
-          "longitude": 0
+        id: "d290f1ee-6c54-4b01-90e6-d701748f0851",
+        type: "Type 1",
+        description: "Emergency medical situation",
+        location: {
+          latitude: 0,
+          longitude: 0,
         },
-        "userId": "user123",
-        "createdAt": "2024-08-18T09:12:33.001Z"
+        userId: "user123",
+        createdAt: "2024-08-18T09:12:33.001Z",
       });
 
-      let notifyCampusSafety = await("https://virtserver.swaggerhub.com/2380759_1/CampusSafety/1.0.0/alerts", {
-        method: "POST",
-        headers: headersList,
-        body: alertCampusBodyContent,
-      });
+      let notifyCampusSafety =
+        await ("https://virtserver.swaggerhub.com/2380759_1/CampusSafety/1.0.0/alerts",
+        {
+          method: "POST",
+          headers: headersList,
+          body: alertCampusBodyContent,
+        });
 
       // Send the POST request
       let response = await fetch(EVENTS_API, {
@@ -314,8 +323,6 @@ export default function EventCreation() {
         headers: headersList,
         body: bodyContent,
       });
-
-
 
       console.log("Notify Campus Response Status:", notifyCampusSafety.status);
 
@@ -325,7 +332,6 @@ export default function EventCreation() {
       console.error("Error uploading image:", error);
       navigate("/dashboard");
     }
-
   }
 
   useEffect(() => {
@@ -440,7 +446,7 @@ export default function EventCreation() {
       }
       try {
         const response = await fetch(
-          `${WIMAN_API}/venues/${venueId}/reservations`,
+          `${WIMAN_API}/venues/${venueId}/reservations`
         );
         const json = await response.json();
         setVenueAvailabilitySlots(json);
@@ -545,7 +551,7 @@ export default function EventCreation() {
                 handleChange({
                   target: {
                     name: "capacity",
-                    value: `${venue.capacity}`
+                    value: `${venue.capacity}`,
                   },
                 });
                 closeLocationPopup();
@@ -604,7 +610,12 @@ export default function EventCreation() {
       if (validateTimeSelection()) {
         closeAvailableTimePopup(); // Call the function to close the popup if no errors
         setEventData((prevFormData) => {
-          return { ...prevFormData, eventDate: startDate, eventTime: startTime, eventVenue: venueId };
+          return {
+            ...prevFormData,
+            eventDate: startDate,
+            eventTime: startTime,
+            eventVenue: venueId,
+          };
         });
         setIsValidDateTime(true);
         console.log("Form submitted successfully!");
@@ -867,9 +878,11 @@ export default function EventCreation() {
                 <input
                   type="number"
                   onChange={handleChange}
-                  name={"ticketPrice"}
+                  name="ticketPrice"
                   value={eventData.ticketPrice}
-                  className="ticket-price"
+                  className={`ticket-price ${
+                    eventData.ticketPrice < 0 && "input-error"
+                  }`}
                   id={id + 1}
                   required
                 />
@@ -910,9 +923,7 @@ export default function EventCreation() {
                       <span>Date</span>
                       <img src={calendar} alt="calendar" />
                     </label>
-                    <h4
-                      className="selected-el"
-                    >
+                    <h4 className="selected-el">
                       {startDate === endDate ? (
                         <span>{startDate}</span>
                       ) : (
@@ -923,7 +934,7 @@ export default function EventCreation() {
                     </h4>
                   </div>
 
-                  <div className="detail-input">
+                  <div className="detail-input ">
                     <label htmlFor={id + 4} className="name-logo-title">
                       <span>Time</span>
                       <img src={clock} alt="clock" />
@@ -934,16 +945,31 @@ export default function EventCreation() {
                       </span>
                     </h4>
                   </div>
-                  <div className="detail-input">
+                  <div className="detail-input ">
                     <label htmlFor={id + "cap"} className="name-logo-title">
                       <span>Capacity</span>
                       <img src={person} alt="person" />
                     </label>
                     <h4 className="selected-el">
-                      <span>
-                        {eventData.capacity}
-                      </span>
+                      <span>{eventData.capacity}</span>
                     </h4>
+                  </div>
+                  <div className="detail-input " >
+                    <label htmlFor={id + "tic"} className="name-logo-title">
+                    Available Tickets
+                    <FaTicketAlt className="icon" height={20} width={20}/> 
+                    </label>
+                    <input
+                      type="number"
+                      onChange={handleChange}
+                      name="availableTickets"
+                      value={eventData.availableTickets}
+                      className={`${
+                        (eventData.availableTickets < 0 || Number(eventData.availableTickets) > Number(eventData.capacity)) && "input-error"
+                      } ticket-price`}
+                      id={id + "tic"}
+                      required
+                    />
                   </div>
                 </div>
               ) : (

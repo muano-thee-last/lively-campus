@@ -100,7 +100,7 @@ function Header({ handleButtonClick }) {
         <ul>
           <li><a href="#ticket">Ticket</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li><a href="#about">About Us</a></li>
+          <li><a href="/about">About Us</a></li>
           <li><button className="btn-secondary" onClick={handleButtonClick}>Login</button></li>
         </ul>
       </nav>

@@ -41,7 +41,7 @@
 #footer-4th-quator p{
     font-size: 0.6rem;
 }
-#footer h4,h5,p{
+#footer h4, #footer h5,#footer p{
     color: white;
 }
 #footer p{

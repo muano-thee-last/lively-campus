@@ -1,0 +1,67 @@
+.green-circle{
+    width: 15px;
+    height: 15px;
+    background-color: #4FBF26;
+    border-radius: 50%;
+}
+.grey-circle{
+    width: 15px;
+    height: 15px;
+    background-color: #3a3a3a;
+    border-radius: 50%;
+}
+.red-circle{
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+}
+.status-bar{
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+}
+.status{
+    color: #585858;
+    font-weight: 600;
+}
+.cards-container {
+    display: grid;
+    gap: 1rem;
+    justify-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    align-items: start;
+    margin-right: 12px;
+}
+@media screen and (max-width: 800px){
+    .cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        z-index: 200;
+        justify-content: center;
+        align-items: center;
+        
+    }
+    .card-width-height{
+        min-width: 355px;
+        
+    }
+
+}
+.approve-events-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+    padding-bottom: 50%;
+    overflow: hidden;
+}
+.filter-container{
+    display: flex;
+    justify-content: center;
+    margin: 0 0 50px 0;
+}
+
+.card-width-height{
+    max-width: 450px;
+}

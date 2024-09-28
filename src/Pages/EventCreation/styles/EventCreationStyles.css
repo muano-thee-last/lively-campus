@@ -8,8 +8,8 @@
 }
 
 .upload-image-section{
-  background-size: 100% 100%;
   background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 .container{
   display: flex;
@@ -21,15 +21,27 @@
   flex: 1;
 
 }
+.input-error {
+  border: 3px solid red !important;
+  outline: none;
+}
+.input-error:active {
+  border: 3px solid red !important;
+}
 .upload-image-section {
   display: flex;
   flex-direction: column;
+  height: 30vw;
   position: relative;
-  height: 250px;
   align-items: center;
   background-color: #d9d9d9;
   justify-content: center;
   margin-bottom: 12px;
+}
+@media screen and (max-width: 700px) {
+  .upload-image-section{
+    height: 250px;
+  }
 }
 .upload-image-section p {
   font-size: 16px;
@@ -101,6 +113,24 @@
   background-color: var(--primary-color);
   border-radius: 10px;
   border: 3px solid white;
+}
+.popup-overlay .title{
+  display: flex;
+  justify-content: space-between;
+}
+.popup-overlay #close-button{
+  height: 30px;
+  align-self: center;
+  background-color: white;
+  border-radius: 3px;
+  border: 2px solid var(--primary-color);
+  font-size: 18px;
+  font-weight: 500;
+  color: red;
+  transition: transform 0.2s;
+}
+#close-button:hover{
+  transform: scale(1.1);
 }
 
 .venue-search-bar{
@@ -338,9 +368,9 @@ display: none; /* For Webkit-based browsers */
 }
 .selected-el{
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 10px;
+  align-items: flex-start;
+  justify-content: left;
+  margin-left: 100px;
   
 }
 .event-details-block input, .detail-input input,
@@ -359,6 +389,8 @@ textarea {
 .ticket-price {
   text-align: center;
 }
+
+
 .event-date,
 .event-time {
   display: flex;
@@ -471,6 +503,10 @@ textarea {
     gap: 5px;
   }
 }
+.icon{
+  width: 24px;
+  height: 28px;
+}
 
 
 @media screen and (max-width: 376px) {
@@ -500,5 +536,4 @@ textarea {
     position: relative;
   }
 }
-
 

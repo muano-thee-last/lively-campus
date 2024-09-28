@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../dashboard/header'; // Adjust the path
 import SideBar from '../dashboard/side-bar'; // Adjust the path
-import EventDetails from './EventDetails'; // Adjust the path
-//import './ViewMoreDetails.css';
+import ApproveEvents from './ApproveEvents';
 
-function ViewMoreDetails() {
+function ApproveEventsPage() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const { id } = useParams();
 
@@ -15,15 +14,15 @@ function ViewMoreDetails() {
 
   return (
     <div id='main-footer-separator'>
-      <div id='ViewMoreDetails'>
+      <div>
         <Header toggleSidebar={toggleSidebar} />
         <div id='content'>
           <SideBar isSidebarOpen={isSidebarOpen} />
-          <EventDetails id={id} />
+          <ApproveEvents id={id} />
         </div>
       </div>
     </div>
   );
 }
 
-export default ViewMoreDetails;
+export default ApproveEventsPage;

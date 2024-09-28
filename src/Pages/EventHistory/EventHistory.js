@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import EventView from './eventView'; // Adjust the import path as needed
-import './EventHistory.css'; // Import the CSS file
+import EventView from './eventView'; 
+import './EventHistory.css'; 
 import Header from "../dashboard/header";
 import Footer from '../dashboard/footer';
 import SideBar from '../dashboard/side-bar';
@@ -10,7 +10,7 @@ function EventHistory() {
   const [eventDetails, setEventDetails] = useState([]);
   const [error, setError] = useState(null);
   const [currentUserName, setCurrentUserName] = useState('');
-  const [isSidebarOpen, setSidebarOpen] = useState(false); // Handle sidebar state
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);

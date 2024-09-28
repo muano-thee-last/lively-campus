@@ -12,6 +12,11 @@ import EventManagement from "./Pages/eventManagement/eventManagement";
 import TicketVerification from "./Pages/TicketVerification/ticketVerification";
 import TicketHistory from "./Pages/TicketHistory/ticketHistory";
 import EventHistory from "./Pages/EventHistory/EventHistory";
+import About from "./Pages/About/About";
+import BuyTicket from "./Pages/BuyTickets/purchase";
+import ApproveEventsPage from "./Pages/EventAproval/ApproveEventsPage";
+
+
 
 function App() {
   return (
@@ -29,6 +34,10 @@ function App() {
         <Route path="/ticketVerification" element={<TicketVerification/>} />
         <Route path="/ticket-history" element={<TicketHistory/>} />
         <Route path="/event-history" element={<EventHistory/>} />
+        <Route path="/about" element={<About/>} />
+        <Route path="/approve-events" element={<ApproveEventsPage/>} />
+        <Route path="/butTicket" element={<BuyTicket/>} />
+
 
       </Routes>
     </Router>
