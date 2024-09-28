@@ -43,7 +43,7 @@ function BuyTicket({ event }) {
         }
     }, [redirectUrl]);
 
-    return null; // No need to return any UI elements
+    return null; 
 }
 
 export default BuyTicket;

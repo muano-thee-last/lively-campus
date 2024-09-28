@@ -154,6 +154,26 @@ function SignIn() {
   return (
     <div className="sign-in-container">
       <div className="sign-in-box">
+      <div className="EmailSignin">
+          <p>Sign in with email</p>
+          <input
+            type="email"
+            className="email-input"
+            value={email}
+            onChange={handleEmailInput}
+            disabled={emailSent || isSendingEmail}
+            placeholder="Email"
+          />
+        </div>
+      <button
+          className="sign-in-button email"
+          onClick={sendEmailVerificationLink}
+          disabled={emailSent || isSendingEmail}
+        >
+          {isSendingEmail ? "Sending..." : emailSent ? "Verification Email Sent" : "Send Verification Link"}
+        </button>
+        <div className="or-divider">OR</div>
+
         <button
           className="sign-in-button google"
           onClick={() => Authenticate("Google", null, navigate)} 
@@ -169,28 +189,6 @@ function SignIn() {
           <img src={Lx} alt="Twitter Icon" className="options" />
           Continue with Twitter
         </button>
-
-        <div className="or-divider">OR</div>
-
-        <div className="EmailSignin">
-          <p>Sign in with email</p>
-          <input
-            type="email"
-            className="email-input"
-            value={email}
-            onChange={handleEmailInput}
-            disabled={emailSent || isSendingEmail}
-          />
-        </div>
-
-        <button
-          className="sign-in-button email"
-          onClick={sendEmailVerificationLink}
-          disabled={emailSent || isSendingEmail}
-        >
-          {isSendingEmail ? "Sending..." : emailSent ? "Verification Email Sent" : "Send Verification Link"}
-        </button>
-
         {error && <p className="error-message">{error}</p>}
         {emailSent && (
           <p className="success-message">
