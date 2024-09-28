@@ -9,7 +9,6 @@ import {
 import "./EventDetails.css";
 import "../EventCreation/styles/EventCreationStyles.css";
 import { Modal, Button } from "@mui/material";
-export default function EventDetails() {
 import '../EventCreation/styles/EventCreationStyles.css'; 
 //import BuyTickets from '../BuyTickets/BuyTickets';
 import BuyTicket from '../BuyTickets/purchase';
