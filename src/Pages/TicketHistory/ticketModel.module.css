@@ -1,0 +1,73 @@
+/* Modal overlay styling */
+.overlay {
+    background-color: rgba(0, 0, 0, 0.75);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Modal content styling */
+  .ticket-modal {
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .event-image {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .ticket-details {
+    text-align: center;
+  }
+  
+  .ticket-details h2 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+  
+  .ticket-details p {
+    margin: 5px 0;
+    font-size: 1rem;
+  }
+  
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .qr-code img {
+    width: 100px;
+    height: 100px;
+    margin: 10px 0;
+  }
+  
+  .close-btn {
+    background-color: #0056b3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .close-btn:hover {
+    background-color: #003d80;
+  }
+  
