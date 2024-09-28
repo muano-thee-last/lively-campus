@@ -210,6 +210,7 @@ function MainContent() {
             event.id === eventId ? { ...event, comments: [...event.comments, newComment] } : event
           );
           setEvents(updatedEvents); // Update the events state
+          submitComment(comment);
           setComment(""); // Clear the input after submission
         } else {
           console.error("Failed to update comments.");
@@ -218,11 +219,20 @@ function MainContent() {
         console.error("Error submitting comment:", error);
       }
     };
+    const submitComment = (comment) => {
+      const commentWithTimestamp = {
+        text: comment,
+        timestamp: new Date().toISOString(), // Save the timestamp when the comment is submitted
+      };
+    
+      // Save commentWithTimestamp in state, local storage, or your database as needed
+      console.log(commentWithTimestamp);
+    };
     
     
     const timeAgo = (timestamp) => {
       const currentTime = new Date();
-      const commentTime = new Date(timestamp);
+      const commentTime = new Date(timestamp); // This timestamp should be fixed from submission time
       const timeDifference = currentTime - commentTime; // Difference in milliseconds
     
       const minutesAgo = Math.floor(timeDifference / (1000 * 60)); // Convert to minutes
@@ -239,6 +249,8 @@ function MainContent() {
         return "Just now";
       }
     };
+    
+    
     
     const handleCommentsClick = (eventId) => {
       setCurrentEventId(eventId);
