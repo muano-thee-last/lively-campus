@@ -10,7 +10,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import { FaTicketAlt } from 'react-icons/fa';
+import { FaTicketAlt } from "react-icons/fa";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import add from "./images-logos/add.svg";
 import location from "./images-logos/location.svg";
@@ -91,41 +91,26 @@ export default function EventCreation() {
     "Alumni Reunion",
     "Networking Event",
   ];
+  const [venueSearchTerm, setVenueSearchTerm] = useState("");
+  const [filteredVenues, setFilteredVenues] = useState([]);
+  function handleVenueSearch(event) {
+    const searchTerm = event.target.value;
+    const searchTermLowerCase = searchTerm.toLowerCase();
+    setVenueSearchTerm(searchTerm);
 
-  // availableVenues = [
-  //   {
-  //     features: ["WiFi", "Projector"],
-  //     name: "The Great Hall",
-  //     location: "Wits University",
-  //     id: "GH001",
-  //     capacity: 500,
-  //     time: "10:00 AM - 8:00 PM",
-  //   },
-  //   {
-  //     features: ["Air Conditioning", "Sound System"],
-  //     name: "Senate Room",
-  //     location: "Senate Room, 2nd Floor",
-  //     id: "SR002",
-  //     capacity: 100,
-  //     time: "10:00 - 00:00 ",
-  //   },
-  //   {
-  //     features: ["WiFi", "Video Conferencing"],
-  //     name: "Computer Lab 1",
-  //     location: "The Wits Science Stadium",
-  //     id: "CL003",
-  //     capacity: 40,
-  //     time: "10:00 - 12:00",
-  //   },
-  //   {
-  //     features: ["Whiteboard", "Natural Light"],
-  //     name: "Sturrock Park",
-  //     location: "Wits University",
-  //     id: "SR004",
-  //     capacity: 1000,
-  //     time: "10:00 - 22:00",
-  //   },
-  // ];
+    // Filter available venues based on the search term
+    const filteredVenues = availableVenues.filter((venue) => {
+      return (
+        venue.venueId.toLowerCase().includes(searchTermLowerCase) ||
+        venue.campusName.toLowerCase().includes(searchTermLowerCase) ||
+        venue.buildingName.toLowerCase().includes(searchTermLowerCase) ||
+        venue.type.toLowerCase().includes(searchTermLowerCase)
+      );
+    });
+
+    // Update the state with the filtered venues
+    setFilteredVenues(filteredVenues);
+  }
   const [user, setUser] = useState({});
   useEffect(() => {
     setUser(JSON.parse(sessionStorage.getItem("user")));
@@ -346,6 +331,7 @@ export default function EventCreation() {
         });
         const json = await response.json();
         setAvailableVenues(json);
+        setFilteredVenues(json)
         console.log(json);
       } catch (error) {
         console.error("Error fetching venues:", error);
@@ -492,10 +478,7 @@ export default function EventCreation() {
     );
   }
 
-  const [venueSearchTerm, setVenueSearchTerm] = useState("");
-  function handleVenueSearch(event) {
-    setVenueSearchTerm(event.target.value);
-  }
+  
   function AddLocationContent() {
     return (
       <div className="card-container">
@@ -509,8 +492,9 @@ export default function EventCreation() {
           />
           <label htmlFor="search-bar"></label>
         </div>
-        {availableVenues.map((venue) => (
-          <div className="venue-card" key={venue.id}>
+
+        {filteredVenues.map((venue) => (
+          <div className="venue-card" key={venue.venueId}>
             <div className="venue-details">
               <iframe
                 title={`Map showing location of ${venue.buildingName} ${venue.venueId}`}
@@ -526,15 +510,12 @@ export default function EventCreation() {
                   <img src={location} alt="logo" height="25" width="25" />
                   <span>{`${venue.campusName} ${venue.buildingName} ${venue.venueId}`}</span>
                 </div>
-
                 <div className="logo-name">
                   <img src={person} alt="logo" height="25" width="25" />
                   <span>Max Capacity {venue.capacity}</span>
                 </div>
-
                 <div className="logo-name">
-                  Type:
-                  <span>{venue.type}</span>
+                  Type: <span>{venue.type}</span>
                 </div>
               </div>
             </div>
@@ -954,10 +935,10 @@ export default function EventCreation() {
                       <span>{eventData.capacity}</span>
                     </h4>
                   </div>
-                  <div className="detail-input " >
+                  <div className="detail-input ">
                     <label htmlFor={id + "tic"} className="name-logo-title">
-                    Available Tickets
-                    <FaTicketAlt className="icon" height={20} width={20}/> 
+                      Available Tickets
+                      <FaTicketAlt className="icon" height={20} width={20} />
                     </label>
                     <input
                       type="number"
@@ -965,7 +946,10 @@ export default function EventCreation() {
                       name="availableTickets"
                       value={eventData.availableTickets}
                       className={`${
-                        (eventData.availableTickets < 0 || Number(eventData.availableTickets) > Number(eventData.capacity)) && "input-error"
+                        (eventData.availableTickets < 0 ||
+                          Number(eventData.availableTickets) >
+                            Number(eventData.capacity)) &&
+                        "input-error"
                       } ticket-price`}
                       id={id + "tic"}
                       required
