@@ -258,7 +258,7 @@ const MainContent = () => {
             <ul className="today-event-list">
               {getTodayEvents().map(event => (
                 <li key={event.id} className="today-event">
-                  <Link to={`/details/${event.id}`}>
+                  <Link to={`/view-more-details/${event.id}`}>
                     <div className="today-event-title">{event.title}</div>
                     <div className="today-event-time">{formatEventTime(event.date)}</div>
                   </Link>
@@ -278,7 +278,7 @@ const MainContent = () => {
             <ul className="upcoming-event-list">
               {upcomingEvents.map(event => (
                 <li key={event.id} className="upcoming-event">
-                  <Link to={`/details/${event.id}`}>
+                  <Link to={`/view-more-details/${event.id}`}>
                     <div className="upcoming-event-title">{event.title}</div>
                     <div className="upcoming-event-datetime">{formatEventDateTime(event.date)}</div>
                   </Link>

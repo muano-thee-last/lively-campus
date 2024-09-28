@@ -19,7 +19,7 @@ const CalendarPopUpCard = ({ date, events, onClose }) => {
               {events.map(event => (
                 <Link 
                   key={event.id} 
-                  to={`/details/${event.id}`}
+                  to={`/view-more-details/${event.id}`}
                   className="calendar-popup-event" 
                   onClick={onClose}
                 >

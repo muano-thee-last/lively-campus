@@ -13,7 +13,7 @@ function ApproveEvents() {
   const navigate = useNavigate();
 
   const handleViewDetails = (id) => {
-    navigate(`/details/${id}`, { state: { approveEvent: true } });
+    navigate(`/view-more-details/${id}`, { state: { approveEvent: true } });
   };
 
   useEffect(() => {

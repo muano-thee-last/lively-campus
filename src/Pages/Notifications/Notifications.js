@@ -69,7 +69,7 @@ function Notifications() {
   }, []);
 
   const handleViewNotification = (id) => {
-    navigate(`/details/${id}`);
+    navigate(`/view-more-details/${id}`);
   };
 
   const isToday = (dateString) => {
