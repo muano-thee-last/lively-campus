@@ -1,3 +1,7 @@
+#content{
+    display: flex;
+    margin-top: 0 !important;
+}
 .green-circle{
     width: 15px;
     height: 15px;

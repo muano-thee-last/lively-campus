@@ -1,45 +1,64 @@
+/* Sidebar layout */
 #side-bar {
+    width: 80px; /* Collapsed width */
+    background-color: #fff; /* Dark background color */
+    color: var(--primary-color); /* Light text color */
+    height: 100vh;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    padding-left: 0.7%;
-    transition: flex 0.3s ease-in-out;
-    z-index: 1000;
-    margin-right: 0.9%;
-}
-
-.sidebar-logos {
+    align-items: center;
+    transition: width 0.3s ease; /* Smooth transition when expanding/collapsing */
+  }
+  
+  #side-bar.expanded {
+    width: 250px; /* Expanded width */
+  }
+  
+  /* Sidebar items (links) */
+  .sidebar-item {
+    width: 100%;
     display: flex;
     align-items: center;
-    margin-bottom: 12%;
-    flex-shrink: 0;
-    transition: all 0.3s ease-in-out;
-}
-
-.sidebar-logos p {
-    color: #003B5C;
-    white-space: nowrap;
-    font-weight: bold;
-    transition: opacity 0.3s ease-in-out;
-    opacity: 1;
-}
-
-.post-history-logos {
-    height: 8.8vh;
-    max-width: 100%;
-    margin-left: -6%;
-}
-.history-logos {
-    height: 8.7vh;
-    max-width: 100%;
-}
-
-
-.event-ticket-logos {
-    height: 7.5vh;
-    max-width: 100%;
-    padding: 2%;
-}
-
+    padding: 15px 10px;
+    text-decoration: none;
+    color: inherit; /* Inherit text color from parent */
+    transition: background-color 0.3s ease;
+  }
+  
+  .sidebar-item:hover {
+    background-color: #34495e; /* Highlight on hover */
+    border-radius: 5px;
+  }
+  
+  .sidebar-icon {
+    font-size: 28px; /* Size of the icons */
+    margin-right: 15px; /* Space between icon and text */
+  }
+  
+  .sidebar-item p {
+    margin: 0;
+    font-size: 16px; /* Text size for sidebar items */
+  }
+  
+  /* Collapsed Sidebar */
+  .collapsed .sidebar-item p {
+    display: none; /* Hide text when collapsed */
+  }
+  
+  .collapsed .sidebar-item {
+    justify-content: center; /* Center icons when collapsed */
+  }
+  
+  /* Adjust link positioning when expanded */
+  .expanded .sidebar-item {
+    justify-content: flex-start;
+  }
+  
+  /* Custom transition for smooth effect */
+  #side-bar, .sidebar-item {
+    transition: all 0.3s ease;
+  }
 
 
 #side-bar.expanded .sidebar-logos p {

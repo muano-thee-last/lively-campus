@@ -1,37 +1,33 @@
-import React from 'react';
-import calender from './images-logos/event-calender.png';
-import ticketlogo from './images-logos/ticket-history.png';
-import postlogo from './images-logos/post-event.jpg';
-import eventhistory from './images-logos/event-history.png';
-import './side-bar.css';
-
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Event, History, PostAdd, EventAvailable, CheckCircle } from "@mui/icons-material"; // Import MUI icons
+import './side-bar.css'; // CSS for styling
 
 function SideBar({ isSidebarOpen }) {
   return (
-    <nav id='side-bar' className={isSidebarOpen ? 'expanded' : 'collapsed'} role="navigation">
-      <Link to='/event-calendar' className='sidebar-logos'>
-        <img className='event-ticket-logos' src={calender} alt="Event Calendar" />
+    <nav id="side-bar" className={isSidebarOpen ? 'expanded' : 'collapsed'} role="navigation">
+      <Link to="/event-calendar" className="sidebar-item">
+        <Event className="sidebar-icon" />
         {isSidebarOpen && <p>Event Calendar</p>}
       </Link>
-      <Link to='/ticket-history' className='sidebar-logos'>
-        <img className='event-ticket-logos' src={ticketlogo} alt="Ticket History" />
+      <Link to="/ticket-history" className="sidebar-item">
+        <History className="sidebar-icon" />
         {isSidebarOpen && <p>Ticket History</p>}
       </Link>
-      <Link to='/post-event' className='sidebar-logos'>
-        <img className='post-history-logos' src={postlogo} alt="Post Event" />
+      <Link to="/post-event" className="sidebar-item">
+        <PostAdd className="sidebar-icon" />
         {isSidebarOpen && <p>Post Event</p>}
       </Link>
-      <Link to='/event-history' className='sidebar-logos'>
-        <img className='history-logos' src={eventhistory} alt="Event History" />
+      <Link to="/event-history" className="sidebar-item">
+        <EventAvailable className="sidebar-icon" />
         {isSidebarOpen && <p>Event History</p>}
       </Link>
-      <Link to="/approve-events" className='sidebar-logos'>
+      <Link to="/approve-events" className="sidebar-item">
+        <CheckCircle className="sidebar-icon" />
         {isSidebarOpen && <p>Approve Events</p>}
       </Link>
     </nav>
   );
 }
-
 
 export default SideBar;
