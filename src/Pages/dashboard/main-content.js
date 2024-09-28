@@ -263,6 +263,13 @@ function MainContent() {
       setCurrentEventId(null);
       document.body.style.overflow = "auto"; // Re-enable scrolling
     };
+    useEffect(() => {
+      document.body.style.overflow = "auto"; // Enable scrolling on initial load
+  
+      return () => {
+        document.body.style.overflow = "auto"; // Cleanup: Ensure scrolling is re-enabled when the component is unmounted
+      };
+    }, []);
 
   const handleScroll = (slider, direction) => {
     if (slider && slider.current) {
