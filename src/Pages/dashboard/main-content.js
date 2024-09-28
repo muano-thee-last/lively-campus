@@ -183,8 +183,8 @@ function MainContent() {
         const newComment = {
           text: comment,
           timestamp: new Date().toLocaleString(), // Get the current date and time
-          userName: "Your Name", // Replace with actual user name
-          userProfilePic: "https://path-to-profile-pic.jpg", // Replace with actual profile picture URL
+          userName: name, // Replace with actual user name
+          userProfilePic: myImg, // Replace with actual profile picture URL
         };
     
         // Append the new comment to the existing comments
@@ -467,10 +467,10 @@ function MainContent() {
       <div className="comments-list scrollable-element">
   {currentEventId && events.find(e => e.id === currentEventId)?.comments.map((com, idx) => (
     <div className="comment-img-comment">
-      <img src={myImg} alt={`${com.userName}'s profile`} className="profile-pic" />
+      <img src={com.userProfilePic} alt={`${com.userName}'s profile`} className="profile-pic" />
           <div key={idx} className="comment">
       <div className="comment-content">
-        <h5 className="commentor">{name}</h5> {/* Display the user's name */}
+        <h5 className="commentor">{com.userName}</h5> {/* Display the user's name */}
         <p>{com.text}</p> {/* Display the comment text */}
         <small>{timeAgo(com.timestamp)}</small> {/* Display the relative time */}
       </div>
