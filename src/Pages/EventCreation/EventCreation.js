@@ -39,7 +39,7 @@ export default function EventCreation() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [wimanBearerKey, setWimanBearerKey] = useState("");
   const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const endDate = "";
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
@@ -331,7 +331,7 @@ export default function EventCreation() {
         });
         const json = await response.json();
         setAvailableVenues(json);
-        setFilteredVenues(json)
+        setFilteredVenues(json);
         console.log(json);
       } catch (error) {
         console.error("Error fetching venues:", error);
@@ -342,6 +342,7 @@ export default function EventCreation() {
 
   const [venueId, setVenueId] = useState("");
   const [venueAvailabilitySlots, setVenueAvailabilitySlots] = useState([]);
+
   useEffect(() => {
     const getVenueAvailability = async () => {
       function timeToMinutes(time) {
@@ -358,78 +359,62 @@ export default function EventCreation() {
         return `${hours}:${mins}:00`;
       }
 
-      // Helper function to add days to a date
-      function addDays(date, days) {
-        const result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
-      }
-
       // Helper function to format date as "YYYY-MM-DD"
       function formatDate(date) {
         return date.toISOString().split("T")[0];
       }
 
-      function findAvailableTimeBetweenDates(
+      function findAvailableTimeForDate(
         events,
         startDate,
-        endDate,
         startTime = "00:00:00",
         endTime = "24:00:00"
       ) {
         const startOfDay = timeToMinutes(startTime); // Custom start time in minutes
         const endOfDay = timeToMinutes(endTime); // Custom end time in minutes
 
-        let currentDate = new Date(startDate);
-        const end = new Date(endDate);
+        const currentDateString = formatDate(new Date(startDate));
+
+        // Extract occupied time slots for the selected date
+        const occupiedSlots =
+          events[currentDateString]?.map((event) => {
+            const [startTime, endTime] = event.time.split("-");
+            return {
+              start: timeToMinutes(startTime),
+              end: timeToMinutes(endTime),
+            };
+          }) || [];
+
+        // Sort occupied slots by start time
+        occupiedSlots.sort((a, b) => a.start - b.start);
+
+        let lastEndTime = startOfDay;
         const availableIntervals = [];
 
-        // Iterate over each day in the date range
-        while (currentDate <= end) {
-          const currentDateString = formatDate(currentDate);
-
-          // Extract occupied time slots for the current date
-          const occupiedSlots =
-            events[currentDateString]?.map((event) => {
-              const [startTime, endTime] = event.time.split("-");
-              return {
-                start: timeToMinutes(startTime),
-                end: timeToMinutes(endTime),
-              };
-            }) || [];
-
-          // Sort occupied slots by start time
-          occupiedSlots.sort((a, b) => a.start - b.start);
-
-          let lastEndTime = startOfDay;
-
-          // Find available intervals between events
-          for (const slot of occupiedSlots) {
-            if (slot.start > lastEndTime) {
-              availableIntervals.push({
-                date: currentDateString,
-                start: minutesToTime(lastEndTime),
-                end: minutesToTime(slot.start),
-              });
-            }
-            lastEndTime = Math.max(lastEndTime, slot.end);
-          }
-
-          // Check for available time after the last event
-          if (lastEndTime < endOfDay) {
+        // Find available intervals between events
+        for (const slot of occupiedSlots) {
+          if (slot.start > lastEndTime) {
             availableIntervals.push({
               date: currentDateString,
               start: minutesToTime(lastEndTime),
-              end: minutesToTime(endOfDay),
+              end: minutesToTime(slot.start),
             });
           }
+          lastEndTime = Math.max(lastEndTime, slot.end);
+        }
 
-          // Move to the next day
-          currentDate = addDays(currentDate, 1);
+        // Check for available time after the last event
+        if (lastEndTime < endOfDay) {
+          availableIntervals.push({
+            date: currentDateString,
+            start: minutesToTime(lastEndTime),
+            end: minutesToTime(endOfDay),
+          });
         }
 
         return availableIntervals;
       }
+
       try {
         const response = await fetch(
           `${WIMAN_API}/venues/${venueId}/reservations`
@@ -439,6 +424,8 @@ export default function EventCreation() {
         console.log(json);
       } catch (error) {
         console.error("Error fetching venue availability:", error);
+
+        // Mock data for testing
         const events = {
           "2024-09-18": [
             { event_name: "Product Launch", time: "10:00:00-12:00:00" },
@@ -450,13 +437,14 @@ export default function EventCreation() {
             { event_name: "Lunch with Investors", time: "13:00:00-14:30:00" },
           ],
         };
-        setVenueAvailabilitySlots(
-          findAvailableTimeBetweenDates(events, startDate, endDate)
-        );
+        setVenueAvailabilitySlots(findAvailableTimeForDate(events, startDate));
       }
     };
-    getVenueAvailability();
-  }, [venueId, startDate, endDate]);
+
+    if (venueId && startDate) {
+      getVenueAvailability();
+    }
+  }, [venueId, startDate]);
 
   function AddTagContent() {
     return (
@@ -478,7 +466,6 @@ export default function EventCreation() {
     );
   }
 
-  
   function AddLocationContent() {
     return (
       <div className="card-container">
@@ -557,7 +544,7 @@ export default function EventCreation() {
   function AddVenueTimeContent() {
     const validateTimeSelection = () => {
       const startDateTime = new Date(`${startDate}T${startTime}`);
-      const endDateTime = new Date(`${endDate}T${endTime}`);
+      const endDateTime = new Date(`${startDate}T${endTime}`);
 
       // Ensure end time is after start time
       if (startDateTime >= endDateTime) {
@@ -566,19 +553,21 @@ export default function EventCreation() {
         return false;
       }
 
-      // Check if the selected time is within available slots
+      // Check if the selected time is within available slots for the selected date
       for (const slot of venueAvailabilitySlots) {
-        const slotStart = new Date(`${slot.date}T${slot.start}`);
-        const slotEnd = new Date(`${slot.date}T${slot.end}`);
+        if (slot.date === startDate) {
+          const slotStart = new Date(`${slot.date}T${slot.start}`);
+          const slotEnd = new Date(`${slot.date}T${slot.end}`);
 
-        // Check if the selected time is outside any slot
-        if (startDateTime >= slotStart && endDateTime <= slotEnd) {
-          setError("");
-          return true;
+          // Check if the selected time range is within the slot
+          if (startDateTime >= slotStart && endDateTime <= slotEnd) {
+            setError("");
+            return true;
+          }
         }
       }
 
-      // If no slot matches
+      // If no matching slot
       setError("The selected time is outside of available slots.");
       setIsValidDateTime(false);
       return false;
@@ -589,15 +578,14 @@ export default function EventCreation() {
 
       // Check if the time is valid before proceeding
       if (validateTimeSelection()) {
-        closeAvailableTimePopup(); // Call the function to close the popup if no errors
-        setEventData((prevFormData) => {
-          return {
-            ...prevFormData,
-            eventDate: startDate,
-            eventTime: startTime,
-            eventVenue: venueId,
-          };
-        });
+        closeAvailableTimePopup(); // Close the popup if no errors
+        setEventData((prevFormData) => ({
+          ...prevFormData,
+          eventDate: startDate,
+          eventStartTime: startTime,
+          eventEndTime: endTime,
+          eventVenue: venueId,
+        }));
         setIsValidDateTime(true);
         console.log("Form submitted successfully!");
       }
@@ -608,7 +596,7 @@ export default function EventCreation() {
         <form onSubmit={handleSubmit}>
           <div className="detail-input">
             <label htmlFor={id + 29} className="name-logo-title">
-              <span>Start Date</span>
+              <span>Date</span>
               <img src={calendar} alt="calendar" />
             </label>
             <input
@@ -619,21 +607,7 @@ export default function EventCreation() {
               className="event-date"
               id={id + 29}
               required
-            />
-          </div>
-          <div className="detail-input">
-            <label htmlFor={id + 30} className="name-logo-title">
-              <span>End Date</span>
-              <img src={calendar} alt="calendar" />
-            </label>
-            <input
-              type="date"
-              onChange={(e) => setEndDate(e.target.value)}
-              name="endDate"
-              value={endDate}
-              className="event-date"
-              id={id + 30}
-              required
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
 
@@ -641,68 +615,71 @@ export default function EventCreation() {
             Available Slots
           </Typography>
 
-          {startDate > endDate ? (
-            <Typography color="error" variant="body1">
-              Date Error: Start date cannot be later than end date.
-            </Typography>
-          ) : venueAvailabilitySlots.length > 0 ? (
-            <div>
-              <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Date</TableCell>
-                      <TableCell>Start Time</TableCell>
-                      <TableCell>End Time</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {venueAvailabilitySlots.map((slot, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{slot.date}</TableCell>
-                        <TableCell>{slot.start}</TableCell>
-                        <TableCell>{slot.end}</TableCell>
+          {startDate ? (
+            venueAvailabilitySlots.length > 0 ? (
+              <div>
+                <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Date</TableCell>
+                        <TableCell>Start Time</TableCell>
+                        <TableCell>End Time</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                      {venueAvailabilitySlots.map((slot, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{slot.date}</TableCell>
+                          <TableCell>{slot.start}</TableCell>
+                          <TableCell>{slot.end}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
 
-              <div className="detail-input">
-                <label htmlFor={id + 15} className="name-logo-title">
-                  <span>Start Time</span>
-                  <img src={clock} alt="clock" />
-                </label>
-                <input
-                  type="time"
-                  onChange={(e) => setStartTime(e.target.value)}
-                  name="startTime"
-                  value={startTime}
-                  className="event-date"
-                  id={id + 15}
-                  required
-                />
-              </div>
+                <div className="detail-input">
+                  <label htmlFor={id + 15} className="name-logo-title">
+                    <span>Start Time</span>
+                    <img src={clock} alt="clock" />
+                  </label>
+                  <input
+                    type="time"
+                    onChange={(e) => setStartTime(e.target.value)}
+                    name="startTime"
+                    value={startTime}
+                    className="event-date"
+                    id={id + 15}
+                    required
+                  />
+                </div>
 
-              <div className="detail-input">
-                <label htmlFor={id + 14} className="name-logo-title">
-                  <span>End Time</span>
-                  <img src={clock} alt="clock" />
-                </label>
-                <input
-                  type="time"
-                  onChange={(e) => setEndTime(e.target.value)}
-                  name="endTime"
-                  value={endTime}
-                  className="event-date"
-                  id={id + 14}
-                  required
-                />
+                <div className="detail-input">
+                  <label htmlFor={id + 14} className="name-logo-title">
+                    <span>End Time</span>
+                    <img src={clock} alt="clock" />
+                  </label>
+                  <input
+                    type="time"
+                    onChange={(e) => setEndTime(e.target.value)}
+                    name="endTime"
+                    value={endTime}
+                    className="event-date"
+                    id={id + 14}
+                    required
+                    min={startTime || "00:00"} // Set min time to startTime, default to "00:00"
+                  />
+                </div>
               </div>
-            </div>
+            ) : (
+              <Typography variant="body1" style={{ marginTop: "10px" }}>
+                No available time slots for the selected date.
+              </Typography>
+            )
           ) : (
             <Typography variant="body1" style={{ marginTop: "10px" }}>
-              No available time slots for the selected dates.
+              Please select a date.
             </Typography>
           )}
 
@@ -729,6 +706,7 @@ export default function EventCreation() {
       </div>
     );
   }
+
   let [colors, setColors] = useState({});
   function randomColor(tagName) {
     const letters = "0123456789ABCDEF";
@@ -866,6 +844,7 @@ export default function EventCreation() {
                   }`}
                   id={id + 1}
                   required
+                  min={0}
                 />
               </div>
 
@@ -908,9 +887,7 @@ export default function EventCreation() {
                       {startDate === endDate ? (
                         <span>{startDate}</span>
                       ) : (
-                        <span>
-                          {startDate} - {endDate}
-                        </span>
+                        <span>{startDate}</span>
                       )}
                     </h4>
                   </div>
@@ -953,6 +930,8 @@ export default function EventCreation() {
                       } ticket-price`}
                       id={id + "tic"}
                       required
+                      min={0}
+                      max={eventData.capacity}
                     />
                   </div>
                 </div>
