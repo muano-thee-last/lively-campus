@@ -24,9 +24,9 @@ function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode, location
       />
       <h2 style={styles.eventName}>{eventName}</h2>
       <div style={styles.detailsContainer}>
-        <p style={styles.eventName}><strong>Location:</strong> {location}</p>
-        <p style={styles.eventName}><strong>Time:</strong> {time} {date}</p>
-        <button onClick={handleOpenModal}>
+        <p style={styles.eventNamex}><strong>Location:</strong> {location}</p>
+        <p style={styles.eventNamex}><strong>Time:</strong> {time} {date}</p>
+        <button onClick={handleOpenModal} style={styles.button}>
           View Ticket
         </button>
       </div>
@@ -62,6 +62,12 @@ const styles = {
     fontSize: '1.5rem',
     textAlign: 'center',
     marginBottom: '20px',
+    color: 'blue',
+  },
+  eventNamex: {
+    fontSize: '1.5rem',
+    textAlign: 'center',
+    marginBottom: '20px',
     color: 'black',
   },
   detailsContainer: {
@@ -74,6 +80,11 @@ const styles = {
     borderRadius: '10px',
     marginBottom: '15px',
   },
+  button:{
+    background: 'blue',
+    color : 'white',   
+    minWidth : '50px'
+  }
 };
 
 export default TicketView;
