@@ -3,11 +3,14 @@ import hamburger from "./images-logos/hamburger.jpg";
 import { useNavigate } from "react-router-dom";
 import logo from "./images-logos/logo.png";
 import profile from "./images-logos/profile-logo.jpg";
-import notifications from "./images-logos/notification-logo.jpeg";
+import notificationsIcon from "./images-logos/notification-logo.jpeg";
 import "./header.css";
+
 function Header({ toggleSidebar }) {
   const [showFilters] = useState(false);
   const navigate = useNavigate();
+  const [pictureUrl, setPictureUrl] = useState("");
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const handleNotificationsClick = () => {
     navigate("/Notifications");
@@ -17,21 +20,119 @@ function Header({ toggleSidebar }) {
     navigate("/dashboard");
   };
 
-  const [pictureUrl, setPictureUrl] = useState("");
+  const deleteNotification = async (id) => {
+    try {
+      await fetch(
+        `https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      console.log(`Deleted notification: ${id}`);
+    } catch (error) {
+      console.error(`Error deleting notification ${id}:`, error);
+    }
+  };
+
+  const fetchAndCleanNotifications = React.useCallback(async (uid) => {
+    try {
+      let notificationsData;
+      const storedNotifications = sessionStorage.getItem("notifications");
+
+      if (storedNotifications) {
+        notificationsData = JSON.parse(storedNotifications);
+      } else {
+        const response = await fetch(
+          "https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications"
+        );
+        notificationsData = await response.json();
+      }
+
+      const viewedNotifications = await fetchViewedNotifications(uid);
+
+      const validNotifications = await Promise.all(
+        notificationsData.map(async (notification) => {
+          try {
+            const eventResponse = await fetch(
+              `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${notification.eventId}`
+            );
+            if (!eventResponse.ok) {
+              console.log(
+                `Event not found for notification: ${notification.id}`
+              );
+              await deleteNotification(notification.id);
+              return null;
+            }
+            return notification;
+          } catch (error) {
+            console.error(
+              `Error fetching event for notification ${notification.id}:`,
+              error
+            );
+            await deleteNotification(notification.id);
+            return null;
+          }
+        })
+      );
+      console.log(validNotifications);
+      const filteredNotifications = validNotifications.filter(
+        (notification) => notification !== null
+      );
+
+      sessionStorage.setItem(
+        "notifications",
+        JSON.stringify(filteredNotifications)
+      );
+
+      const unviewedCount = filteredNotifications.filter(
+        (notification) => !viewedNotifications.has(String(notification.eventId))
+      ).length;
+
+      setNotificationCount(unviewedCount);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      setNotificationCount(0);
+    }
+  }, []);
+
+  const fetchViewedNotifications = async (uid) => {
+    try {
+      const response = await fetch(
+        `https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications/viewed/${uid}`
+      );
+      if (response.ok) {
+        const viewedIds = await response.json();
+        return new Set(viewedIds.map(String));
+      } else {
+        console.error("Failed to fetch viewed notifications");
+        return new Set();
+      }
+    } catch (error) {
+      console.error("Error fetching viewed notifications:", error);
+      return new Set();
+    }
+  };
 
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("user"));
-    const getPictureUrl = () => {
+    if (user) {
       setPictureUrl(user.photoURL);
-    };
-    getPictureUrl();
-  }, [pictureUrl]);
+      fetchAndCleanNotifications(user.uid);
+    }
+  }, [fetchAndCleanNotifications]);
+
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user) {
+      fetchAndCleanNotifications(user.uid);
+    }
+  }, [fetchAndCleanNotifications]);
 
   return (
     <div id="header">
       <section className="header-right-section">
         <img
-          className="hamburger-logo pointer pointer"
+          className="hamburger-logo pointer"
           src={hamburger}
           alt="Menu"
           onClick={toggleSidebar}
@@ -42,15 +143,12 @@ function Header({ toggleSidebar }) {
           alt="Livelycampus Logo"
           onClick={handleDashboardNavigation}
         />
-        <h4 onClick={handleDashboardNavigation} className="pointer">Livelycampus</h4>
+        <h4 onClick={handleDashboardNavigation} className="pointer">
+          Livelycampus
+        </h4>
       </section>
       <section className="header-middle-section">
-        <input
-          type="text"
-          className="search"
-          placeholder="Search"
-          //onClick={handleSearchClick} // Show filters on click
-        />
+        <input type="text" className="search" placeholder="Search" />
         <button className="search-button">
           {/* Add content or icon for the search button */}
         </button>
@@ -79,13 +177,16 @@ function Header({ toggleSidebar }) {
         )}
       </section>
       <section className="header-left-section">
-        <img
-          id="notifications"
-          className="lively-campus-notifications pointer"
-          src={notifications}
-          alt="Notifications"
-          onClick={handleNotificationsClick}
-        />
+        <div className="notification-container">
+          <img
+            id="notifications"
+            className="lively-campus-notifications pointer"
+            src={notificationsIcon}
+            alt="Notifications"
+            onClick={handleNotificationsClick}
+          />
+          <span className="notification-counter">{notificationCount}</span>
+        </div>
         <img
           className="lively-campus-profile pointer"
           src={pictureUrl ? pictureUrl : profile}
