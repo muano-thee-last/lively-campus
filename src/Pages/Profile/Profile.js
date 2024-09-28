@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState, useCallback } from "react";
 
 import "../EventCreation/styles/Profile.css";
@@ -10,11 +10,11 @@ import witsBackground from "../EventCreation/images-logos/wits-background.png";
 import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
 import Footer from "../dashboard/footer";
-import profile from '../dashboard/images-logos/profile-logo.jpg';
-import comments from '../dashboard/images-logos/comments.jpeg';
+import profile from "../dashboard/images-logos/profile-logo.jpg";
+import comments from "../dashboard/images-logos/comments.jpeg";
 
 export default function Profile() {
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const [user, setUser] = useState({});
   const userId = sessionStorage.getItem("uid");
 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -34,17 +34,24 @@ export default function Profile() {
 
   const { myImg, name, title, gender, birthday, email, phone } = userData;
 
+  useEffect(() => {
+    setUser(JSON.parse(sessionStorage.getItem("user")));
+  }, []);
+
   const fetchUserLikedEvents = useCallback(() => {
-    fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`)
-      .then(response => response.json())
-      .then(data => {
+    fetch(
+      `https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
         const likedEventIds = data.likedEvents || [];
-        const filteredLikedEvents = events.filter(event => likedEventIds.includes(event.id));
+        const filteredLikedEvents = events.filter((event) =>
+          likedEventIds.includes(event.id)
+        );
         setLikedEvents(filteredLikedEvents);
       })
-      .catch(error => console.error("Error fetching liked events:", error));
+      .catch((error) => console.error("Error fetching liked events:", error));
   }, [events, userId]);
-
 
   useEffect(() => {
     fetchEvents();
@@ -56,18 +63,15 @@ export default function Profile() {
     }
   }, [events, fetchUserLikedEvents]);
 
-
   const fetchEvents = () => {
-    fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events')
-      .then(response => response.json())
-      .then(data => setEvents(data))
-      .catch(error => console.error("Error fetching events:", error));
+    fetch("https://us-central1-witslivelycampus.cloudfunctions.net/app/events")
+      .then((response) => response.json())
+      .then((data) => setEvents(data))
+      .catch((error) => console.error("Error fetching events:", error));
   };
 
-
   const toggleSidebar = () => {
-    setSidebarOpen(prev => !prev);
-    console.log(sessionStorage.getItem("uid"));
+    setSidebarOpen((prev) => !prev);
   };
 
   const decrementLike = (eventId) => {
@@ -85,16 +89,18 @@ export default function Profile() {
 
   const handleUnlike = (eventId) => {
     //Optimistic UI updates
-    const updatedLikedEvents = likedEvents.filter(event => event.id !== eventId);
+    const updatedLikedEvents = likedEvents.filter(
+      (event) => event.id !== eventId
+    );
     setLikedEvents(updatedLikedEvents);
 
     decrementLike(eventId).then((response) => {
       if (!response.ok) {
         console.error("Failed to decrement like:", response.json());
         //add back the event we failed to unlike
-        setLikedEvents([eventId,...updatedLikedEvents]);
-      }else{
-        console.log("Successfully decremented like",response.json());
+        setLikedEvents([eventId, ...updatedLikedEvents]);
+      } else {
+        console.log("Successfully decremented like", response.json());
       }
     });
   };
@@ -110,7 +116,11 @@ export default function Profile() {
         <SideBar isSidebarOpen={isSidebarOpen} />
         <div className="profile">
           <div className="wits-background-picture">
-            <img src={witsBackground} className="wits-background" alt="background" />
+            <img
+              src={witsBackground}
+              className="wits-background"
+              alt="background"
+            />
           </div>
           <div className="picture-container">
             <img src={myImg} className="profile-picture" alt="profile-pic" />
@@ -142,13 +152,18 @@ export default function Profile() {
           </div>
           <div className="additional-features-container">
             <div className="additional-features">
-              <h2 className="add-features-bold-title">Additional Functions
-              </h2>
-              <button className="additional-features-buttons" onClick={() => handleEventManagement()}>Manage your Events</button>
-              <button className="additional-features-buttons">Create an Event</button>
+              <h2 className="add-features-bold-title">Additional Functions</h2>
+              <button
+                className="additional-features-buttons"
+                onClick={() => handleEventManagement()}
+              >
+                Manage your Events
+              </button>
+              <button className="additional-features-buttons">
+                Create an Event
+              </button>
             </div>
           </div>
-
 
           {/* Liked Events Section */}
           <div className="liked-events-section">
@@ -161,11 +176,19 @@ export default function Profile() {
                       <h4 className="event-title">{event.title}</h4>
                     </div>
                     <div className="card-second-row">
-                      <img src={profile} alt="Profile" className="profile-image" />
+                      <img
+                        src={profile}
+                        alt="Profile"
+                        className="profile-image"
+                      />
                       <p className="event-organizer">{event.organizerName}</p>
                     </div>
                     <div className="card-third-row">
-                      <img className="event-images" src={event.imageUrl} alt="Event" />
+                      <img
+                        className="event-images"
+                        src={event.imageUrl}
+                        alt="Event"
+                      />
                     </div>
                     <div className="card-fourth-row">
                       <div className="like-comment">
@@ -174,11 +197,21 @@ export default function Profile() {
                           className="like-button active"
                           onClick={() => handleUnlike(event.id)}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" className="like-icon">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="24"
+                            height="24"
+                            className="like-icon"
+                          >
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                           </svg>
                         </button>
-                        <img src={comments} alt="Comments" className="comments-image" />
+                        <img
+                          src={comments}
+                          alt="Comments"
+                          className="comments-image"
+                        />
                         <p className="like-count">Likes: {event.likes}</p>
                       </div>
                     </div>

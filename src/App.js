@@ -14,6 +14,10 @@ import TicketHistory from "./Pages/TicketHistory/ticketHistory";
 import EventHistory from "./Pages/EventHistory/EventHistory";
 import About from "./Pages/About/About";
 import BuyTicket from "./Pages/BuyTickets/purchase";
+import ApproveEventsPage from "./Pages/EventAproval/ApproveEventsPage";
+
+
+
 function App() {
   return (
     <Router>
@@ -24,13 +28,14 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/event-calendar" element={<Calendar />} />
-        <Route path="/view-more-details/:id" element={<ViewMoreDetails />} />
+        <Route path="/details/:id" element={<ViewMoreDetails />} /> {/* Add this line */}
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/eventManagement" element={<EventManagement/>} />
         <Route path="/ticketVerification" element={<TicketVerification/>} />
         <Route path="/ticket-history" element={<TicketHistory/>} />
         <Route path="/event-history" element={<EventHistory/>} />
         <Route path="/about" element={<About/>} />
+        <Route path="/approve-events" element={<ApproveEventsPage/>} />
         <Route path="/butTicket" element={<BuyTicket/>} />
 
 

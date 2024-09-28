@@ -126,7 +126,10 @@ export default function EventCreation() {
   //     time: "10:00 - 22:00",
   //   },
   // ];
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    setUser(JSON.parse(sessionStorage.getItem("user")));
+  }, []);
 
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -278,7 +281,7 @@ export default function EventCreation() {
 
       let bodyContent = JSON.stringify({
         organizerName: user.displayName,
-        organizerId: sessionStorage.getItem("userId"),
+        organizerId: user.uid,
         title: eventData.eventName,
         description: eventData.eventDescription,
         ticketPrice: Number(eventData.ticketPrice),
@@ -291,6 +294,8 @@ export default function EventCreation() {
         venue: eventData.eventLocation,
         likes: 0,
         comments: [],
+        createdAt: new Date().toISOString(),
+        organizerImg: user.photoURL,
       });
       let alertCampusBodyContent = JSON.stringify({
         id: "d290f1ee-6c54-4b01-90e6-d701748f0851",
