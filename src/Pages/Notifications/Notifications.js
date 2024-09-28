@@ -4,6 +4,7 @@ import "./Notifications.css";
 
 function Notifications() {
   const [notificationsByDate, setNotificationsByDate] = useState({});
+  const [viewedNotifications, setViewedNotifications] = useState(new Set()); // Track viewed notifications
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const uid = sessionStorage.getItem("uid");
@@ -41,6 +42,7 @@ function Notifications() {
                 );
                 return null;
               }
+
               const eventData = await eventResponse.json();
 
               const timestampDate = new Date(
@@ -93,12 +95,30 @@ function Notifications() {
       }
     };
 
-    fetchNotifications();
-  }, []);
+    const fetchViewedNotifications = async () => {
+      try {
+        const response = await fetch(
+          `https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications/viewed/${uid}`
+        );
+        if (response.ok) {
+          const viewedIds = await response.json(); // Assuming the response is an array of IDs
+          console.log("Viewed notification IDs:", viewedIds);
+          // Create a Set from the array of IDs
+          setViewedNotifications(new Set(viewedIds));
+        } else {
+          console.error("Failed to fetch viewed notifications");
+        }
+      } catch (error) {
+        console.error("Error fetching viewed notifications:", error);
+      }
+    };
 
-  const handleViewNotification = async (notificationId, uid) => {
+    fetchNotifications();
+    fetchViewedNotifications(); // Fetch viewed notifications
+  }, [uid]);
+
+  const handleViewNotification = async (notificationId) => {
     try {
-      // Send a request to update the viewed notification
       const response = await fetch(
         `https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications/viewed/${uid}`,
         {
@@ -114,7 +134,6 @@ function Notifications() {
         throw new Error("Failed to update viewed notification");
       }
 
-      // Navigate to the notification details page
       navigate(`/view-more-details/${notificationId}`);
     } catch (error) {
       console.error("Error updating viewed notification:", error);
@@ -146,8 +165,12 @@ function Notifications() {
               {notificationsByDate[date].map((notification) => (
                 <li
                   key={notification.id}
-                  className="notification-item"
-                  onClick={() => handleViewNotification(notification.id, uid)} // Pass the uid here
+                  className={`notification-item ${
+                    viewedNotifications.has(notification.id)
+                      ? "viewed"
+                      : "unviewed"
+                  }`} // Apply class conditionally
+                  onClick={() => handleViewNotification(notification.id)} // Pass the uid here
                 >
                   <img
                     src={notification.imageUrl}

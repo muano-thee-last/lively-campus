@@ -22,11 +22,10 @@ function Header({ toggleSidebar }) {
 
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("user"));
-    const getPictureUrl = () => {
-      if (user) setPictureUrl(user.photoURL);
-    };
-    getPictureUrl();
-    fetchAndCleanNotifications();
+    if (user) {
+      setPictureUrl(user.photoURL);
+      fetchAndCleanNotifications(user.uid);
+    }
   }, []);
 
   const deleteNotification = async (id) => {
@@ -43,7 +42,7 @@ function Header({ toggleSidebar }) {
     }
   };
 
-  const fetchAndCleanNotifications = async () => {
+  const fetchAndCleanNotifications = async (uid) => {
     try {
       let notificationsData;
       const storedNotifications = sessionStorage.getItem("notifications");
@@ -57,7 +56,8 @@ function Header({ toggleSidebar }) {
         notificationsData = await response.json();
       }
 
-      // Filter and delete invalid notifications
+      const viewedNotifications = await fetchViewedNotifications(uid);
+
       const validNotifications = await Promise.all(
         notificationsData.map(async (notification) => {
           try {
@@ -69,38 +69,64 @@ function Header({ toggleSidebar }) {
                 `Event not found for notification: ${notification.id}`
               );
               await deleteNotification(notification.id);
-              return null; // Mark as invalid
+              return null;
             }
-            return notification; // Mark as valid
+            return notification;
           } catch (error) {
             console.error(
               `Error fetching event for notification ${notification.id}:`,
               error
             );
             await deleteNotification(notification.id);
-            return null; // Mark as invalid
+            return null;
           }
         })
       );
-
-      // Filter out null values (invalid notifications)
+      console.log(validNotifications);
       const filteredNotifications = validNotifications.filter(
         (notification) => notification !== null
       );
 
-      // Store only valid notifications back to sessionStorage
       sessionStorage.setItem(
         "notifications",
         JSON.stringify(filteredNotifications)
       );
 
-      // Set the notification count to the number of valid notifications
-      setNotificationCount(filteredNotifications.length);
+      const unviewedCount = filteredNotifications.filter(
+        (notification) => !viewedNotifications.has(String(notification.eventId))
+      ).length;
+
+      setNotificationCount(unviewedCount);
     } catch (error) {
       console.error("Error fetching notifications:", error);
-      setNotificationCount(0); // Set count to 0 in case of error
+      setNotificationCount(0);
     }
   };
+
+  const fetchViewedNotifications = async (uid) => {
+    try {
+      const response = await fetch(
+        `https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications/viewed/${uid}`
+      );
+      if (response.ok) {
+        const viewedIds = await response.json();
+        return new Set(viewedIds.map(String));
+      } else {
+        console.error("Failed to fetch viewed notifications");
+        return new Set();
+      }
+    } catch (error) {
+      console.error("Error fetching viewed notifications:", error);
+      return new Set();
+    }
+  };
+
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user) {
+      fetchAndCleanNotifications(user.uid);
+    }
+  }, []);
 
   return (
     <div id="header">
