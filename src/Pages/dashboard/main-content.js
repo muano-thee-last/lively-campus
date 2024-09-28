@@ -5,6 +5,14 @@ import profile from "./images-logos/profile-logo.jpg";
 import comments from "./images-logos/comments.jpeg";
 import { useCallback } from "react";
 
+const user = JSON.parse(sessionStorage.getItem("user"));
+const userData = {
+  name: user.displayName,
+  myImg: user.photoURL,
+};
+
+const { myImg, name} = userData;
+
 
 const tagGroups = {
   "Music & Dance": ["Music", "Dance"],
@@ -28,11 +36,13 @@ const tagGroups = {
 function MainContent() {
   const [events, setEvents] = useState([]);
   const [liked, setLiked] = useState({});
-  const [flippedCards, setFlippedCards] = useState({});
   const [showFeedback, setShowFeedback] = useState(false);
-  const [visibleComments, setVisibleComments] = useState({});
+  const [overlayVisible, setOverlayVisible] = useState(false);
+  const [currentEventId, setCurrentEventId] = useState(null);
+  const [contentVisible, setContentVisible] = useState(false);
 
   const [comment, setComment] = useState(""); 
+  const [error, setError] = useState(""); 
   const navigate = useNavigate();
   const userId = sessionStorage.getItem("uid");
 
@@ -98,7 +108,14 @@ function MainContent() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
+  useEffect(() => {
+    if (overlayVisible) {
+      // Use timeout to trigger class change after the overlay has mounted
+      setTimeout(() => setContentVisible(true), 10);
+    } else {
+      setContentVisible(false);
+    }
+  }, [overlayVisible]);
   const fetchEvents = () => {
     fetch("https://us-central1-witslivelycampus.cloudfunctions.net/app/events")
       .then((response) => {
@@ -142,6 +159,13 @@ function MainContent() {
   };
     // Function to handle comment submission
     const handleSubmit = async (eventId) => {
+      if (!comment.trim()) {
+        setError("Comment cannot be empty!"); // Set error if comment is empty
+        return;
+      }
+    
+      setError(""); // Clear error if the comment is valid
+    
       try {
         // Fetch the current comments for the event
         const response = await fetch(
@@ -154,10 +178,18 @@ function MainContent() {
     
         const eventData = await response.json();
     
-        // Append the new comment to the existing comments
-        const updatedComments = [...eventData.comments, comment];
+        // Create a new comment with timestamp, user name, and profile picture
+        const newComment = {
+          text: comment,
+          timestamp: new Date().toLocaleString(), // Get the current date and time
+          userName: "Your Name", // Replace with actual user name
+          userProfilePic: "https://path-to-profile-pic.jpg", // Replace with actual profile picture URL
+        };
     
-        // Update the event's comments
+        // Append the new comment to the existing comments
+        const updatedComments = [...eventData.comments, newComment];
+    
+        // Update the event's comments on the server
         const updateResponse = await fetch(
           `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${eventId}/comments`,
           {
@@ -172,9 +204,12 @@ function MainContent() {
         );
     
         if (updateResponse.ok) {
-          // Optionally update your local state to reflect the change
+          // Immediately update local state to reflect the new comment
+          const updatedEvents = events.map(event => 
+            event.id === eventId ? { ...event, comments: [...event.comments, newComment] } : event
+          );
+          setEvents(updatedEvents); // Update the events state
           setComment(""); // Clear the input after submission
-          handleFlip(eventId)
         } else {
           console.error("Failed to update comments.");
         }
@@ -183,12 +218,38 @@ function MainContent() {
       }
     };
     
-  const handleFlip = (eventId) => {
-    setFlippedCards((prevFlipped) => ({
-      ...prevFlipped,
-      [eventId]: !prevFlipped[eventId], // Toggle the flip state for this event
-    }));
-  };
+    
+    const timeAgo = (timestamp) => {
+      const currentTime = new Date();
+      const commentTime = new Date(timestamp);
+      const timeDifference = currentTime - commentTime; // Difference in milliseconds
+    
+      const minutesAgo = Math.floor(timeDifference / (1000 * 60)); // Convert to minutes
+      const hoursAgo = Math.floor(minutesAgo / 60);
+      const daysAgo = Math.floor(hoursAgo / 24);
+    
+      if (daysAgo > 0) {
+        return `${daysAgo}d ago`;
+      } else if (hoursAgo > 0) {
+        return `${hoursAgo}h ago`;
+      } else if (minutesAgo > 0) {
+        return `${minutesAgo}min ago`;
+      } else {
+        return "Just now";
+      }
+    };
+    
+    const handleCommentsClick = (eventId) => {
+      setCurrentEventId(eventId);
+      setOverlayVisible(true);
+      document.body.style.overflow = "hidden"; // Disable scrolling
+    };
+  
+    const closeOverlay = () => {
+      setOverlayVisible(false);
+      setCurrentEventId(null);
+      document.body.style.overflow = "auto"; // Re-enable scrolling
+    };
 
   const handleScroll = (slider, direction) => {
     if (slider && slider.current) {
@@ -245,12 +306,7 @@ function MainContent() {
     
     window.location.href = mailtoLink;
   };
-  const toggleCommentsVisibility = (eventId) => {
-    setVisibleComments((prev) => ({
-      ...prev,
-      [eventId]: !prev[eventId]
-    }));
-  };
+
 
   // Function to group events by tag group
   const getEventsByTagGroup = (group) => {
@@ -291,9 +347,7 @@ function MainContent() {
                   {groupedEvents.map((event, index) => (
                     <div className="dashboard-card" key={index}>
                       <div
-                        className={`card-inner ${
-                          flippedCards[event.id] ? "is-flipped" : ""
-                        }`}
+                       className="card-inner"
                       >
                         {/* Front Side */}
                         <div className="card-front">
@@ -339,8 +393,7 @@ function MainContent() {
                                 src={comments}
                                 alt="Comments"
                                 className="comments-image"
-                                onClick={() => handleFlip(event.id)} // Flip the card when comments icon is clicked
-                               
+                                onClick={() => handleCommentsClick(event.id)}
                               />
                               <p className="like-count">
                                 likes {event.likes}
@@ -365,7 +418,7 @@ function MainContent() {
         Leave a comment
         <button
           className="close-comment-button"
-          onClick={() => handleFlip(event.id)} // Close the comment section
+         // Close the comment section
         >
           X
         </button>
@@ -377,37 +430,10 @@ function MainContent() {
         onChange={(e) => setComment(e.target.value)} // Update state on change
       ></textarea>
       <div className="feedback1-buttons">
-        <button className="view-comments" onClick={() => toggleCommentsVisibility(event.id)}>Comments</button>
-        <button className="submit1-button" onClick={() => handleSubmit(event.id)}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" viewBox="0 0 24 24" fill="none">
-            <path d="M7.39999 6.32003L15.89 3.49003C19.7 2.22003 21.77 4.30003 20.51 8.11003L17.68 16.6C15.78 22.31 12.66 22.31 10.76 16.6L9.91999 14.08L7.39999 13.24C1.68999 11.34 1.68999 8.23003 7.39999 6.32003Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-            <path d="M10.11 13.6501L13.69 10.0601" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-          </svg>
-        </button>
+      
       </div>
                 {/* Conditionally render the comments view */}
-  {visibleComments[event.id] && (
-                <div className="comments-list-container">
-                  <h2>Comments</h2>
-                  <button
-                    className="close-comments-button"
-                    onClick={() => toggleCommentsVisibility(event.id)}
-                  >
-                    Close 
-                  </button>
-                  <div className="comments-list">
-                    {event.comments && event.comments.length > 0 ? (
-                      event.comments.map((com, idx) => (
-                        <div key={idx} className="comment">
-                          {com}
-                        </div>
-                      ))
-                    ) : (
-                      <div>No comments yet.</div>
-                    )}
-                  </div>
-                </div>
-              )}
+
     </div>
 
         </div>
@@ -428,13 +454,53 @@ function MainContent() {
           </div>
         );
       })}
+  {/* Overlay for comments */}
+  {overlayVisible && (
+  <div className={`overlay ${overlayVisible ? 'overlay-visible' : ''}`}>
+    <div className={`overlay-content ${contentVisible ? 'content-visible' : ''}`}>
+      <h2>Comments</h2>
+      <button className="close-overlay-button" onClick={closeOverlay}>
+        Close
+      </button>
+      <div className="comments-list scrollable-element">
+  {currentEventId && events.find(e => e.id === currentEventId)?.comments.map((com, idx) => (
+    <div className="comment-img-comment">
+      <img src={myImg} alt={`${com.userName}'s profile`} className="profile-pic" />
+          <div key={idx} className="comment">
+      <div className="comment-content">
+        <h5 className="commentor">{name}</h5> {/* Display the user's name */}
+        <p>{com.text}</p> {/* Display the comment text */}
+        <small>{timeAgo(com.timestamp)}</small> {/* Display the relative time */}
+      </div>
+    </div>
+    </div>
+
+  ))}
+</div>
+      <div className="post-comments">
+      <textarea
+        className="comment-input"
+        placeholder="Write a comment..."
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+      />
+      {error && <p className="comment-error-message">{error}</p>} {/* Show error message */}
+      <button className="submit-button" onClick={() => handleSubmit(currentEventId)}>
+        Submit
+      </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {showFeedback && (
         <div className="feedback-box">
           <p onClick={handleFeedbackClick}>Send us your feedback!</p>
         </div>
       )}
+       
     </div>
+    
   );
 }
 
