@@ -1,3 +1,6 @@
+[![codecov](https://codecov.io/gh/muano-thee-last/lively-campus/branch/main/graph/badge.svg)](https://codecov.io/gh/muano-thee-last/lively-campus)
+![Codecov Graph](https://codecov.io/gh/muano-thee-last/lively-campus/branch/main/graphs/tree.svg)
+
 link of the website : https://witslivelycampus.web.app/
 
 code coverage : https://app.codecov.io/gh/muano-thee-last/lively-campus
