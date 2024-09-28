@@ -1,6 +1,6 @@
 #content{
     display: flex;
-    margin-top: 0 !important;
+    margin-top: -50px !important;
 }
 .green-circle{
     width: 15px;
