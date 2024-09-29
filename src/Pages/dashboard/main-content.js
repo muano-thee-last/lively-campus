@@ -23,7 +23,7 @@ const tagGroups = {
 };
 
 
-function MainContent() {
+function MainContent({ searchQuery }) {
   const [events, setEvents] = useState([]);
   const [liked, setLiked] = useState({});
   const [showFeedback, setShowFeedback] = useState(false);
@@ -33,6 +33,7 @@ function MainContent() {
   const [user, setUser] = useState({});
   const [comment, setComment] = useState(""); 
   const [error, setError] = useState(""); 
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const navigate = useNavigate();
   const userId = sessionStorage.getItem("uid");
 
@@ -327,15 +328,22 @@ function MainContent() {
     window.location.href = mailtoLink;
   };
 
+  useEffect(() => {
+    const filtered = events.filter((event) =>
+      event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.organizerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+    setFilteredEvents(filtered);
+  }, [searchQuery, events]);
 
-  // Function to group events by tag group
-  const getEventsByTagGroup = (group) => {
+  // Modify the getEventsByTagGroup function to use filteredEvents
+  const getEventsByTagGroup = useCallback((group) => {
     const tagsInGroup = tagGroups[group];
-    return events.filter((event) =>
+    return filteredEvents.filter((event) =>
       event.tags.some((tag) => tagsInGroup.includes(tag))
     );
-  };
-
+  }, [filteredEvents]);
 
   return (
     <div id="dashboard-main-content">
