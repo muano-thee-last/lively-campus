@@ -138,14 +138,6 @@ function Header({ toggleSidebar, onSearch }) {
 
   const isDashboard = location.pathname === "/dashboard";
 
-  const handleNotificationsClick = () => {
-    navigate("/Notifications");
-  };
-
-  const handleDashboardNavigation = () => {
-    navigate("/dashboard");
-  };
-
   return (
     <div id="header">
       <section className="header-right-section">
@@ -171,6 +163,7 @@ function Header({ toggleSidebar, onSearch }) {
             placeholder="Search"
             value={searchQuery}
             onChange={handleSearchChange}
+            disabled={!isDashboard}
             inputProps={{ 'aria-label': 'search' }}
           />
           <IconButton type="submit" className="search-button" style={{scale: "2.5"}}>
