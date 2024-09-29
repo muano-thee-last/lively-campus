@@ -352,7 +352,7 @@ padding: 12%; */
   flex-direction: column;
   align-items: start;
   justify-content:space-around;
-  
+  transition: opacity 0.5s ease-in-out;
   
 }
 .card .event-content h2{
@@ -363,6 +363,10 @@ padding: 12%; */
   flex-direction: column;
   align-items: start;
   width: 43%;
+  background-color: rgba(0, 0, 0, 0.2); /* Black with transparency */
+  backdrop-filter: blur(10px); /* Blur effect */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 .event-card-description p{
  font-weight: bold;
@@ -556,7 +560,7 @@ padding: 12%; */
   display: none; /* Hidden on larger screens */
   font-size: 2rem;
   cursor: pointer;
-  color: #333;
+  color: white;
 }
 .burger {
   
