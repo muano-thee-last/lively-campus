@@ -385,7 +385,7 @@ function MainContent({ searchQuery }) {
                           <div className="card-second-row">
                             <img
                               src={event.organizerImg ? event.organizerImg : profile}
-                              style={event.organizerImg ? { borderRadius: 50 } : {}}
+                              style={event.organizerImg ? { borderRadius: "990px" } : {}}
                               alt="Profile"
                               className="profile-image"
                             />

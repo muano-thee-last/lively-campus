@@ -134,6 +134,7 @@ function Notifications() {
         throw new Error("Failed to update viewed notification");
       }
 
+
       navigate(`/view-more-details/${notificationId}`);
     } catch (error) {
       console.error("Error updating viewed notification:", error);
@@ -151,15 +152,16 @@ function Notifications() {
 
   return (
     <div className="notifications-container">
-      <h2>Notifications</h2>
-      <br />
-      {isLoading ? (
+      <h2 style={{"color" : "#003B5C"}}>Notifications</h2>
+      <br/>      
+      {isLoading ? ( // Display this while loading
         <div className="loading-message">Loading notifications...</div>
       ) : (
         Object.keys(notificationsByDate).map((date) => (
           <div key={date}>
-            <h3 className="notification-date">
-              {isToday(date) ? "Today" : date}
+            <h3 style={{"color" : "#003B5C"}}className="notification-date">
+              {isToday(date) ? 'Today' : date} {/* Show 'Today' if the notification is from today */}
+
             </h3>
             <ul className="notifications-list">
               {notificationsByDate[date].map((notification) => (
