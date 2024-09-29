@@ -18,6 +18,7 @@ import ApproveEventsPage from "./Pages/EventAproval/ApproveEventsPage";
 
 
 
+
 function App() {
   return (
     <Router>
@@ -37,6 +38,7 @@ function App() {
         <Route path="/about" element={<About/>} />
         <Route path="/buyTicket" element={<BuyTicket/>} />
         <Route path="/approve-events" element={<ApproveEventsPage/>} />
+
 
       </Routes>
     </Router>

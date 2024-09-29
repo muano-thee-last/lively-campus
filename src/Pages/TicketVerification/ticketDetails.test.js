@@ -1,36 +1,32 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import TicketInfo from './ticketDetails';
 
 describe('TicketInfo Component', () => {
-  test('renders no ticket information if ticket prop is null', () => {
+  test('renders "No ticket information available" when no ticket is passed', () => {
     render(<TicketInfo ticket={null} />);
 
-    // Check if the fallback message is displayed
-    const noTicketMessage = screen.getByText('No ticket information available');
-    expect(noTicketMessage).toBeInTheDocument();
+    // Check if the "No ticket information available" message is displayed
+    expect(screen.getByText(/No ticket information available/i)).toBeInTheDocument();
   });
 
-  test('renders ticket information correctly when ticket prop is provided', () => {
+  test('displays correct ticket information when ticket is provided', () => {
     const ticket = {
-      price: '$50',
-      purchaseDate: '2023-09-28',
+      price: 'R100',
+      purchaseDate: '2024-09-01',
       code: 'ABC123',
     };
 
     render(<TicketInfo ticket={ticket} />);
 
-    // Check if ticket price is rendered correctly
-    const priceElement = screen.getByText('$50');
-    expect(priceElement).toBeInTheDocument();
+    // Check if the ticket details are displayed correctly
+    expect(screen.getByText(/Ticket Price:/i)).toBeInTheDocument();
+    expect(screen.getByText(/R100/i)).toBeInTheDocument();
 
-    // Check if purchase date is rendered correctly
-    const dateElement = screen.getByText('2023-09-28');
-    expect(dateElement).toBeInTheDocument();
+    expect(screen.getByText(/Purchase Date:/i)).toBeInTheDocument();
+    expect(screen.getByText(/2024-09-01/i)).toBeInTheDocument();
 
-    // Check if ticket code is rendered correctly
-    const codeElement = screen.getByText('ABC123');
-    expect(codeElement).toBeInTheDocument();
+    expect(screen.getByText(/Ticket Code:/i)).toBeInTheDocument();
+    expect(screen.getByText(/ABC123/i)).toBeInTheDocument();
   });
 });

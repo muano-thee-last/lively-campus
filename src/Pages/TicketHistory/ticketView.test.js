@@ -1,53 +1,93 @@
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import TicketView from './ticketView';
-import TicketModal from './ticketModal'; // Import for verifying modal interaction
 
-jest.mock('./TicketModal', () => {
-  return ({ isOpen, onClose, eventName }) => (
-    isOpen ? <div data-testid="modal"><h1>{eventName}</h1></div> : null
-  );
+// Mock the TicketModal component
+jest.mock('./ticketModal', () => {
+  return function MockTicketModal({ isOpen, onClose, eventName }) {
+    return isOpen ? (
+      <div data-testid="mock-modal">
+        <p>{eventName}</p>
+        <button onClick={onClose}>Close Modal</button>
+      </div>
+    ) : null;
+  };
 });
+
+// Mock the image imports
+jest.mock('../../asserts/location_icon.jpg', () => 'mocked-location-icon.jpg');
+jest.mock('../../asserts/calender_icon.jpg', () => 'mocked-calendar-icon.jpg');
 
 describe('TicketView Component', () => {
   const mockProps = {
-    eventName: "Campus Party",
-    ticketPrice: "100",
-    purchaseDate: "2023-09-28",
-    ticketCode: "ABC123",
-    venue: "Wits Great Hall",
-    time: "19:00",
-    date: "2023-09-28",
-    imageUrl: "event.jpg",
+    eventName: 'Test Event',
+    ticketPrice: 50,
+    purchaseDate: '2023-07-01',
+    ticketCode: 'TEST123',
+    venue: 'Test Venue',
+    time: '19:00',
+    date: '2023-07-15',
+    imageUrl: 'test-image.jpg'
   };
 
-  test('renders TicketView with correct details', () => {
+  it('renders correctly with given props', () => {
     render(<TicketView {...mockProps} />);
 
-    // Verify event name is rendered
-    expect(screen.getByText('Campus Party')).toBeInTheDocument();
-
-    // Verify venue and time details
-    expect(screen.getByText(/Wits Great Hall/)).toBeInTheDocument();
-    expect(screen.getByText(/19:00 28 September 2023/)).toBeInTheDocument();
+    expect(screen.getByText('Test Event')).toBeInTheDocument();
+    expect(screen.getByText(/Location:/)).toHaveTextContent('Location: Test Venue');
+    expect(screen.getByText(/Time:/)).toHaveTextContent('Time: 19:00 15 July 2023');
+    expect(screen.getByRole('button', { name: 'View Ticket' })).toBeInTheDocument();
+    expect(screen.getByAltText('event')).toHaveAttribute('src', 'test-image.jpg');
   });
 
-  test('opens and closes the modal when button is clicked', () => {
+  it('opens modal when "View Ticket" button is clicked', () => {
     render(<TicketView {...mockProps} />);
 
-    // Verify that modal is not open initially
-    expect(screen.queryByTestId('modal')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'View Ticket' }));
 
-    // Click 'View Ticket' button to open the modal
-    fireEvent.click(screen.getByText('View Ticket'));
-    expect(screen.getByTestId('modal')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-modal')).toBeInTheDocument();
+    expect(screen.getByText('Test Event')).toBeInTheDocument();
+  });
 
-    // Verify that the modal displays event name
-    expect(screen.getByText('Campus Party')).toBeInTheDocument();
+  it('closes modal when close button in modal is clicked', () => {
+    render(<TicketView {...mockProps} />);
 
-    // Simulate closing the modal
-    fireEvent.click(screen.getByTestId('modal'));
-    expect(screen.queryByTestId('modal')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'View Ticket' }));
+    expect(screen.getByTestId('mock-modal')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close Modal' }));
+    expect(screen.queryByTestId('mock-modal')).not.toBeInTheDocument();
+  });
+
+  it('formats date correctly', () => {
+    render(<TicketView {...mockProps} />);
+
+    expect(screen.getByText(/Time:/)).toHaveTextContent('Time: 19:00 15 July 2023');
+  });
+
+  it('passes correct props to TicketModal', () => {
+    render(<TicketView {...mockProps} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'View Ticket' }));
+
+    expect(screen.getByTestId('mock-modal')).toBeInTheDocument();
+    expect(screen.getByText('Test Event')).toBeInTheDocument();
+  });
+
+  it('handles missing props gracefully', () => {
+    const incompleteProps = {
+      eventName: 'Incomplete Event',
+      imageUrl: 'incomplete-image.jpg'
+    };
+
+    render(<TicketView {...incompleteProps} />);
+
+    expect(screen.getByText('Incomplete Event')).toBeInTheDocument();
+    expect(screen.getByAltText('event')).toHaveAttribute('src', 'incomplete-image.jpg');
+    expect(screen.getByText(/Location:/)).toHaveTextContent('Location:');
+    expect(screen.getByText(/Time:/)).toHaveTextContent('Time:');
   });
 });
+
+//
