@@ -64,7 +64,11 @@ const MainContent = () => {
     setCurrentDate(newDate);
   };
 
-  const handleFilterDateChange = (e) => setFilterDate(e.target.value);
+  const handleFilterDateChange = (e) => {
+    const newDate = e.target.value ? new Date(e.target.value) : new Date();
+    setFilterDate(e.target.value);
+    setCurrentDate(newDate);
+  };
   const handleFilterTypeChange = (e) => setFilterType(e.target.value);
   const handleFilterLocationChange = (e) => setFilterLocation(e.target.value);
 
@@ -100,12 +104,12 @@ const MainContent = () => {
   };
 
   // New function to check if a day has events
-  const dayHasEvents = (day) => {
+  const dayHasEvents = (day, month, year) => {
     return filteredEvents.some(event => {
       const eventDate = new Date(event.date);
       return eventDate.getDate() === day && 
-             eventDate.getMonth() === currentMonth && 
-             eventDate.getFullYear() === currentYear;
+             eventDate.getMonth() === month && 
+             eventDate.getFullYear() === year;
     });
   };
 
@@ -115,8 +119,14 @@ const MainContent = () => {
 
   // Update the renderMiniCalendar function
   const renderMiniCalendar = () => {
-    const miniCalendarDays = [...Array(daysInMonth).keys()].map(day => day + 1);
-    const paddedDays = [...Array(firstDayOfMonth).fill(null), ...miniCalendarDays];
+    const miniCalendarDate = new Date(currentDate);
+    const miniCalendarMonth = miniCalendarDate.getMonth();
+    const miniCalendarYear = miniCalendarDate.getFullYear();
+    const miniCalendarDaysInMonth = new Date(miniCalendarYear, miniCalendarMonth + 1, 0).getDate();
+    const miniCalendarFirstDayOfMonth = new Date(miniCalendarYear, miniCalendarMonth, 1).getDay();
+
+    const miniCalendarDays = [...Array(miniCalendarDaysInMonth).keys()].map(day => day + 1);
+    const paddedDays = [...Array(miniCalendarFirstDayOfMonth).fill(null), ...miniCalendarDays];
     
     return (
       <div className="mini-calendar">
@@ -130,12 +140,12 @@ const MainContent = () => {
             <div 
               key={`mini-${index}`} 
               className={`mini-date ${
-                day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() 
+                day === today.getDate() && miniCalendarMonth === today.getMonth() && miniCalendarYear === today.getFullYear() 
                   ? 'highlight' 
-                  : day && dayHasEvents(day) 
-                    ? dayHasUserEvents(day) ? 'has-user-events' : 'has-events'
+                  : day && dayHasEvents(day, miniCalendarMonth, miniCalendarYear) 
+                    ? dayHasUserEvents(day, miniCalendarMonth, miniCalendarYear) ? 'has-user-events' : 'has-events'
                     : ''
-              }`}
+              } ${filterDate && day === new Date(filterDate).getDate() ? 'selected-date' : ''}`}
             >
               {day}
             </div>
@@ -146,12 +156,12 @@ const MainContent = () => {
   };
 
   // New function to check if a day has events created by the current user
-  const dayHasUserEvents = (day) => {
+  const dayHasUserEvents = (day, month, year) => {
     return filteredEvents.some(event => {
       const eventDate = new Date(event.date);
       return eventDate.getDate() === day && 
-             eventDate.getMonth() === currentMonth && 
-             eventDate.getFullYear() === currentYear &&
+             eventDate.getMonth() === month && 
+             eventDate.getFullYear() === year &&
              isUserEvent(event);
     });
   };
@@ -223,13 +233,6 @@ const MainContent = () => {
     };
   }, [currentMonth, currentYear]);
 
-  const limitEventsForMobile = (events, limit = 3) => {
-    if (window.innerWidth <= 768) {
-      return events.slice(0, limit);
-    }
-    return events;
-  };
-
   return (
     <div className="calendar-container">
       <div className="sidebar">
@@ -243,7 +246,14 @@ const MainContent = () => {
 
           <div className="filters">
             <h4>Filters</h4>
-            <input type="date" value={filterDate} onChange={handleFilterDateChange} />
+            <label htmlFor="date-filter">Date Filter</label>
+            <input 
+              id="date-filter"
+              type="date" 
+              value={filterDate} 
+              onChange={handleFilterDateChange}
+              max={new Date().toISOString().split('T')[0]}
+            />
             <select value={filterType} onChange={handleFilterTypeChange}>
               <option value="">All Types</option>
               {eventTypes.map(type => (
@@ -303,7 +313,12 @@ const MainContent = () => {
       <div className="calendar" ref={calendarRef}>
         <div className="calendar-header">
           <h2 className='viewing-month'>{months[currentMonth]} {currentYear}</h2>
-          <select className='select-month' onChange={handleMonthChange} value={currentMonth}>
+          <select 
+            className='select-month' 
+            onChange={handleMonthChange} 
+            value={currentMonth}
+            aria-label="Select month"
+          >
             {months.map((month, index) => (
               <option key={month} value={index}>{month}</option>
             ))}
@@ -320,12 +335,12 @@ const MainContent = () => {
           ))}
 
           {[...Array(daysInMonth).keys()].map(day => {
-            const dayEvents = limitEventsForMobile(filteredEvents.filter(event => {
+            const dayEvents = filteredEvents.filter(event => {
               const eventDate = new Date(event.date);
               return eventDate.getDate() === day + 1 && 
                      eventDate.getMonth() === currentMonth && 
                      eventDate.getFullYear() === currentYear;
-            }));
+            });
 
             const isToday = day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
             const isPastDay = new Date(currentYear, currentMonth, day + 1) < new Date().setHours(0, 0, 0, 0);
@@ -334,7 +349,9 @@ const MainContent = () => {
             return (
               <div 
                 key={day} 
-                className={`day ${isToday ? 'highlight-day' : ''} ${dayEvents.length > 0 ? hasUserEvents ? 'has-user-events' : 'has-events' : ''} ${isPastDay ? 'past-day' : ''}`}
+                className={`day ${isToday ? 'highlight-day' : ''} 
+                  ${dayEvents.length > 0 ? hasUserEvents ? 'has-user-events' : 'has-events' : ''} 
+                  ${isPastDay ? 'past-day' : ''}`}
                 onClick={() => handleDateClick(day + 1)}
               >
                 <span className="day-number">{day + 1}</span>

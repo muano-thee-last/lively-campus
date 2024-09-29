@@ -591,3 +591,12 @@
 }
 
 /* ... (keep remaining styles) ... */
+
+.selected-date {
+  background-color: #FFB347 !important; /* Light orange background for selected date */
+  border: 2px solid #FF8C00 !important; /* Dark orange border */
+  color: #000 !important;
+  font-weight: bold !important;
+}
+
+/* ... (keep remaining styles) ... */
