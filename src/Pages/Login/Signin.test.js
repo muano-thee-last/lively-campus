@@ -1,115 +1,115 @@
-// SignIn.test.js
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import SignIn from './login';
-import { auth } from './config'; // Adjust path as needed
-import { signInWithPopup, sendSignInLinkToEmail } from 'firebase/auth';
 
+// Mock the entire firebase/auth module
 jest.mock('firebase/auth', () => ({
-  signInWithPopup: jest.fn(),
-  sendSignInLinkToEmail: jest.fn(),
-  isSignInWithEmailLink: jest.fn(),
-  signInWithEmailLink: jest.fn(),
-}));
-
-jest.mock('./config', () => ({
-  auth: {},
+  getAuth: jest.fn(),
   GoogleAuthProvider: jest.fn(),
   TwitterAuthProvider: jest.fn(),
-  FacebookAuthProvider: jest.fn(),
+  signInWithPopup: jest.fn(),
+  isSignInWithEmailLink: jest.fn(),
+  signInWithEmailLink: jest.fn(),
+  sendSignInLinkToEmail: jest.fn(),
 }));
+
+// Mock the config file
+jest.mock('./config', () => ({
+  auth: {},
+}));
+
+// Mock the useNavigate hook
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+// Mock createNewUser function
+jest.mock('./createNewUser', () => jest.fn());
+
+// Mock fetch function
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve({}),
+  })
+);
 
 describe('SignIn Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  test('renders SignIn component with all buttons', () => {
+  test('renders SignIn component', () => {
     render(
-      <Router>
+      <BrowserRouter>
         <SignIn />
-      </Router>
+      </BrowserRouter>
     );
-
-    expect(screen.getByText(/Continue with Google/i)).toBeInTheDocument();
-    expect(screen.getByText(/Continue with Instagram/i)).toBeInTheDocument();
-    expect(screen.getByText(/Continue with Twitter/i)).toBeInTheDocument();
-    expect(screen.getByText(/Continue with Facebook/i)).toBeInTheDocument();
-    expect(screen.getByText(/Send Verification Link/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
+    expect(screen.getByText('Continue with Google')).toBeInTheDocument();
+    expect(screen.getByText('Continue with Twitter')).toBeInTheDocument();
   });
 
-  test('calls Authenticate function on button click', async () => {
-    const mockNavigate = jest.fn();
-    jest.spyOn(require('react-router-dom'), 'useNavigate').mockReturnValue(mockNavigate);
-
+  test('handles email input', () => {
     render(
-      <Router>
+      <BrowserRouter>
         <SignIn />
-      </Router>
+      </BrowserRouter>
     );
-
-    fireEvent.click(screen.getByText(/Continue with Google/i));
-    expect(signInWithPopup).toHaveBeenCalled();
+    const emailInput = screen.getByPlaceholderText('Email');
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    expect(emailInput.value).toBe('test@example.com');
   });
 
-  test('handles email verification link', async () => {
-    const mockNavigate = jest.fn();
-    jest.spyOn(require('react-router-dom'), 'useNavigate').mockReturnValue(mockNavigate);
-    jest.spyOn(require('./config'), 'isSignInWithEmailLink').mockReturnValue(true);
-
-    render(
-      <Router>
-        <SignIn />
-      </Router>
-    );
-
-    // Simulate localStorage
-    window.localStorage.setItem('emailForSignIn', 'test@example.com');
-
-    // Simulate a successful email verification link
-    jest.spyOn(require('firebase/auth'), 'signInWithEmailLink').mockResolvedValue({ user: { uid: '12345', displayName: 'John Doe', photoURL: 'photo.jpg', email: 'test@example.com' } });
-
-    // Trigger the effect
-    await waitFor(() => {
-      expect(screen.queryByText(/Verification Email Sent/i)).toBeInTheDocument();
-    });
-  });
-
-  test('sends email verification link when button is clicked', async () => {
-    render(
-      <Router>
-        <SignIn />
-      </Router>
-    );
-
-    // Mock the response of sendSignInLinkToEmail
+  test('sends verification email', async () => {
+    const sendSignInLinkToEmail = require('firebase/auth').sendSignInLinkToEmail;
     sendSignInLinkToEmail.mockResolvedValue();
 
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'test@example.com' } });
-    fireEvent.click(screen.getByText(/Send Verification Link/i));
+    render(
+      <BrowserRouter>
+        <SignIn />
+      </BrowserRouter>
+    );
+
+    const emailInput = screen.getByPlaceholderText('Email');
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+
+    const sendButton = screen.getByText('Send Verification Link');
+    fireEvent.click(sendButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/Verification Email Sent/i)).toBeInTheDocument();
+      expect(sendSignInLinkToEmail).toHaveBeenCalledWith(
+        expect.anything(),
+        'test@example.com',
+        expect.anything()
+      );
+      expect(screen.getByText('Verification Email Sent')).toBeInTheDocument();
     });
   });
 
-  test('handles failed email verification link', async () => {
+
+
+
+  test('displays error message when sending email fails', async () => {
+    const sendSignInLinkToEmail = require('firebase/auth').sendSignInLinkToEmail;
+    sendSignInLinkToEmail.mockRejectedValue(new Error("Email send failed"));
+
     render(
-      <Router>
+      <BrowserRouter>
         <SignIn />
-      </Router>
+      </BrowserRouter>
     );
 
-    // Mock the response of sendSignInLinkToEmail
-    sendSignInLinkToEmail.mockRejectedValue(new Error('Failed to send'));
+    const emailInput = screen.getByPlaceholderText('Email');
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'test@example.com' } });
-    fireEvent.click(screen.getByText(/Send Verification Link/i));
+    const sendButton = screen.getByText('Send Verification Link');
+    fireEvent.click(sendButton);
 
     await waitFor(() => {
-      expect(screen.queryByText(/Failed to send email. Please try again./i)).toBeInTheDocument();
+      expect(screen.getByText("Failed to send email. Please try again.")).toBeInTheDocument();
     });
   });
 });

@@ -28,6 +28,8 @@
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
     "react-transition-group": "^4.4.5",
+    "text-encoding": "^0.7.0",
+    "util": "^0.12.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -56,7 +58,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@testing-library/dom": "^8.11.1",
+    "@testing-library/dom": "^8.20.1",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/react-hooks": "^8.0.1",

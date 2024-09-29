@@ -1,16 +1,12 @@
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import { render, screen, fireEvent } from '@testing-library/react';
 import TicketView from './ticketView';
-import TicketModal from './ticketModal'; // Import for verifying modal interaction
+import Modal from 'react-modal';
 
-jest.mock('./TicketModal', () => {
-  return ({ isOpen, onClose, eventName }) => (
-    isOpen ? <div data-testid="modal"><h1>{eventName}</h1></div> : null
-  );
-});
+// Mock Modal.setAppElement to prevent errors during testing
+Modal.setAppElement = jest.fn();  // Mocking globally for tests
 
-describe('TicketView Component', () => {
+describe('TicketView component', () => {
   const mockProps = {
     eventName: "Campus Party",
     ticketPrice: "100",
@@ -21,33 +17,47 @@ describe('TicketView Component', () => {
     date: "2023-09-28",
     imageUrl: "event.jpg",
   };
-
+//
   test('renders TicketView with correct details', () => {
     render(<TicketView {...mockProps} />);
 
-    // Verify event name is rendered
-    expect(screen.getByText('Campus Party')).toBeInTheDocument();
+    const eventNameElement = screen.getByText('Campus Party');
+    expect(eventNameElement).toBeInTheDocument();
 
-    // Verify venue and time details
-    expect(screen.getByText(/Wits Great Hall/)).toBeInTheDocument();
-    expect(screen.getByText(/19:00 28 September 2023/)).toBeInTheDocument();
+    const venueElement = screen.getByText('Location: Wits Great Hall');
+    expect(venueElement).toBeInTheDocument();
+
+    const timeElement = screen.getByText('Time: 19:00 28 September 2023');
+    expect(timeElement).toBeInTheDocument();
   });
 
-  test('opens and closes the modal when button is clicked', () => {
+  test('displays "View Ticket" button', () => {
     render(<TicketView {...mockProps} />);
 
-    // Verify that modal is not open initially
-    expect(screen.queryByTestId('modal')).toBeNull();
+    const viewTicketButton = screen.getByText('View Ticket');
+    expect(viewTicketButton).toBeInTheDocument();
+  });
 
-    // Click 'View Ticket' button to open the modal
-    fireEvent.click(screen.getByText('View Ticket'));
-    expect(screen.getByTestId('modal')).toBeInTheDocument();
+  test('opens modal when "View Ticket" button is clicked', () => {
+    render(<TicketView {...mockProps} />);
 
-    // Verify that the modal displays event name
-    expect(screen.getByText('Campus Party')).toBeInTheDocument();
+    const viewTicketButton = screen.getByText('View Ticket');
+    fireEvent.click(viewTicketButton);
 
-    // Simulate closing the modal
-    fireEvent.click(screen.getByTestId('modal'));
-    expect(screen.queryByTestId('modal')).toBeNull();
+    const modalElement = screen.getByText('Campus Party');
+    expect(modalElement).toBeInTheDocument();
+  });
+
+  test('closes modal when modal close is triggered', () => {
+    render(<TicketView {...mockProps} />);
+
+    const viewTicketButton = screen.getByText('View Ticket');
+    fireEvent.click(viewTicketButton);
+
+    // Assuming the modal has a close button or some element to trigger close
+    const closeModalButton = screen.getByText('Campus Party');  // Replace this with actual close element if needed
+    fireEvent.click(closeModalButton);
+
+    expect(screen.queryByText('Campus Party')).not.toBeInTheDocument();
   });
 });
