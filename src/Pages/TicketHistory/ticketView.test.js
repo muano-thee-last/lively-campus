@@ -17,7 +17,7 @@ describe('TicketView component', () => {
     date: "2023-09-28",
     imageUrl: "event.jpg",
   };
-
+//
   test('renders TicketView with correct details', () => {
     render(<TicketView {...mockProps} />);
 
