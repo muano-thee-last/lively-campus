@@ -11,9 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import { FaTicketAlt } from 'react-icons/fa';
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes } from "firebase/storage";
 import add from "./images-logos/add.svg";
-import location from "./images-logos/location.svg";
 import calendar from "./images-logos/calendar.svg";
 import clock from "./images-logos/clock.svg";
 import upload from "./images-logos/upload.svg";
@@ -24,7 +23,7 @@ import person from "./images-logos/person.svg";
 import { storage } from "../../Pages/Login/config";
 import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../dashboard/footer";
 
 const EVENTS_API =
@@ -33,19 +32,33 @@ const EVENTS_API =
 const WIMAN_API = "https://wiman.azurewebsites.net/api/";
 
 export default function EventCreation() {
-  const [availableVenues, setAvailableVenues] = useState([]);
+  const location = useLocation();
+  const {editingEvent, isEditing} = location.state || {};
   const navigate = useNavigate();
+
+  const [availableVenues, setAvailableVenues] = useState([]);
   const [MAP_API_KEY, SET_MAP_API_KEY] = useState("");
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [wimanBearerKey, setWimanBearerKey] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  // Function to toggle sidebar
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
   };
 
-  const [eventData, setEventData] = useState({
+  const [eventData,setEventData] = useState(isEditing?{
+    eventName: editingEvent.title,
+    eventDescription: editingEvent.description,
+    ticketPrice: editingEvent.ticketPrice,
+    availableTickets: editingEvent.availableTickets,
+    capacity: editingEvent.capacity,
+    eventDate: editingEvent.date,
+    eventTime: editingEvent.time,
+    eventLocation: editingEvent.location,
+    eventVenue: editingEvent.venue,
+  }: {
     eventName: "",
     eventDescription: "",
     ticketPrice: 0,
@@ -59,12 +72,12 @@ export default function EventCreation() {
   const id = useId();
   const fileInputRef = useRef(null);
   const [image, setImage] = useState("");
-  const [imageUrlLocal, setImageUrlLocal] = useState("");
+  const [imageUrlLocal, setImageUrlLocal] = useState(isEditing ? editingEvent.imageUrl : "");
   const [isPopupTagOpen, setIsPopupTagOpen] = useState(false);
   const [isPopupLocationOpen, setIsPopupLocationOpen] = useState(false);
   const [isAvailableTimePopup, setIsAvailableTimePopup] = useState(false);
 
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState(isEditing ? editingEvent.tags : []);
   const aboutTags = [
     "Music",
     "Dance",
@@ -92,45 +105,12 @@ export default function EventCreation() {
     "Networking Event",
   ];
 
-  // availableVenues = [
-  //   {
-  //     features: ["WiFi", "Projector"],
-  //     name: "The Great Hall",
-  //     location: "Wits University",
-  //     id: "GH001",
-  //     capacity: 500,
-  //     time: "10:00 AM - 8:00 PM",
-  //   },
-  //   {
-  //     features: ["Air Conditioning", "Sound System"],
-  //     name: "Senate Room",
-  //     location: "Senate Room, 2nd Floor",
-  //     id: "SR002",
-  //     capacity: 100,
-  //     time: "10:00 - 00:00 ",
-  //   },
-  //   {
-  //     features: ["WiFi", "Video Conferencing"],
-  //     name: "Computer Lab 1",
-  //     location: "The Wits Science Stadium",
-  //     id: "CL003",
-  //     capacity: 40,
-  //     time: "10:00 - 12:00",
-  //   },
-  //   {
-  //     features: ["Whiteboard", "Natural Light"],
-  //     name: "Sturrock Park",
-  //     location: "Wits University",
-  //     id: "SR004",
-  //     capacity: 1000,
-  //     time: "10:00 - 22:00",
-  //   },
-  // ];
   const [user, setUser] = useState({});
   useEffect(() => {
     setUser(JSON.parse(sessionStorage.getItem("user")));
   }, []);
 
+  // Function to handle checkbox changes for tags
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     if (checked) {
@@ -141,21 +121,31 @@ export default function EventCreation() {
       );
     }
   };
+
+  // Function to handle file input click
   function handleDivClick() {
     fileInputRef.current.click();
   }
+
+  // Function to handle file change
   function handleFileChange(event) {
     setImage(event.target.files[0]);
     setImageUrlLocal(URL.createObjectURL(event.target.files[0]));
   }
+
+  // Function to handle form input changes
   function handleChange(event) {
     setEventData((prevFormData) => {
       return { ...prevFormData, [event.target.name]: event.target.value };
     });
   }
+
+  // Function to handle form submission
   function handleSubmit(event) {
     event.preventDefault();
   }
+
+  // Function to open tag popup
   function openTagPopup() {
     setIsPopupTagOpen(true);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -164,6 +154,8 @@ export default function EventCreation() {
       }
     );
   }
+
+  // Function to close tag popup
   function closeTagPopup() {
     setIsPopupTagOpen(false);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -173,6 +165,7 @@ export default function EventCreation() {
     );
   }
 
+  // Function to open location popup
   function openLocationPopup() {
     setIsPopupLocationOpen(true);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -181,6 +174,8 @@ export default function EventCreation() {
       }
     );
   }
+
+  // Function to close location popup
   function closeLocationPopup() {
     setIsPopupLocationOpen(false);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -189,6 +184,8 @@ export default function EventCreation() {
       }
     );
   }
+
+  // Function to open available time popup
   function openAvailableTimePopup() {
     setIsAvailableTimePopup(true);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -197,6 +194,8 @@ export default function EventCreation() {
       }
     );
   }
+
+  // Function to close available time popup
   function closeAvailableTimePopup() {
     setIsAvailableTimePopup(false);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -205,6 +204,7 @@ export default function EventCreation() {
       }
     );
   }
+
   useEffect(() => {
     const getGoogleKey = async () => {
       const url =
@@ -223,6 +223,7 @@ export default function EventCreation() {
 
     getGoogleKey();
   }, []);
+
   useEffect(() => {
     const getWimanBearerKey = async () => {
       const url =
@@ -243,35 +244,38 @@ export default function EventCreation() {
     getWimanBearerKey();
   }, []);
 
+  // Function to handle submit button click
   async function handleSubmitButton() {
     // Validation: Check if all required fields are filled
-
-    if (
-      !eventData.eventName ||
-      !eventData.eventDescription ||
-      !eventData.ticketPrice ||
-      !eventData.capacity ||
-      !eventData.eventDate ||
-      !eventData.eventTime ||
-      !eventData.eventLocation ||
-      !selectedTags.length || // assuming selectedTags is an array
-      !image ||
-      eventData.ticketPrice < 0 ||
-      !eventData.availableTickets ||
-      eventData.availableTickets < 0 ||
-      Number(eventData.availableTickets) > Number(eventData.capacity)
-    ) {
-      console.error("All fields must be filled out before submission.");
-      return; // Stop execution if any field is empty
+    if (!isEditing) {
+      if (
+        !eventData.eventName ||
+        !eventData.eventDescription ||
+        !eventData.ticketPrice ||
+        !eventData.capacity ||
+        !eventData.eventDate ||
+        !eventData.eventTime ||
+        !eventData.eventLocation ||
+        !selectedTags.length ||
+        !image ||
+        eventData.ticketPrice < 0 ||
+        !eventData.availableTickets ||
+        eventData.availableTickets < 0 ||
+        Number(eventData.availableTickets) > Number(eventData.capacity)
+      ) {
+        console.error("All fields must be filled out before submission.");
+        alert("Please fill out all the fields before submission.");
+        return; // Stop execution if any field is empty
+      }
     }
 
     const imageRef = ref(storage, `images/${image.name}`);
 
     try {
-      // Upload image and get download URL
-      await uploadBytes(imageRef, image);
-
-      const url = await getDownloadURL(imageRef);
+      let url = imageUrlLocal;
+      if(image){
+        await uploadBytes(imageRef, image);
+      }
 
       let headersList = {
         Accept: "*/*",
@@ -292,9 +296,9 @@ export default function EventCreation() {
         imageUrl: url,
         tags: selectedTags,
         venue: eventData.eventLocation,
-        likes: 0,
-        comments: [],
-        createdAt: new Date().toISOString(),
+        likes: isEditing? eventData.likes : 0,
+        comments: isEditing? eventData.comments : 0,
+        createdAt: isEditing? eventData.createdAt : new Date(),
         organizerImg: user.photoURL,
       });
       let alertCampusBodyContent = JSON.stringify({
@@ -317,12 +321,11 @@ export default function EventCreation() {
           body: alertCampusBodyContent,
         });
 
-      // Send the POST request
-      let response = await fetch(EVENTS_API, {
-        method: "POST",
-        headers: headersList,
-        body: bodyContent,
-      });
+        let response = await fetch(isEditing?`${EVENTS_API}/${editingEvent.id}`: EVENTS_API,{
+          method : isEditing? "PUT" : "POST",
+          headers: headersList,
+          body: bodyContent,
+        })
 
       console.log("Notify Campus Response Status:", notifyCampusSafety.status);
 
@@ -523,7 +526,7 @@ export default function EventCreation() {
               ></iframe>
               <div className="venue-info">
                 <div className="logo-name">
-                  <img src={location} alt="logo" height="25" width="25" />
+                  <img src="./images-logos/location.svg" alt="Location icon" height="25" width="25" />
                   <span>{`${venue.campusName} ${venue.buildingName} ${venue.venueId}`}</span>
                 </div>
 
@@ -608,7 +611,7 @@ export default function EventCreation() {
 
       // Check if the time is valid before proceeding
       if (validateTimeSelection()) {
-        closeAvailableTimePopup(); // Call the function to close the popup if no errors
+        closeAvailableTimePopup(); 
         setEventData((prevFormData) => {
           return {
             ...prevFormData,
@@ -978,7 +981,7 @@ export default function EventCreation() {
 
               <div className="center-button">
                 <button className="create-button" onClick={handleSubmitButton}>
-                  Create Event
+                  {isEditing?"Update Event" : "Create Event"}
                 </button>
               </div>
             </div>
