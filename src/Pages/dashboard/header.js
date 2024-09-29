@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Menu as MenuIcon, Notifications as NotificationsIcon, AccountCircle as AccountCircleIcon } from "@mui/icons-material"; // MUI icons
-import { useNavigate } from "react-router-dom";
 import { IconButton, InputBase, Badge } from "@mui/material";
 import logo from "./images-logos/logo.png";
 import "./header.css";
