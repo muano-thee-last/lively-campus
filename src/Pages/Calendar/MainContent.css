@@ -411,12 +411,49 @@
   }
 
   .day {
-    padding: 5px;
-    min-height: 80px;
+    padding: 2px;
+    min-height: auto; /* Remove fixed height */
+    height: 0;
+    padding-bottom: 100%; /* Create a square aspect ratio */
+    position: relative;
+  }
+
+  .day-number {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: 10px;
+    margin-bottom: 0;
+  }
+
+  .events-container {
+    position: absolute;
+    top: 20px; /* Adjust based on day number size */
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   .event-details {
-    font-size: 0.7em;
+    font-size: 6px;
+    padding: 1px 2px;
+    margin-bottom: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .event-title {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .event-time {
+    display: none; /* Hide time on mobile to save space */
   }
 
   .viewing-month {
@@ -450,6 +487,7 @@
   .calendar {
     order: 1;
     width: 100%;
+    padding: 10px;
   }
 
   .sidebar {
@@ -486,21 +524,13 @@
     display: none; /* Hide mini-calendar on very small screens */
   }
 
-  .calendar {
-    padding: 15px;
-  }
-
   .calendar-grid {
     gap: 1px;
   }
 
-  .day {
-    min-height: 60px;
-  }
-
   .day-name {
-    font-size: 12px;
-    padding: 5px;
+    font-size: 10px;
+    padding: 2px;
   }
 
   .event-details {
@@ -509,12 +539,12 @@
   }
 
   .viewing-month {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .select-month {
     font-size: 12px;
-    padding: 4px 8px;
+    padding: 2px 4px;
   }
 
   .filters input,
@@ -542,23 +572,22 @@
 /* Adjust the layout for very small screens */
 @media (max-width: 400px) {
   .calendar-grid {
-    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
   }
 
   .day {
-    min-height: 40px;
+    border: 1px solid #e0e0e0;
+    min-height: auto;
     padding: 2px;
   }
 
   .day-number {
-    font-size: 10px;
+    font-size: 8px;
   }
 
   .event-details {
-    font-size: 0.6em;
+    font-size: 5px;
   }
 }
 
 /* ... (keep remaining styles) ... */
-
-

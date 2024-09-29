@@ -223,6 +223,13 @@ const MainContent = () => {
     };
   }, [currentMonth, currentYear]);
 
+  const limitEventsForMobile = (events, limit = 3) => {
+    if (window.innerWidth <= 768) {
+      return events.slice(0, limit);
+    }
+    return events;
+  };
+
   return (
     <div className="calendar-container">
       <div className="sidebar">
@@ -313,12 +320,12 @@ const MainContent = () => {
           ))}
 
           {[...Array(daysInMonth).keys()].map(day => {
-            const dayEvents = filteredEvents.filter(event => {
+            const dayEvents = limitEventsForMobile(filteredEvents.filter(event => {
               const eventDate = new Date(event.date);
               return eventDate.getDate() === day + 1 && 
                      eventDate.getMonth() === currentMonth && 
                      eventDate.getFullYear() === currentYear;
-            });
+            }));
 
             const isToday = day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
             const isPastDay = new Date(currentYear, currentMonth, day + 1) < new Date().setHours(0, 0, 0, 0);
