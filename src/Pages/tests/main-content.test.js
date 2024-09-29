@@ -276,37 +276,38 @@ describe('MainContent Component', () => {
         ok: true,
         json: async () => ({}),
       });
-
+  
     renderComponent();
-
+  
     // Wait for initial fetch calls
     await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
-
+  
     // Find the comments image by alt text
     const commentsImages = screen.getAllByAltText('Comments');
     expect(commentsImages.length).toBeGreaterThan(0);
     const commentsImage = commentsImages[0];
-
+  
     // Click on comments image to open overlay
     fireEvent.click(commentsImage);
-
+  
     // Enter a new comment in the textarea
-    const commentInput = screen.getByPlaceholderText('Write a comment...');
+    const commentInput = screen.getByLabelText('overlay-comment-input');
     fireEvent.change(commentInput, { target: { value: 'New test comment' } });
-
+  
     // Click the submit button
-    const submitButton = screen.getByRole('button', { name: /submit/i });
+    const submitButton = screen.getByLabelText('submit-comment-button');
     fireEvent.click(submitButton);
-
+  
     // Wait for the fetch calls: one for fetching event details, one for updating comments
     await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4));
-
+  
     // The new comment should appear in the comments list
     expect(screen.getByText('New test comment')).toBeInTheDocument();
-
+  
     // Ensure that the comment input is cleared
-    expect(commentInput.value).toBe('');
+    await waitFor(() => expect(commentInput.value).toBe(''));
   });
+  
 
   test('shows feedback box after scrolling', async () => {
     // Mock fetch for events

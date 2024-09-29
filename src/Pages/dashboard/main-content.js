@@ -473,6 +473,7 @@ function MainContent() {
 </div>
       <div className="post-comments">
       <textarea
+        aria-label="overlay-comment-input"
         className="comment-input"
         placeholder="Write a comment..."
         value={comment}
