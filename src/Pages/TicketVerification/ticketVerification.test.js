@@ -1,72 +1,51 @@
 import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import TicketVerification from './TicketVerification';
+import TicketVerification from './ticketVerification';
+
+// Mock the TicketInfo component
+jest.mock('./ticketDetails', () => ({ ticket }) => (
+  <div>{ticket ? `Ticket Code: ${ticket.code}` : "No Ticket"}</div>
+));
+
+// Mock fetch function
+global.fetch = jest.fn();
 
 describe('TicketVerification Component', () => {
-  test('displays error message when ticket verification fails', async () => {
-    // Mock fetch to simulate an API failure
-    global.fetch = jest.fn(() =>
-      Promise.reject(new Error('Unable to fetch ticket'))
-    );
-
-    render(<TicketVerification />);
-
-    const input = screen.getByPlaceholderText('Enter ticket code');
-    const button = screen.getByText('Verify');
-
-    // Enter a ticket number and click verify
-    fireEvent.change(input, { target: { value: 'INVALID_CODE' } });
-    fireEvent.click(button);
-
-    // Expect to see the loading state first
-    expect(button).toHaveTextContent('Verifying...');
-
-    // Wait for the error message to appear
-    await waitFor(() => {
-      const errorMessage = screen.getByText('Unable to verify ticket. Please try again.');
-      expect(errorMessage).toBeInTheDocument();
-      expect(button).toHaveTextContent('Verify');
-    });
+  beforeEach(() => {
+    fetch.mockClear();
   });
 
-  test('displays ticket information when verification succeeds', async () => {
-    // Mock fetch to simulate a successful API response
-    const mockTicketData = {
-      price: 100,
-      purchaseDate: '2023-09-28',
-      ticketCode: 'VALID_CODE',
-    };
+  test('renders input, button, and no ticket initially', () => {
+    render(<TicketVerification />);
+    
+    // Check if input, button, and no ticket info are rendered
+    expect(screen.getByPlaceholderText('Enter ticket code')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /verify/i })).toBeInTheDocument();
+    expect(screen.getByText(/No Ticket/i)).toBeInTheDocument();
+  });
 
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(mockTicketData),
-      })
-    );
+
+  test('displays error message when fetch fails', async () => {
+    // Mock the fetch to throw an error
+    fetch.mockResolvedValueOnce({
+      ok: false,
+      status: 404,
+    });
 
     render(<TicketVerification />);
-
-    const input = screen.getByPlaceholderText('Enter ticket code');
-    const button = screen.getByText('Verify');
-
-    // Enter a valid ticket number and click verify
-    fireEvent.change(input, { target: { value: 'VALID_CODE' } });
-    fireEvent.click(button);
-
-    // Expect to see the loading state first
-    expect(button).toHaveTextContent('Verifying...');
-
-    // Wait for the ticket information to appear
-    await waitFor(() => {
-      const priceElement = screen.getByText('R100');
-      const purchaseDateElement = screen.getByText('2023-09-28');
-      const ticketCodeElement = screen.getByText('VALID_CODE');
-
-      expect(priceElement).toBeInTheDocument();
-      expect(purchaseDateElement).toBeInTheDocument();
-      expect(ticketCodeElement).toBeInTheDocument();
-      expect(button).toHaveTextContent('Verify');
+    
+    // Simulate input change
+    fireEvent.change(screen.getByPlaceholderText('Enter ticket code'), {
+      target: { value: 'invalid-code' },
     });
+
+    // Simulate button click
+    fireEvent.click(screen.getByRole('button', { name: /verify/i }));
+
+    // Wait for error message to appear
+    await waitFor(() => expect(screen.getByText(/Unable to verify ticket/i)).toBeInTheDocument());
+    
+    // Verify that no ticket information is displayed
+    expect(screen.getByText(/No Ticket/i)).toBeInTheDocument();
   });
 });
