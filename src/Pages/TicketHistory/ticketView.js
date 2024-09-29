@@ -1,32 +1,14 @@
-/* eslint-disable */
-
 import React, { useState } from 'react';
 import TicketModal from './ticketModal';
-import styles from './ticketView.module.css'; // Import the CSS module
-import location_icon from '../../asserts/location_icon.jpg'
-import calender_icon from '../../asserts/calender_icon.jpg'
-function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode, venue, time, date, imageUrl }) {
+import styles from './ticketView.module.css';
+
+export default function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode, venue, time, date, imageUrl }) {
   const [isModalOpen, setModalOpen] = useState(false);
 
   function formatDate(dateString) {
-    const months = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-  
-    // Parse the date string into a Date object
     const date = new Date(dateString);
-  
-    // Extract the day, month, and year
-    const day = date.getDate();
-    const month = months[date.getMonth()];
-    const year = date.getFullYear();
-  
-    // Return the formatted date
-    return `${day} ${month} ${year}`;
+    return date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
   }
-
-
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -45,13 +27,8 @@ function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode, venue, t
       />
       <h2 className={styles.eventName}>{eventName}</h2>
       <div className={styles.detailsContainer}>
-        <div className='line'>
         <p className={styles.eventNamex}><strong>Location:</strong> {venue}</p>
-        </div>
-        <div className='line'>
         <p className={styles.eventNamex}><strong>Time:</strong> {time} {formatDate(date)}</p>
-
-        </div>
         <button onClick={handleOpenModal} className={styles.button}>
           View Ticket
         </button>
@@ -73,5 +50,3 @@ function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode, venue, t
     </div>
   );
 }
-
-export default TicketView;
