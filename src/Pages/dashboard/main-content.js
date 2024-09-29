@@ -353,7 +353,7 @@ function MainContent() {
           <div className="dashboard-events-section" key={idx}>
             <p className="dashboard-tags">{group}</p>
             <div className="dashboard-slider-container">
-              <button
+              <button aria-label="scroll-left"
                 className="arrow-button left"
                 onClick={() => handleScroll(sliderRefs.current[group], "left")}
               >
@@ -395,6 +395,7 @@ function MainContent() {
                           <div className="card-fourth-row">
                             <div className="like-comment">
                               <button
+                                aria-label={`like-button-${event.id}`}
                                 className={`like-button ${
                                   liked[event.id] ? "active" : ""
                                 }`}
@@ -423,7 +424,7 @@ function MainContent() {
                                 {event.comments.length}
                               </p>
                             </div>
-                            <button
+                            <button  aria-label="view-more-details-button"
                               className="details-button"
                               onClick={() => handleViewDetails(event.id)}
                             >
@@ -431,41 +432,13 @@ function MainContent() {
                             </button>
                           </div>
                         </div>
-
-                        {/* Back Side (Comment Section) */}
-                        <div className="card-back">
-                        <div className="feedback1-container">
-      <h1 className="feedback1-title">
-        Leave a comment
-        <button
-          className="close-comment-button"
-         // Close the comment section
-        >
-          X
-        </button>
-      </h1>
-      <textarea
-        className="feedback1-textarea"
-        placeholder="Post a comment"
-        value={comment} // Bind the textarea to the comment state
-        onChange={(e) => setComment(e.target.value)} // Update state on change
-      ></textarea>
-      <div className="feedback1-buttons">
-      
-      </div>
-                {/* Conditionally render the comments view */}
-
-    </div>
-
-        </div>
-
                         </div>
                       </div>
                    
                   ))}
                 </div>
               </div>
-              <button
+              <button aria-label="scroll-right"
                 className="arrow-button right"
                 onClick={() => handleScroll(sliderRefs.current[group], "right")}
               >
@@ -506,7 +479,7 @@ function MainContent() {
         onChange={(e) => setComment(e.target.value)}
       />
       {error && <p className="comment-error-message">{error}</p>} {/* Show error message */}
-      <button className="submit-button" onClick={() => handleSubmit(currentEventId)}>
+      <button aria-label="submit-comment-button" className="submit-button" onClick={() => handleSubmit(currentEventId)}>
         Submit
       </button>
       </div>
