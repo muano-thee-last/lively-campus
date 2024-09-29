@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
 
+
+async function validatePayment(){
+
+}
+
 async function getRedirectLink(amount) {
     try {
         const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/getPaymentUrl', {
@@ -15,6 +20,7 @@ async function getRedirectLink(amount) {
         }
 
         const result = await response.json();
+        //setPaymentId(result.id);
         return result.redirectUrl;
     } catch (error) {
         console.error('Error fetching payment URL:', error.message, error);
@@ -24,7 +30,10 @@ async function getRedirectLink(amount) {
 
 function BuyTicket({ event }) {
     const [redirectUrl, setRedirectUrl] = useState(null);
+    var [paymentId, setPaymentId] = useState("")
 
+
+    console.log(event)
     useEffect(() => {
         const fetchRedirectLink = async () => {
             try {
