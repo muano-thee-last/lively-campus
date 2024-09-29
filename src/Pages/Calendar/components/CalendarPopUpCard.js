@@ -35,7 +35,7 @@ const CalendarPopUpCard = ({ date, events, onClose }) => {
               ))}
             </>
           ) : (
-            <p className="no-events-message">Oops! It looks like there's nothing scheduled for this date.</p>
+            <p className="no-events-message">Oops!! It looks like there's nothing scheduled for this date.</p>
           )}
         </div>
       </div>

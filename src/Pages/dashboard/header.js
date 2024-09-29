@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import hamburger from "./images-logos/hamburger.jpg";
-import { useNavigate } from "react-router-dom";
 import logo from "./images-logos/logo.png";
 import profile from "./images-logos/profile-logo.jpg";
 import notificationsIcon from "./images-logos/notification-logo.jpeg";
 import "./header.css";
 
-function Header({ toggleSidebar }) {
+function Header({ toggleSidebar, onSearch }) {
   const [showFilters] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const [pictureUrl, setPictureUrl] = useState("");
   const [notificationCount, setNotificationCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleNotificationsClick = () => {
     navigate("/Notifications");
@@ -128,6 +130,15 @@ function Header({ toggleSidebar }) {
     }
   }, [fetchAndCleanNotifications]);
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    if (location.pathname === "/dashboard" && onSearch) {
+      onSearch(e.target.value);
+    }
+  };
+
+  const isDashboard = location.pathname === "/dashboard";
+
   return (
     <div id="header">
       <section className="header-right-section">
@@ -148,9 +159,16 @@ function Header({ toggleSidebar }) {
         </h4>
       </section>
       <section className="header-middle-section">
-        <input type="text" className="search" placeholder="Search" />
+        <input
+          type="text"
+          className="search"
+          placeholder="Search"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          disabled={!isDashboard}
+        />
         <button className="search-button">
-          {/* Add content or icon for the search button */}
+          {/* Keep existing content or icon for the search button */}
         </button>
         {showFilters && (
           <div className="filter-options">
@@ -198,4 +216,5 @@ function Header({ toggleSidebar }) {
     </div>
   );
 }
+
 export default Header;
