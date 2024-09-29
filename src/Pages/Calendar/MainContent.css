@@ -370,10 +370,38 @@
   .sidebar {
     width: 100%;
     padding: 20px;
+    order: 2; /* Move sidebar content below the main calendar */
   }
 
   .calendar {
     padding: 20px;
+    order: 1; /* Ensure calendar is at the top */
+  }
+
+  /* Reorder elements within the sidebar */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .month-header {
+    order: 1;
+  }
+
+  .mini-calendar {
+    order: 2;
+  }
+
+  .filters {
+    order: 3;
+  }
+
+  .today-events {
+    order: 4;
+  }
+
+  .upcoming-events {
+    order: 5;
   }
 }
 
@@ -399,9 +427,49 @@
     font-size: 14px;
     padding: 6px 10px;
   }
+
+  .sidebar {
+    padding: 15px;
+  }
+
+  .filters, .today-events, .upcoming-events {
+    margin-top: 20px;
+  }
+
+  .mini-calendar {
+    display: none; /* Hide mini-calendar on smaller screens */
+  }
 }
 
 @media (max-width: 600px) {
+  .calendar-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .calendar {
+    order: 1;
+    width: 100%;
+  }
+
+  .sidebar {
+    order: 2;
+    width: 100%;
+  }
+
+  .filters {
+    order: 2;
+    margin-top: 20px;
+  }
+
+  .today-events {
+    order: 3;
+  }
+
+  .upcoming-events {
+    order: 4;
+  }
+
   .calendar-container {
     font-size: 14px;
   }

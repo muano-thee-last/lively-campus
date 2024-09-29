@@ -226,68 +226,70 @@ const MainContent = () => {
   return (
     <div className="calendar-container">
       <div className="sidebar">
-        <div className="month-header">
-          <span className='current-month'>{months[currentMonth]} </span>
-          <span className='current-year'>{currentYear}</span>
-        </div>
+        <div className="sidebar-content">
+          <div className="month-header">
+            <span className='current-month'>{months[currentMonth]} </span>
+            <span className='current-year'>{currentYear}</span>
+          </div>
 
-        {renderMiniCalendar()}
+          {renderMiniCalendar()}
 
-        <div className="filters">
-          <h4>Filters</h4>
-          <input type="date" value={filterDate} onChange={handleFilterDateChange} />
-          <select value={filterType} onChange={handleFilterTypeChange}>
-            <option value="">All Types</option>
-            {eventTypes.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
-          <input 
-            type="text" 
-            placeholder="location" 
-            value={filterLocation} 
-            onChange={handleFilterLocationChange} 
-          />
-        </div>
-
-        <div className="today-events">
-          <h4>
-            <FontAwesomeIcon icon={faCalendarAlt} /> Today
-          </h4>
-          {getTodayEvents().length > 0 ? (
-            <ul className="today-event-list">
-              {getTodayEvents().map(event => (
-                <li key={event.id} className="today-event">
-                  <Link to={`/view-more-details/${event.id}`}>
-                    <div className="today-event-title">{event.title}</div>
-                    <div className="today-event-time">{formatEventTime(event.date)}</div>
-                  </Link>
-                </li>
+          <div className="filters">
+            <h4>Filters</h4>
+            <input type="date" value={filterDate} onChange={handleFilterDateChange} />
+            <select value={filterType} onChange={handleFilterTypeChange}>
+              <option value="">All Types</option>
+              {eventTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
               ))}
-            </ul>
-          ) : (
-            <p className='no-events-today'>No events today</p>
-          )}
-        </div>
+            </select>
+            <input 
+              type="text" 
+              placeholder="location" 
+              value={filterLocation} 
+              onChange={handleFilterLocationChange} 
+            />
+          </div>
 
-        <div className="upcoming-events">
-          <h4>
-            <FontAwesomeIcon icon={faCalendarAlt} /> Upcoming Events
-          </h4>
-          {upcomingEvents.length > 0 ? (
-            <ul className="upcoming-event-list">
-              {upcomingEvents.map(event => (
-                <li key={event.id} className="upcoming-event">
-                  <Link to={`/details/${event.id}`}>
-                    <div className="upcoming-event-title">{event.title}</div>
-                    <div className="upcoming-event-datetime">{formatEventDateTime(event.date)}</div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className='no-events'>No upcoming events</p>
-          )}
+          <div className="today-events">
+            <h4>
+              <FontAwesomeIcon icon={faCalendarAlt} /> Today
+            </h4>
+            {getTodayEvents().length > 0 ? (
+              <ul className="today-event-list">
+                {getTodayEvents().map(event => (
+                  <li key={event.id} className="today-event">
+                    <Link to={`/view-more-details/${event.id}`}>
+                      <div className="today-event-title">{event.title}</div>
+                      <div className="today-event-time">{formatEventTime(event.date)}</div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className='no-events-today'>No events today</p>
+            )}
+          </div>
+
+          <div className="upcoming-events">
+            <h4>
+              <FontAwesomeIcon icon={faCalendarAlt} /> Upcoming Events
+            </h4>
+            {upcomingEvents.length > 0 ? (
+              <ul className="upcoming-event-list">
+                {upcomingEvents.map(event => (
+                  <li key={event.id} className="upcoming-event">
+                    <Link to={`/details/${event.id}`}>
+                      <div className="upcoming-event-title">{event.title}</div>
+                      <div className="upcoming-event-datetime">{formatEventDateTime(event.date)}</div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className='no-events'>No upcoming events</p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -361,9 +363,3 @@ const MainContent = () => {
 };
 
 export default MainContent;
-
-
-
-
-
-
