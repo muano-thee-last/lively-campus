@@ -1,6 +1,4 @@
 .notifications-container {
-    padding-left: 20px;
-    padding-top: 8px;
     justify-content: center;
     width: 100%;
     padding-right: 20px;
@@ -9,7 +7,6 @@
 
   }
   
-
 .notifications-list {
     list-style-type: none;
     padding: 0;

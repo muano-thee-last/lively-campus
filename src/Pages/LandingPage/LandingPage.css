@@ -367,6 +367,7 @@ padding: 12%; */
 .event-card-description p{
  font-weight: bold;
  text-align: left;
+ color: white;
 } 
 
 /* Positions the button in upcoming events */

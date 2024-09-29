@@ -7,23 +7,27 @@
     color: var(--primary-color); 
   }
   
-  /* Right section: Logo and title */
   .header-right-section {
     display: flex;
     align-items: center;
   }
   
+  .header-right-section .hamburger-logo{
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+    justify-self: center;
+  }
   .lively-campus-logo {
-    height: 40px; /* Adjust logo size */
+    height: 40px; 
     margin-right: 10px;
   }
   
   .pointer {
     cursor: pointer;
-    color: var(--primary-color); /* Pointer hover color */
+    color: var(--primary-color); 
   }
   
-  /* Middle section: Search bar */
   .header-middle-section {
     display: flex;
     flex-grow: 1;
@@ -56,7 +60,6 @@
     background-color: transparent;
   }
   
-  /* Left section: Notifications and Profile */
   .header-left-section {
     display: flex;
     align-items: center;
@@ -73,10 +76,9 @@
     margin-right: 20px;
   }
   
-  /* Badge customization */
   .MuiBadge-badge {
     right: 5px;
     top: 10px;
-    background-color: #e74c3c; /* Red notification badge */
+    background-color: #000000;
     color: #fff;
   }

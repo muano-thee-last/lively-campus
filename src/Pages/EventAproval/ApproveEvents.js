@@ -42,6 +42,7 @@ function ApproveEvents() {
     };
     fetchEvents();
   }, []);
+  
 
   // Function to handle filter changes
   const handleFilterChange = (event) => {
@@ -103,7 +104,12 @@ function ApproveEvents() {
                 </h4>
               </div>
               <div className="card-second-row override-organizer">
-                <img src={profile} alt="Profile " className="profile-image" />
+                <img
+                  src={event.organizerImg ? event.organizerImg : profile}
+                  style={event.organizerImg ? { borderRadius: "50%", maxWidth: "70px", maxHeight: "70px"} : {}}
+                  alt="Profile"
+                  className={event.organizerImg ? "" : "profile-image"}
+                />
                 <p className="event-organizer">{event.organizerName}</p>
               </div>
               <div className="card-third-row override-image">
@@ -143,7 +149,12 @@ function ApproveEvents() {
                 </button>
               </div>
               <div className="created-at">
-                <p className="date">Created at: {event.createdAt ? event.createdAt.slice(0, 10) : "2020-01-01"}</p>
+                <p className="date">
+                  Created at:{" "}
+                  {event.createdAt
+                    ? event.createdAt.slice(0, 10)
+                    : "2020-01-01"}
+                </p>
               </div>
             </div>
           ))

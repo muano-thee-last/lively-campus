@@ -83,14 +83,14 @@ function Notifications() {
 
   return (
     <div className="notifications-container">
-      <h2>Notifications</h2>
+      <h2 style={{"color" : "#003B5C"}}>Notifications</h2>
       <br/>      
       {isLoading ? ( // Display this while loading
         <div className="loading-message">Loading notifications...</div>
       ) : (
         Object.keys(notificationsByDate).map(date => (
           <div key={date}>
-            <h3 className="notification-date">
+            <h3 style={{"color" : "#003B5C"}}className="notification-date">
               {isToday(date) ? 'Today' : date} {/* Show 'Today' if the notification is from today */}
             </h3>
             <ul className="notifications-list">

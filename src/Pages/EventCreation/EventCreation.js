@@ -230,6 +230,7 @@ export default function EventCreation() {
 
   async function handleSubmitButton() {
     // Validation: Check if all required fields are filled
+    console.log(eventData);
 
     if (
       !eventData.eventName ||
@@ -237,14 +238,11 @@ export default function EventCreation() {
       !eventData.ticketPrice ||
       !eventData.capacity ||
       !eventData.eventDate ||
-      !eventData.eventTime ||
+      !eventData.eventStartTime ||
       !eventData.eventLocation ||
-      !selectedTags.length || // assuming selectedTags is an array
+      !selectedTags.length ||
       !image ||
-      eventData.ticketPrice < 0 ||
-      !eventData.availableTickets ||
-      eventData.availableTickets < 0 ||
-      Number(eventData.availableTickets) > Number(eventData.capacity)
+      !eventData.availableTickets
     ) {
       console.error("All fields must be filled out before submission.");
       return; // Stop execution if any field is empty
@@ -254,65 +252,63 @@ export default function EventCreation() {
 
     try {
       // Upload image and get download URL
-      await uploadBytes(imageRef, image);
-
-      const url = await getDownloadURL(imageRef);
 
       let headersList = {
         Accept: "*/*",
         "User-Agent": "lively-campus",
         "Content-Type": "application/json",
       };
-
-      let bodyContent = JSON.stringify({
-        organizerName: user.displayName,
-        organizerId: user.uid,
-        title: eventData.eventName,
-        description: eventData.eventDescription,
-        ticketPrice: Number(eventData.ticketPrice),
-        capacity: Number(eventData.capacity),
-        availableTickets: Number(eventData.availableTickets),
-        date: eventData.eventDate,
-        time: eventData.eventTime,
-        imageUrl: url,
-        tags: selectedTags,
-        venue: eventData.eventLocation,
-        likes: 0,
-        comments: [],
-        createdAt: new Date().toISOString(),
-        organizerImg: user.photoURL,
-      });
-      let alertCampusBodyContent = JSON.stringify({
-        id: "d290f1ee-6c54-4b01-90e6-d701748f0851",
-        type: "Type 1",
-        description: "Emergency medical situation",
-        location: {
-          latitude: 0,
-          longitude: 0,
+      let responseWiman = await fetch(`${WIMAN_API}/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${wimanBearerKey}`,
         },
-        userId: "user123",
-        createdAt: "2024-08-18T09:12:33.001Z",
+        body: JSON.stringify({
+          date: startDate,
+          startTime: startTime,
+          endTime: endTime,
+          venueId: venueId,
+          eventName: eventData.eventName,
+          repeatFrequency: "none",
+          repeatUntil: startDate,
+        }),
       });
+      const dataWiman = await responseWiman.json();
 
-      let notifyCampusSafety =
-        await ("https://virtserver.swaggerhub.com/2380759_1/CampusSafety/1.0.0/alerts",
-        {
-          method: "POST",
-          headers: headersList,
-          body: alertCampusBodyContent,
+      if (responseWiman.ok) {
+        await uploadBytes(imageRef, image);
+        const url = await getDownloadURL(imageRef);
+
+        let bodyContent = JSON.stringify({
+          organizerName: user.displayName,
+          organizerId: user.uid,
+          title: eventData.eventName,
+          description: eventData.eventDescription,
+          ticketPrice: Number(eventData.ticketPrice),
+          capacity: Number(eventData.capacity),
+          availableTickets: Number(eventData.availableTickets),
+          date: eventData.eventDate,
+          time: eventData.eventStartTime,
+          imageUrl: url,
+          tags: selectedTags,
+          venue: eventData.eventLocation,
+          likes: 0,
+          comments: [],
+          createdAt: new Date().toISOString(),
+          organizerImg: user.photoURL,
+          bookingId: dataWiman.bookingId,
         });
 
-      // Send the POST request
-      let response = await fetch(EVENTS_API, {
-        method: "POST",
-        headers: headersList,
-        body: bodyContent,
-      });
-
-      console.log("Notify Campus Response Status:", notifyCampusSafety.status);
-
-      console.log("Response Status:", response.status);
-      navigate("/Dashboard");
+        // Send the POST request
+        let response = await fetch(EVENTS_API, {
+          method: "POST",
+          headers: headersList,
+          body: bodyContent,
+        });
+        console.log("Response Status:", response.status);
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
       navigate("/dashboard");
@@ -417,15 +413,17 @@ export default function EventCreation() {
 
       try {
         const response = await fetch(
-          `${WIMAN_API}/venues/${venueId}/reservations`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${wimanBearerKey}`,
+          `${WIMAN_API}/venues/${venueId}/reservations`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${wimanBearerKey}`,
+            },
           }
-        });
+        );
         const json = await response.json();
-        setVenueAvailabilitySlots(json);
+        setVenueAvailabilitySlots(findAvailableTimeForDate(json, startDate));
         console.log(json);
       } catch (error) {
         console.error("Error fetching venue availability:", error);
@@ -449,7 +447,7 @@ export default function EventCreation() {
     if (venueId && startDate) {
       getVenueAvailability();
     }
-  }, [venueId, startDate]);
+  }, [venueId, startDate, wimanBearerKey]);
 
   function AddTagContent() {
     return (
@@ -485,7 +483,7 @@ export default function EventCreation() {
           <label htmlFor="search-bar"></label>
         </div>
 
-        {filteredVenues.map((venue) => (
+        {filteredVenues.length > 0 ? (filteredVenues.map((venue) => (
           <div className="venue-card" key={venue.venueId}>
             <div className="venue-details">
               <iframe
@@ -536,7 +534,10 @@ export default function EventCreation() {
               Check Venue Availability
             </button>
           </div>
-        ))}
+        ))
+        ) : (
+          <h2 style={{ textAlign: "center" , margin: "0 auto", color: "var(--primary-color)"}}>No venues found.</h2>
+        )}
       </div>
     );
   }

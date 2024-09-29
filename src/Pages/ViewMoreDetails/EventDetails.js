@@ -12,8 +12,10 @@ import { Modal, Button } from "@mui/material";
 import "../EventCreation/styles/EventCreationStyles.css";
 import BuyTickets from "../BuyTickets/BuyTickets";
 import BuyTicket from "../BuyTickets/purchase";
+
 const LIVELY_CAMPUS_API =
   "https://us-central1-witslivelycampus.cloudfunctions.net/app";
+const WIMAN_API = "https://wiman.azurewebsites.net/api/";
 
 export default function EventDetails() {
   const { id } = useParams();
@@ -26,10 +28,31 @@ export default function EventDetails() {
 
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+  const [wimanBearerKey, setWimanBearerKey] = useState("");
+  const [isVenueApproved, setIsVenueApproved] = useState(null);
 
   function handleReject() {
     setIsRejectModalOpen(true);
   }
+  useEffect(() => {
+    const getWimanBearerKey = async () => {
+      const url =
+        "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvWiman";
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+        const json = await response.json();
+        setWimanBearerKey(json.value);
+      } catch (error) {
+        console.error("Error fetching Wiman API key:", error);
+      }
+    };
+
+    getWimanBearerKey();
+  }, []);
 
   useEffect(() => {
     fetch(
@@ -53,6 +76,28 @@ export default function EventDetails() {
       setApproveEvent(false);
     }
   }, [id, setApproveEvent, location]);
+
+  useEffect(() => {
+    async function getVenueStatus() {
+      const response = await fetch(
+        `${WIMAN_API}/bookings/status/${event.bookingId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${wimanBearerKey}`,
+          },
+        }
+      );
+      const res = await response.json();
+      if (res.status === "confirmed") {
+        setIsVenueApproved(true);
+      } else if (res.status === "rejected") {
+        setIsVenueApproved(false);
+      }
+    }
+    if (event && wimanBearerKey) getVenueStatus();
+  }, [event, wimanBearerKey]);
 
   useEffect(() => {
     const getGoogleKey = async () => {
@@ -171,12 +216,12 @@ export default function EventDetails() {
       {approveEvent && (
         <div className="response-wiman-section">
           <h3>Venue Approval Status </h3>{" "}
-          {event.isVenueApproved === true ? (
+          {isVenueApproved === true ? (
             <div className="status-bar">
               <div className="green-circle"></div>{" "}
               <p className="status">Approved</p>
             </div>
-          ) : event.isVenueApproved === false ? (
+          ) : isVenueApproved === false ? (
             <div className="status-bar">
               {" "}
               <div className="red-circle"></div>{" "}
@@ -239,28 +284,41 @@ export default function EventDetails() {
                 console.log("Rejecting event...");
 
                 try {
-                  // Ensure the LIVELY_CAMPUS_API and id are correct
-                  let response = await fetch(
-                    `${LIVELY_CAMPUS_API}/events/${id}/reject`,
+                  let cancelResponse = await fetch(
+                    `${WIMAN_API}/bookings/cancel/${event.bookingId}`,
                     {
                       method: "PUT",
-                      headers: headersList,
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${wimanBearerKey}`,
+                      },
                     }
                   );
 
-                  if (response.ok) {
-                    handleCloseModal(); // Close modal first
-                    navigate("/approve-events"); // Navigate after modal closes
-                  } else {
-                    console.log(
-                      "Failed to reject the event, status:",
-                      response.status
+                  if (cancelResponse.ok) {
+                    let response = await fetch(
+                      `${LIVELY_CAMPUS_API}/events/${id}/reject`,
+                      {
+                        method: "PUT",
+                        headers: headersList,
+                      }
                     );
+
+                    if (response.ok) {
+                      handleCloseModal(); // Close modal first
+                      navigate("/approve-events"); // Navigate after modal closes
+                    } else {
+                      console.log(
+                        "Failed to reject the event, status:",
+                        response.status
+                      );
+                    }
                   }
                 } catch (error) {
                   console.error("Error rejecting the event:", error);
                 }
-              }}
+              }
+              }
             >
               Yes
             </Button>
@@ -280,7 +338,7 @@ export default function EventDetails() {
         <div className="modal-content-accept-reject centered-modal">
           <h2 id="modal-title">Approve Event</h2>
 
-          {event.isVenueApproved === true ? (
+          {isVenueApproved === true ? (
             <div>
               <p id="modal-description">
                 Are you sure you want to approve this event?
@@ -331,7 +389,7 @@ export default function EventDetails() {
                 </Button>
               </div>
             </div>
-          ) : event.isVenueApproved === false ? (
+          ) : isVenueApproved === false ? (
             <div>
               <p id="modal-description">
                 This event has already been rejected.
