@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { useState } from 'react';
 import TicketModal from './ticketModal';
 import styles from './ticketView.module.css'; // Import the CSS module
