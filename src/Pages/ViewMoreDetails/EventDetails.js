@@ -358,14 +358,8 @@ export default function EventDetails() {
 
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <div className="modal-content">
-          <BuyTickets event={event} onClose={handleCloseModal} />
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleCloseModal}
-          >
-            Close
-          </Button>
+          <BuyTicket/>
+        
           <BuyTicket event={event} />
         </div>
       </Modal>

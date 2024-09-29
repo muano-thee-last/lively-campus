@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 async function getRedirectLink(amount) {
     try {
@@ -17,7 +17,7 @@ async function getRedirectLink(amount) {
         const result = await response.json();
         return result.redirectUrl;
     } catch (error) {
-        console.error('Error fetching payment URL:', error.message, error); // More detailed error
+        console.error('Error fetching payment URL:', error.message, error);
         return null;
     }
 }
@@ -27,15 +27,21 @@ function BuyTicket({ event }) {
 
     useEffect(() => {
         const fetchRedirectLink = async () => {
-            console.log(event)
-            const url = await getRedirectLink(event.ticketPrice);
-            if (url) {
-                setRedirectUrl(url); 
+            try {
+                if (event && event.ticketPrice) {
+                    console.log(event);
+                    const url = await getRedirectLink(event.ticketPrice);
+                    if (url) {
+                        setRedirectUrl(url);
+                    }
+                }
+            } catch (error) {
+                console.error('Error in fetching redirect link:', error);
             }
         };
 
         fetchRedirectLink();
-    }, [event.ticketPrice,event]);
+    }, [event]);
 
     useEffect(() => {
         if (redirectUrl) {
@@ -43,7 +49,7 @@ function BuyTicket({ event }) {
         }
     }, [redirectUrl]);
 
-    return null; 
+    return null;
 }
 
 export default BuyTicket;
