@@ -5,6 +5,7 @@ import Header from "../dashboard/header";
 import Footer from '../dashboard/footer';
 import SideBar from '../dashboard/side-bar';
 
+
 function TicketHistory() {
   const [ticketDetails, setTicketDetails] = useState([]);
   const [error, setError] = useState(null);
@@ -25,6 +26,7 @@ function TicketHistory() {
         return response.json();
       })
       .then((data) => {
+        console.log("the data is", data)
         setTicketDetails(data);
       })
       .catch((error) => {
@@ -55,6 +57,10 @@ function TicketHistory() {
                     ticketPrice={ticket.price}
                     purchaseDate={ticket.purchaseDate}
                     ticketCode={ticket.ticketCode}
+                    venue = {ticket.venue}
+                    time = {ticket.time}
+                    date = {ticket.date}
+                    imageUrl = {ticket.imageUrl}
                   />
                 </div>
               ))

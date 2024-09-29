@@ -3,15 +3,19 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgb(255, 255, 255);
+    width: 50%;
+    flex: 1;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
   }
   
   .sign-in-box {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: white;
     padding: 15px;
     border-radius: 10px;
     width: 300px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     text-align: center;
     max-height: 90vh;
     overflow-y: auto;
@@ -19,16 +23,20 @@
   
   .sign-in-button {
     width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    background-color: rgb(255, 255, 255);
-    border: none;
-    border-radius: 10px;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border-radius: 20px;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 6px 0px,
+        rgba(0, 0, 0, 0.06) 0px 2px 0px 1px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: 11px;
+  gap: 5px;
+  margin: 15px 0;
   }
   
   .google {
@@ -50,23 +58,28 @@
   }
   
   .email-input {
-    width: 90%;
+    width: 92%;
     padding: 10px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 40px;
     font-size: 14px;
     margin-top: 5px;
+    padding-left: 15px;
   }
   
   .or-divider {
     margin: 15px 0;
     font-weight: bold;
+   
   }
   
   .email {
-    background-color: #6a11cb;
+    background: teal;
     color: #fff;
-    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+    border: none;
+    box-shadow: rgba(5, 63, 58, 0.16) 0px 5px 6px 0px,
+    rgba(5, 56, 65, 0.06) 0px 2px 0px 1px;
+  
   }
   
   .options {
@@ -86,5 +99,14 @@
     margin: 0;
     font-size: 14px;
     font-weight: bold;
+    margin-left: 30%;
+    margin-bottom: 5%;
+    
+  }
+  @media(max-width: 900px){
+    .sign-in-container {
+      width: 100%;
+     
+    }
   }
   

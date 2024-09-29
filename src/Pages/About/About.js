@@ -52,7 +52,7 @@ function About() {
             <li><button className="btn-secondary">Login</button></li>
           </ul>
         </nav>
-        <label className="burger" htmlFor="burger">
+        <label className="burger" htmlFor="burger" aria-label="burger">
           <input type="checkbox" id="burger" onClick={toggleMenu} />
           <span></span>
           <span></span>
