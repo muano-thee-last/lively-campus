@@ -1,90 +1,75 @@
 import React, { useState } from 'react';
-
 import TicketModal from './ticketModal';
+import styles from './ticketView.module.css'; // Import the CSS module
+import location_icon from '../../asserts/location_icon.jpg'
+import calender_icon from '../../asserts/calender_icon.jpg'
+function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode, venue, time, date, imageUrl }) {
+  const [isModalOpen, setModalOpen] = useState(false);
 
-function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode, location, time, date, imageUrl }) {
-  const [isModalOpen, setModalOpen] = useState(false); // State to manage modal visibility
-  console.log("location is ", location);
-  console.log("date is ", date);
+  function formatDate(dateString) {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+  
+    // Parse the date string into a Date object
+    const date = new Date(dateString);
+  
+    // Extract the day, month, and year
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+  
+    // Return the formatted date
+    return `${day} ${month} ${year}`;
+  }
+
+
 
   const handleOpenModal = () => {
-    setModalOpen(true);  // Open the modal when the button is clicked
+    setModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setModalOpen(false); // Close the modal
+    setModalOpen(false);
   };
 
   return (
-    <div style={styles.ticketContainer}>
+    <div className={styles.ticketContainer}>
       <img 
         src={imageUrl} 
         alt="event" 
-        style={styles.image} // Added image styling if needed
+        className={styles.image} 
       />
-      <h2 style={styles.eventName}>{eventName}</h2>
-      <div style={styles.detailsContainer}>
-        <p style={styles.eventNamex}><strong>Location:</strong> {location}</p>
-        <p style={styles.eventNamex}><strong>Time:</strong> {time} {date}</p>
-        <button onClick={handleOpenModal} style={styles.button}>
+      <h2 className={styles.eventName}>{eventName}</h2>
+      <div className={styles.detailsContainer}>
+        <div className='line'>
+        <p className={styles.eventNamex}><strong>Location:</strong> {venue}</p>
+        </div>
+        <div className='line'>
+        <p className={styles.eventNamex}><strong>Time:</strong> {time} {formatDate(date)}</p>
+
+        </div>
+        <button onClick={handleOpenModal} className={styles.button}>
           View Ticket
         </button>
       </div>
 
-      {/* Render the TicketModal */}
       <TicketModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         eventImage={imageUrl}
         eventName={eventName}
         eventDate={date}
-        eventLocation={location}
-        studentNo="12345678"  // Replace with actual student number if needed
+        eventLocation={venue}
+        studentNo="12345678"
         ticketNo={ticketCode}
         ticketDate={date}
         ticketTime={time}
-        qrCode={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticketCode}`} // QR code
+        qrCode={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticketCode}`}
       />
     </div>
   );
 }
-
-const styles = {
-  ticketContainer: {
-    border: '1px solid #ddd',
-    borderRadius: '10px',
-    padding: '20px',
-    maxWidth: '400px',
-    margin: '20px auto',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-  },
-  eventName: {
-    fontSize: '1.5rem',
-    textAlign: 'center',
-    marginBottom: '20px',
-    color: 'blue',
-  },
-  eventNamex: {
-    fontSize: '1.5rem',
-    textAlign: 'center',
-    marginBottom: '20px',
-    color: 'black',
-  },
-  detailsContainer: {
-    fontSize: '1rem',
-    marginBottom: '20px',
-    color: 'black',
-  },
-  image: {
-    width: '100%',
-    borderRadius: '10px',
-    marginBottom: '15px',
-  },
-  button:{
-    background: 'blue',
-    color : 'white',   
-    minWidth : '50px'
-  }
-};
 
 export default TicketView;
