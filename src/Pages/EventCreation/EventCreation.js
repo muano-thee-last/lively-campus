@@ -17,6 +17,7 @@ import calendar from "./images-logos/calendar.svg";
 import clock from "./images-logos/clock.svg";
 import upload from "./images-logos/upload.svg";
 import locationButton from "./images-logos/location-button.svg";
+import locationSVG from "./images-logos/location.svg";
 import "./styles/EventCreationStyles.css";
 import PopupCard from "./components/PopupCard";
 import person from "./images-logos/person.svg";
@@ -903,7 +904,7 @@ export default function EventCreation() {
                   style={eventData.eventLocation ? { top: "-24px" } : {}}
                 >
                   <span>Venue</span>
-                  <img src={location} alt="location" />
+                  <img src={locationSVG} alt="location" />
                 </label>
                 <div className="add-selected-location">
                   {eventData.eventLocation && (
