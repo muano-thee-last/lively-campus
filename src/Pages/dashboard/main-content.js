@@ -330,12 +330,13 @@ function MainContent({ searchQuery }) {
 
   useEffect(() => {
     const filtered = events.filter((event) =>
-      event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.organizerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.organizerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     );
     setFilteredEvents(filtered);
   }, [searchQuery, events]);
+  
 
   // Modify the getEventsByTagGroup function to use filteredEvents
   const getEventsByTagGroup = useCallback((group) => {
