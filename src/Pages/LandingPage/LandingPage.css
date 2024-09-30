@@ -493,22 +493,22 @@ padding: 12%; */
 /* Styles the login modal */
 .login-modal {
   position: fixed;
-  top: 10%;
+  top: 0;
   bottom: 0;
-  left: 75%;
+  left: 28%;
   transform: translate(-50%, -50%);
   width:100%;
   height: 1px;
   background: transparent;
-  border-radius: 8px;
+
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
 
 .landing-close-button {
   position: absolute;
-  top:20%;
-  right: 49%;
+  top:12000%;
+  right: 12.5%;
   background-color: #003B5C;
   color: white;
   border: none;
@@ -523,6 +523,8 @@ padding: 12%; */
   align-items: center;
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 100000;
+  display: none;
 }
 
 .landing-close-button:hover {
@@ -548,10 +550,11 @@ padding: 12%; */
   .login-modal {
     width: 95%;
     padding: 15px;
-    left: 50%;
+    left: 40%;
   }
   .landing-close-button{
-    right: 1.5%;
+    right: -3.5%;
+    top: 535%;
   }
  
 }
@@ -723,10 +726,7 @@ padding: 12%; */
     padding: 0 10px;
   }
 
-  .login-modal {
-    width: 95%;
-    padding: 15px;
-  }
+
 
 }
 
