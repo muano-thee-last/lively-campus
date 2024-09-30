@@ -1,14 +1,18 @@
 /* eslint-disable */
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, TwitterAuthProvider } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  TwitterAuthProvider,
+} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import { TextEncoder, TextDecoder } from 'text-encoding';
 
-let auth, db, storage;
+let auth, db, storage, app;
 
 async function getData() {
-  const url = "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvVar"; 
+  const url =
+    "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvVar";
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -35,7 +39,7 @@ async function initializeFirebase() {
     projectId: "witslivelycampus",
     storageBucket: "witslivelycampus.appspot.com",
     messagingSenderId: "61229245877",
-    appId: "1:61229245877:web:44c304d1f7eed94b9065fc"
+    appId: "1:61229245877:web:44c304d1f7eed94b9065fc",
   };
 
   const app = initializeApp(firebaseConfig);
@@ -43,9 +47,9 @@ async function initializeFirebase() {
   db = getFirestore(app);
   storage = getStorage(app);
 
-  console.log('Firebase initialized successfully');
+  console.log("Firebase initialized successfully");
 }
 
-initializeFirebase();
+await initializeFirebase();
 
-export { auth, db, GoogleAuthProvider, TwitterAuthProvider, storage };
+export { auth, db, GoogleAuthProvider, TwitterAuthProvider, storage, app };

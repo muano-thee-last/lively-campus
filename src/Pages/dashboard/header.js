@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu as MenuIcon, Notifications as NotificationsIcon, AccountCircle as AccountCircleIcon } from "@mui/icons-material"; // MUI icons
+import {
+  Menu as MenuIcon,
+  Notifications as NotificationsIcon,
+  AccountCircle as AccountCircleIcon,
+} from "@mui/icons-material"; // MUI icons
 import { IconButton, InputBase, Badge } from "@mui/material";
 import logo from "./images-logos/logo.png";
 import "./header.css";
@@ -75,7 +79,6 @@ function Header({ toggleSidebar, onSearch }) {
           }
         })
       );
-      console.log(validNotifications);
       const filteredNotifications = validNotifications.filter(
         (notification) => notification !== null
       );
@@ -164,9 +167,13 @@ function Header({ toggleSidebar, onSearch }) {
             value={searchQuery}
             onChange={handleSearchChange}
             disabled={!isDashboard}
-            inputProps={{ 'aria-label': 'search' }}
+            inputProps={{ "aria-label": "search" }}
           />
-          <IconButton type="submit" className="search-button" style={{scale: "2.5"}}>
+          <IconButton
+            type="submit"
+            className="search-button"
+            style={{ scale: "2.5" }}
+          >
             {/* <SearchIcon /> */}
           </IconButton>
         </div>
@@ -211,11 +218,9 @@ function Header({ toggleSidebar, onSearch }) {
             <AccountCircleIcon className="pointer" style={{ fontSize: 40 }} />
           )}
         </IconButton>
-
       </section>
     </div>
   );
 }
 
 export default Header;
-
