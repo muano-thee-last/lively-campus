@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { useState, useEffect } from 'react';
 import './BuyTickets.css';
 import applePayLogo from '../../asserts/apple-pay.jpg';
