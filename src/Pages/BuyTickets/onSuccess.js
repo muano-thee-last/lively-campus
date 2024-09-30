@@ -56,7 +56,7 @@ async function uploadTicketInformation(eventId, price) {
       userId: userId,
       eventId: eventId,
       ticketCode: ticketCode,
-      purchaseDate: "17 September 2024",
+      purchaseDate: "27 September 2024",
       price: price
     };
     try {
@@ -80,16 +80,29 @@ const SuccessPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const externalId = searchParams.get("externalId");  // Retrieve externalId from URL
-
+  console.log(externalId)
   alert(externalId);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate('/dashboard');
-    }, 4000);
 
-    return () => clearTimeout(timer); // Clean up
-  }, [navigate]);
+  const id = externalId.uid;
+
+
+  console.log(externalId)
+  console.log(id)
+
+  uploadTicketInformation(id, 200);
+
+  updateTicketsAvailable(id);
+  incrementTicketSalse(id);
+
+
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       navigate('/ticket-history');
+//     }, 4000);
+
+//     return () => clearTimeout(timer); // Clean up
+//   }, [navigate]);
 
   return (
     <div className={styles.successContainer}>
