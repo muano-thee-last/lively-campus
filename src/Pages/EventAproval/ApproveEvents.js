@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Radio, RadioGroup, FormControl, FormControlLabel } from "@mui/material"; // MUI components
+import {
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormControlLabel,
+} from "@mui/material"; // MUI components
 import "../EventCreation/styles/Profile.css";
 import "./ApproveEvents.css";
 import profile from "../EventCreation/images-logos/profile-logo.jpg";
@@ -13,7 +18,7 @@ function ApproveEvents() {
   const navigate = useNavigate();
 
   const handleViewDetails = (id) => {
-    navigate(`/details/${id}`, { state: { approveEvent: true } });
+    navigate(`/view-more-details/${id}`, { state: { approveEvent: true } });
   };
 
   useEffect(() => {
@@ -29,7 +34,7 @@ function ApproveEvents() {
         })
         .then((data) => {
           setEvents(data);
-          setFilteredEvents(data); 
+          setFilteredEvents(data);
         })
         .catch((error) => {
           console.error("Error fetching events:", error);
@@ -37,19 +42,21 @@ function ApproveEvents() {
     };
     fetchEvents();
   }, []);
+  
 
   // Function to handle filter changes
   const handleFilterChange = (event) => {
     const status = event.target.value;
     setFilterStatus(status);
-    
+
     if (status === "all") {
       setFilteredEvents(events);
     } else {
       const filtered = events.filter((event) => {
         if (status === "approved") return event.isApproved === true;
         if (status === "rejected") return event.isApproved === false;
-        if (status === "pending") return event.isApproved !== true && event.isApproved !== false;
+        if (status === "pending")
+          return event.isApproved !== true && event.isApproved !== false;
         return false;
       });
       setFilteredEvents(filtered);
@@ -67,11 +74,7 @@ function ApproveEvents() {
             value={filterStatus}
             onChange={handleFilterChange}
           >
-            <FormControlLabel
-              value="all"
-              control={<Radio />}
-              label="All"
-            />
+            <FormControlLabel value="all" control={<Radio />} label="All" />
             <FormControlLabel
               value="approved"
               control={<Radio />}
@@ -101,7 +104,12 @@ function ApproveEvents() {
                 </h4>
               </div>
               <div className="card-second-row override-organizer">
-                <img src={profile} alt="Profile " className="profile-image" />
+                <img
+                  src={event.organizerImg ? event.organizerImg : profile}
+                  style={event.organizerImg ? { borderRadius: "50%", maxWidth: "70px", maxHeight: "70px"} : {}}
+                  alt="Profile"
+                  className={event.organizerImg ? "" : "profile-image"}
+                />
                 <p className="event-organizer">{event.organizerName}</p>
               </div>
               <div className="card-third-row override-image">
@@ -140,6 +148,14 @@ function ApproveEvents() {
                   View more details
                 </button>
               </div>
+              <div className="created-at">
+                <p className="date">
+                  Created at:{" "}
+                  {event.createdAt
+                    ? event.createdAt.slice(0, 10)
+                    : "2020-01-01"}
+                </p>
+              </div>
             </div>
           ))
         ) : (
@@ -151,4 +167,3 @@ function ApproveEvents() {
 }
 
 export default ApproveEvents;
-
