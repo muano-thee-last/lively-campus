@@ -52,7 +52,6 @@ async function setTicketCode() {
 
 
 async function uploadTicketInformation(eventId, price) {
-  // Get the userId from localStorage
   ticketCode = await setTicketCode();
   const userId = sessionStorage.getItem("uid");
 
@@ -64,54 +63,26 @@ async function uploadTicketInformation(eventId, price) {
     price: price
   };
 
-  // try {
-  //   const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/addTicket', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(data),
-  //   });
-
-    
-
-  try{
-
-    const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/getPaymentUrl', {
+  try {
+    const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/addTicket', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({amount : data.price}),
+      body: JSON.stringify(data),
     });
 
-    
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
 
-    //redirect to the payment url
-
-    const result = await response.json();
-
-    const redirectUrl = result.redirectUrl;
-
-    function RedirectToExternal() {
-      const handleRedirect = () => {
-        window.open(redirectUrl, '_blank'); 
-      };
-    
-      return <button onClick={handleRedirect}>Open the payment page</button>;
-    }
-    
-    RedirectToExternal();
-
-    console.log(result.message);
-  } catch (error) {
-    console.error('Error uploading ticket information:', error);
+  }catch(e){
+    console.log(e);
   }
+
 }
+
+    
+
+
 
 
 function BuyTickets({ event, onClose }) {
