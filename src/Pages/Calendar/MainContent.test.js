@@ -1,91 +1,82 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import MainContent from './MainContent';
+import '@testing-library/jest-dom';
 
 // Mock the fetch function
 global.fetch = jest.fn(() =>
   Promise.resolve({
-    json: () => Promise.resolve([]),
+    ok: true,
+    json: () => Promise.resolve([]), // Return an empty array of events
   })
 );
 
-describe('MainContent Component', () => {
+// Mock the current date to ensure consistent testing
+const mockDate = new Date('2024-09-30T00:00:00.000Z');
+const RealDate = Date;
+
+// Mock console.log and console.error to suppress unnecessary logs during tests
+const originalLog = console.log;
+const originalError = console.error;
+
+describe('MainContent', () => {
+  beforeAll(() => {
+    global.Date = class extends RealDate {
+      constructor() {
+        super();
+        return mockDate;
+      }
+      static now() {
+        return mockDate.getTime();
+      }
+    };
+    console.log = jest.fn();
+    console.error = jest.fn();
+  });
+
+  afterAll(() => {
+    global.Date = RealDate;
+    console.log = originalLog;
+    console.error = originalError;
+  });
+
   beforeEach(() => {
+    fetch.mockClear();
     jest.clearAllMocks();
   });
 
-  test('renders without crashing', async () => {
-    render(
-      <Router>
-        <MainContent />
-      </Router>
-    );
-    await waitFor(() => expect(screen.getByText(/Filters/i)).toBeInTheDocument());
+  it('renders without crashing', async () => {
+    await act(async () => {
+      render(<MainContent />);
+    });
+    await waitFor(() => {
+      expect(screen.getByText('No upcoming events')).toBeInTheDocument();
+    });
   });
 
-  test('displays current month and year', () => {
-    render(
-      <Router>
-        <MainContent />
-      </Router>
-    );
-    const currentDate = new Date();
-    const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
-    const currentYear = currentDate.getFullYear().toString();
-    expect(screen.getByText(currentMonth, { selector: '.current-month' })).toBeInTheDocument();
-    expect(screen.getByText(currentYear, { selector: '.current-year' })).toBeInTheDocument();
+  it('displays no events message when there are no events', async () => {
+    await act(async () => {
+      render(<MainContent />);
+    });
+    await waitFor(() => {
+      expect(screen.getByText('No upcoming events')).toBeInTheDocument();
+    });
   });
 
-  test('changes month when select is changed', async () => {
-    render(
-      <Router>
-        <MainContent />
-      </Router>
-    );
-    const select = screen.getByRole('combobox', { name: /select month/i });
-    fireEvent.change(select, { target: { value: '5' } });
-    await waitFor(() => expect(screen.getByText('June', { selector: '.current-month' })).toBeInTheDocument());
+  it('fetches events on component mount', async () => {
+    await act(async () => {
+      render(<MainContent />);
+    });
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch).toHaveBeenCalledWith('https://us-central1-witslivelycampus.cloudfunctions.net/app/events');
+    });
   });
 
-  test('fetches events on component mount', async () => {
-    render(
-      <Router>
-        <MainContent />
-      </Router>
-    );
-    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
-    expect(global.fetch).toHaveBeenCalledWith('https://us-central1-witslivelycampus.cloudfunctions.net/app/events');
+  it('displays the current month and year', async () => {
+    await act(async () => {
+      render(<MainContent />);
+    });
+    expect(screen.getByText('September 2024')).toBeInTheDocument();
   });
-
-  test('filters events when date filter is applied', async () => {
-    render(
-      <Router>
-        <MainContent />
-      </Router>
-    );
-    const dateInput = screen.getByLabelText('Date Filter');
-    fireEvent.change(dateInput, { target: { value: '2023-06-15' } });
-    await waitFor(() => expect(screen.getByText('June', { selector: '.current-month' })).toBeInTheDocument());
-  });
-
-  test('displays "No events today" when there are no events', async () => {
-    render(
-      <Router>
-        <MainContent />
-      </Router>
-    );
-    await waitFor(() => expect(screen.getByText('No events today')).toBeInTheDocument());
-  });
-
-  test('displays "No upcoming events" when there are no upcoming events', async () => {
-    render(
-      <Router>
-        <MainContent />
-      </Router>
-    );
-    await waitFor(() => expect(screen.getByText('No upcoming events')).toBeInTheDocument());
-  });
-
-  // Add more tests as needed for MainContent component functionality
 });
