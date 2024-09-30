@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './LandingPage.css';
-import logo from '../../asserts/logo.png';
+import logo from '../../asserts/logo.png'; 
 import Login from '../Login/login';
 import Footer from '../dashboard/footer';
 
@@ -11,10 +11,14 @@ function LandingPage() {
   const [currentPreviousIndex, setCurrentPreviousIndex] = useState(0);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [previousEvents, setPreviousEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const today = new Date(); // Move the `today` variable inside useEffect
+      const today = new Date();
+      setLoading(true); 
+      setError(null);
       try {
         const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events');
         const data = await response.json();
@@ -26,30 +30,41 @@ function LandingPage() {
         setUpcomingEvents(upcoming);
         setPreviousEvents(previous);
       } catch (error) {
-        console.error('Error fetching events:', error);
+        setError('Error fetching events, please try again later.');
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchEvents();
-  }, []); // Remove `today` from the dependency array
+  }, []);
 
   useEffect(() => {
-    const upcomingInterval = setInterval(() => {
-      setCurrentUpcomingIndex((prevIndex) => (prevIndex + 1) % upcomingEvents.length);
-    }, 6500);
+    if (upcomingEvents.length > 0) {
+      const upcomingInterval = setInterval(() => {
+        setCurrentUpcomingIndex((prevIndex) => (prevIndex + 1) % upcomingEvents.length);
+      }, 6500);
 
-    const previousInterval = setInterval(() => {
-      setCurrentPreviousIndex((prevIndex) => (prevIndex + 1) % previousEvents.length);
-    }, 6500);
+      return () => clearInterval(upcomingInterval); 
+    }
+  }, [upcomingEvents.length]);
 
-    return () => {
-      clearInterval(upcomingInterval);
-      clearInterval(previousInterval);
-    };
-  }, [upcomingEvents.length, previousEvents.length]);
+  useEffect(() => {
+    if (previousEvents.length > 0) {
+      const previousInterval = setInterval(() => {
+        setCurrentPreviousIndex((prevIndex) => (prevIndex + 1) % previousEvents.length);
+      }, 6500);
 
-  const handleButtonClick = () => setShowLogin(true);
-  const handleCloseLogin = () => setShowLogin(false);
+      return () => clearInterval(previousInterval);
+    }
+  }, [previousEvents.length]);
+
+  const handleButtonClick = () => {setShowLogin(true)
+    document.body.style.overflow = "hidden";
+  };
+  const handleCloseLogin = () => {setShowLogin(false)
+    document.body.style.overflow = "auto";
+  };
   const handleUpcomingDotClick = (index) => setCurrentUpcomingIndex(index);
   const handlePreviousDotClick = (index) => setCurrentPreviousIndex(index);
 
@@ -60,21 +75,28 @@ function LandingPage() {
         <HeroSection />
       </div>
 
-      <EventsSection
-        title="Upcoming Events"
-        events={upcomingEvents}
-        currentIndex={currentUpcomingIndex}
-        handleDotClick={handleUpcomingDotClick}
-        showBookNow
-        handleButtonClick={handleButtonClick}
-      />
+      {loading && <p>Loading events...</p>}
+      {error && <p>{error}</p>}
 
-      <EventsSection
-        title="Previous Events"
-        events={previousEvents}
-        currentIndex={currentPreviousIndex}
-        handleDotClick={handlePreviousDotClick}
-      />
+      {!loading && !error && (
+        <>
+          <EventsSection
+            title="Upcoming Events"
+            events={upcomingEvents}
+            currentIndex={currentUpcomingIndex}
+            handleDotClick={handleUpcomingDotClick}
+            showBookNow
+            handleButtonClick={handleButtonClick}
+          />
+
+          <EventsSection
+            title="Previous Events"
+            events={previousEvents}
+            currentIndex={currentPreviousIndex}
+            handleDotClick={handlePreviousDotClick}
+          />
+        </>
+      )}
 
       <Footer />
 
@@ -83,13 +105,11 @@ function LandingPage() {
   );
 }
 
-// Header component containing logo and navigation
 function Header({ handleButtonClick }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen);
-  };
+  const toggleMenu = () => setIsMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen);
+
   return (
     <header className="landing-page-header">
       <div className="logo-container">
@@ -99,12 +119,12 @@ function Header({ handleButtonClick }) {
       <nav className={`landing-page-nav-menu ${isMenuOpen ? 'open' : ''}`}>
         <ul>
           <li><a href="#ticket">Ticket</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="/about">Contact</a></li>
           <li><a href="/about">About Us</a></li>
-          <li><button className="btn-secondary" onClick={handleButtonClick}>Login</button></li>
+          <li><button className="btn-secondary" onClick={handleButtonClick} aria-label='Login'>Login</button></li>
         </ul>
       </nav>
-      <label className="burger" htmlFor="burger" >
+      <label className="burger" htmlFor="burger">
         <input type="checkbox" id="burger" onClick={toggleMenu} />
         <span></span>
         <span></span>
@@ -114,7 +134,6 @@ function Header({ handleButtonClick }) {
   );
 }
 
-// Hero section component with main call-to-action
 function HeroSection() {
   return (
     <div className="hero-card">
@@ -125,14 +144,17 @@ function HeroSection() {
           Connecting you with the best campus events and activities. Discover, engage, and celebrate!
         </p>
         <div className="hero-buttons">
-          <button className="btn-secondary">Learn More</button>
+          <button className="btn-secondary" onClick={AboutSec}>Learn More</button>
         </div>
       </section>
     </div>
   );
 }
 
-// Events section component for displaying upcoming or previous events
+function AboutSec() {
+  window.location.href = '/about';
+}
+
 function EventsSection({ title, events, currentIndex, handleDotClick, showBookNow, handleButtonClick }) {
   const sectionRef = useRef(null);
 
@@ -164,7 +186,7 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
   return (
     <section ref={sectionRef} className="landing-page-events-section">
       <h1>{title}</h1>
-      
+
       {currentEvent ? (
         <div
           className="card"
@@ -173,14 +195,13 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
           }}
         >
           <div className="event-content">
-            <div className='event-card-description'>
+            <div className="event-card-description">
               <h2>{currentEvent.title}</h2>
               <p>{currentEvent.description}</p>
             </div>
-            {showBookNow ? (
-              <button className="btn-primary" onClick={handleButtonClick}>Get Ticket</button>
-            ) : (
-              <h2>{currentEvent.title}</h2>
+            {showBookNow && (
+              <button className="btn-primary" onClick={handleButtonClick} aria-label='Login'>Get Ticket</button>
+
             )}
           </div>
           <div className="dots">
@@ -194,17 +215,16 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
           </div>
         </div>
       ) : (
-        <p>No events available</p>
+        <p>No events available yet</p>
       )}
     </section>
   );
 }
 
-// Login modal component for displaying the login form
 function LoginModal({ handleCloseLogin }) {
   return (
     <div className="login-modal">
-      <button className="close-button" onClick={handleCloseLogin}>X</button>
+      <button className="landing-close-button" onClick={handleCloseLogin} aria-label='landing-close-button'>X</button>
       <Login />
     </div>
   );

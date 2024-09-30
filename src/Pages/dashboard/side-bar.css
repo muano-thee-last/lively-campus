@@ -1,18 +1,18 @@
 /* Sidebar layout */
 #side-bar {
-    width: 80px; /* Collapsed width */
-    background-color: #fff; /* Dark background color */
-    color: var(--primary-color); /* Light text color */
+    width: 80px; 
+    background-color: #fff; 
+    color: var(--primary-color); 
     height: 100vh;
-    padding: 20px;
+    padding: 0 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: width 0.3s ease; /* Smooth transition when expanding/collapsing */
+    transition: width 0.3s ease;
   }
   
   #side-bar.expanded {
-    width: 250px; /* Expanded width */
+    width: 200px;
   }
   
   /* Sidebar items (links) */
@@ -22,17 +22,17 @@
     align-items: center;
     padding: 15px 10px;
     text-decoration: none;
-    color: inherit; /* Inherit text color from parent */
+    color: inherit; 
     transition: background-color 0.3s ease;
   }
   
   .sidebar-item:hover {
-    background-color: #34495e; /* Highlight on hover */
+    background-color: var(--secondary-color);
     border-radius: 5px;
   }
   
   .sidebar-icon {
-    font-size: 28px; /* Size of the icons */
+    font-size: 28px; 
     margin-right: 15px; /* Space between icon and text */
   }
   
@@ -89,7 +89,6 @@
         height: 60vh;
         display: flex;
         flex-direction: column;
-        
     }
 }
 

@@ -1,43 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
+import TicketModal from './ticketModal';
+import styles from './ticketView.module.css';
 
-function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode }) {
+export default function TicketView({ eventName, ticketPrice, purchaseDate, ticketCode, venue, time, date, imageUrl }) {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
   return (
-    <div style={styles.ticketContainer}>
-      <h2 style={styles.eventName}>{eventName}</h2>
-      <div style={styles.detailsContainer}>
-        <p style={styles.eventName}>R{ticketPrice}</p>
-        <p style={styles.eventName}><strong>Purchase Date:</strong> {new Date(purchaseDate).toLocaleDateString()}</p>
-        <p style={styles.eventName}><strong>Ticket Code:</strong> {ticketCode}</p>
-        <img 
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticketCode}`} 
-              alt={`QR code for ticket ${ticketCode}`}
-            />
+    <div className={styles.ticketContainer}>
+      <img 
+        src={imageUrl} 
+        alt="event" 
+        className={styles.image} 
+      />
+      <h2 className={styles.eventName}>{eventName}</h2>
+      <div className={styles.detailsContainer}>
+        <p className={styles.eventNamex}><strong>Location:</strong> {venue}</p>
+        <p className={styles.eventNamex}><strong>Time:</strong> {time} {formatDate(date)}</p>
+        <button onClick={handleOpenModal} className={styles.button}>
+          View Ticket
+        </button>
       </div>
 
+      <TicketModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        eventImage={imageUrl}
+        eventName={eventName}
+        eventDate={date}
+        eventLocation={venue}
+        studentNo="12345678"
+        ticketNo={ticketCode}
+        ticketDate={date}
+        ticketTime={time}
+        qrCode={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticketCode}`}
+      />
     </div>
   );
 }
-
-const styles = {
-  ticketContainer: {
-    border: '1px solid #ddd',
-    borderRadius: '10px',
-    padding: '20px',
-    maxWidth: '400px',
-    margin: '20px auto',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-  },
-  eventName: {
-    fontSize: '1.5rem',
-    textAlign: 'center',
-    marginBottom: '20px',
-    color: 'black', 
-  },
-  detailsContainer: {
-    fontSize: '1rem',
-    marginBottom: '20px',
-    color: 'black', 
-  }
-};
-
-export default TicketView;

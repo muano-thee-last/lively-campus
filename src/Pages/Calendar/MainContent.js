@@ -64,7 +64,11 @@ const MainContent = () => {
     setCurrentDate(newDate);
   };
 
-  const handleFilterDateChange = (e) => setFilterDate(e.target.value);
+  const handleFilterDateChange = (e) => {
+    const newDate = e.target.value ? new Date(e.target.value) : new Date();
+    setFilterDate(e.target.value);
+    setCurrentDate(newDate);
+  };
   const handleFilterTypeChange = (e) => setFilterType(e.target.value);
   const handleFilterLocationChange = (e) => setFilterLocation(e.target.value);
 
@@ -100,12 +104,12 @@ const MainContent = () => {
   };
 
   // New function to check if a day has events
-  const dayHasEvents = (day) => {
+  const dayHasEvents = (day, month, year) => {
     return filteredEvents.some(event => {
       const eventDate = new Date(event.date);
       return eventDate.getDate() === day && 
-             eventDate.getMonth() === currentMonth && 
-             eventDate.getFullYear() === currentYear;
+             eventDate.getMonth() === month && 
+             eventDate.getFullYear() === year;
     });
   };
 
@@ -115,8 +119,14 @@ const MainContent = () => {
 
   // Update the renderMiniCalendar function
   const renderMiniCalendar = () => {
-    const miniCalendarDays = [...Array(daysInMonth).keys()].map(day => day + 1);
-    const paddedDays = [...Array(firstDayOfMonth).fill(null), ...miniCalendarDays];
+    const miniCalendarDate = new Date(currentDate);
+    const miniCalendarMonth = miniCalendarDate.getMonth();
+    const miniCalendarYear = miniCalendarDate.getFullYear();
+    const miniCalendarDaysInMonth = new Date(miniCalendarYear, miniCalendarMonth + 1, 0).getDate();
+    const miniCalendarFirstDayOfMonth = new Date(miniCalendarYear, miniCalendarMonth, 1).getDay();
+
+    const miniCalendarDays = [...Array(miniCalendarDaysInMonth).keys()].map(day => day + 1);
+    const paddedDays = [...Array(miniCalendarFirstDayOfMonth).fill(null), ...miniCalendarDays];
     
     return (
       <div className="mini-calendar">
@@ -130,12 +140,12 @@ const MainContent = () => {
             <div 
               key={`mini-${index}`} 
               className={`mini-date ${
-                day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear() 
+                day === today.getDate() && miniCalendarMonth === today.getMonth() && miniCalendarYear === today.getFullYear() 
                   ? 'highlight' 
-                  : day && dayHasEvents(day) 
-                    ? dayHasUserEvents(day) ? 'has-user-events' : 'has-events'
+                  : day && dayHasEvents(day, miniCalendarMonth, miniCalendarYear) 
+                    ? dayHasUserEvents(day, miniCalendarMonth, miniCalendarYear) ? 'has-user-events' : 'has-events'
                     : ''
-              }`}
+              } ${filterDate && day === new Date(filterDate).getDate() ? 'selected-date' : ''}`}
             >
               {day}
             </div>
@@ -146,12 +156,12 @@ const MainContent = () => {
   };
 
   // New function to check if a day has events created by the current user
-  const dayHasUserEvents = (day) => {
+  const dayHasUserEvents = (day, month, year) => {
     return filteredEvents.some(event => {
       const eventDate = new Date(event.date);
       return eventDate.getDate() === day && 
-             eventDate.getMonth() === currentMonth && 
-             eventDate.getFullYear() === currentYear &&
+             eventDate.getMonth() === month && 
+             eventDate.getFullYear() === year &&
              isUserEvent(event);
     });
   };
@@ -226,75 +236,89 @@ const MainContent = () => {
   return (
     <div className="calendar-container">
       <div className="sidebar">
-        <div className="month-header">
-          <span className='current-month'>{months[currentMonth]} </span>
-          <span className='current-year'>{currentYear}</span>
-        </div>
+        <div className="sidebar-content">
+          <div className="month-header">
+            <span className='current-month'>{months[currentMonth]} </span>
+            <span className='current-year'>{currentYear}</span>
+          </div>
 
-        {renderMiniCalendar()}
+          {renderMiniCalendar()}
 
-        <div className="filters">
-          <h4>Filters</h4>
-          <input type="date" value={filterDate} onChange={handleFilterDateChange} />
-          <select value={filterType} onChange={handleFilterTypeChange}>
-            <option value="">All Types</option>
-            {eventTypes.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
-          <input 
-            type="text" 
-            placeholder="location" 
-            value={filterLocation} 
-            onChange={handleFilterLocationChange} 
-          />
-        </div>
-
-        <div className="today-events">
-          <h4>
-            <FontAwesomeIcon icon={faCalendarAlt} /> Today
-          </h4>
-          {getTodayEvents().length > 0 ? (
-            <ul className="today-event-list">
-              {getTodayEvents().map(event => (
-                <li key={event.id} className="today-event">
-                  <Link to={`/view-more-details/${event.id}`}>
-                    <div className="today-event-title">{event.title}</div>
-                    <div className="today-event-time">{formatEventTime(event.date)}</div>
-                  </Link>
-                </li>
+          <div className="filters">
+            <h4>Filters</h4>
+            <label htmlFor="date-filter">Date Filter</label>
+            <input 
+              id="date-filter"
+              type="date" 
+              value={filterDate} 
+              onChange={handleFilterDateChange}
+              max={new Date().toISOString().split('T')[0]}
+            />
+            <select value={filterType} onChange={handleFilterTypeChange}>
+              <option value="">All Types</option>
+              {eventTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
               ))}
-            </ul>
-          ) : (
-            <p className='no-events-today'>No events today</p>
-          )}
-        </div>
+            </select>
+            <input 
+              type="text" 
+              placeholder="location" 
+              value={filterLocation} 
+              onChange={handleFilterLocationChange} 
+            />
+          </div>
 
-        <div className="upcoming-events">
-          <h4>
-            <FontAwesomeIcon icon={faCalendarAlt} /> Upcoming Events
-          </h4>
-          {upcomingEvents.length > 0 ? (
-            <ul className="upcoming-event-list">
-              {upcomingEvents.map(event => (
-                <li key={event.id} className="upcoming-event">
-                  <Link to={`/view-more-details/${event.id}`}>
-                    <div className="upcoming-event-title">{event.title}</div>
-                    <div className="upcoming-event-datetime">{formatEventDateTime(event.date)}</div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className='no-events'>No upcoming events</p>
-          )}
+          <div className="today-events">
+            <h4>
+              <FontAwesomeIcon icon={faCalendarAlt} /> Today
+            </h4>
+            {getTodayEvents().length > 0 ? (
+              <ul className="today-event-list">
+                {getTodayEvents().map(event => (
+                  <li key={event.id} className="today-event">
+                    <Link to={`/view-more-details/${event.id}`}>
+                      <div className="today-event-title">{event.title}</div>
+                      <div className="today-event-time">{formatEventTime(event.date)}</div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className='no-events-today'>No events today</p>
+            )}
+          </div>
+
+          <div className="upcoming-events">
+            <h4>
+              <FontAwesomeIcon icon={faCalendarAlt} /> Upcoming Events
+            </h4>
+            {upcomingEvents.length > 0 ? (
+              <ul className="upcoming-event-list">
+                {upcomingEvents.map(event => (
+                  <li key={event.id} className="upcoming-event">
+                    <Link to={`/details/${event.id}`}>
+                      <div className="upcoming-event-title">{event.title}</div>
+                      <div className="upcoming-event-datetime">{formatEventDateTime(event.date)}</div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className='no-events'>No upcoming events</p>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="calendar" ref={calendarRef}>
         <div className="calendar-header">
           <h2 className='viewing-month'>{months[currentMonth]} {currentYear}</h2>
-          <select className='select-month' onChange={handleMonthChange} value={currentMonth}>
+          <select 
+            className='select-month' 
+            onChange={handleMonthChange} 
+            value={currentMonth}
+            aria-label="Select month"
+          >
             {months.map((month, index) => (
               <option key={month} value={index}>{month}</option>
             ))}
@@ -325,7 +349,9 @@ const MainContent = () => {
             return (
               <div 
                 key={day} 
-                className={`day ${isToday ? 'highlight-day' : ''} ${dayEvents.length > 0 ? hasUserEvents ? 'has-user-events' : 'has-events' : ''} ${isPastDay ? 'past-day' : ''}`}
+                className={`day ${isToday ? 'highlight-day' : ''} 
+                  ${dayEvents.length > 0 ? hasUserEvents ? 'has-user-events' : 'has-events' : ''} 
+                  ${isPastDay ? 'past-day' : ''}`}
                 onClick={() => handleDateClick(day + 1)}
               >
                 <span className="day-number">{day + 1}</span>
@@ -361,9 +387,3 @@ const MainContent = () => {
 };
 
 export default MainContent;
-
-
-
-
-
-

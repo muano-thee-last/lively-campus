@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./styles.css";
-import Lgoogle from '../../asserts/google.jpeg';
-import Lx from '../../asserts/twitter.png';
 import { auth, GoogleAuthProvider, TwitterAuthProvider } from "./config";
-import { 
-  signInWithPopup, 
-  isSignInWithEmailLink, 
-  signInWithEmailLink, 
-  sendSignInLinkToEmail 
+import {
+  signInWithPopup,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
+  sendSignInLinkToEmail
 } from "firebase/auth";
 import createNewUser from "./createNewUser";
-
+import Lgoogle from '../../asserts/google.jpeg';
+import Lx from '../../asserts/twitter.png';
+import "./styles.css";
 
 const Authenticate = (platform, email = null, navigate) => {
   if (platform === "Google") {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        handleSignIn(result, "Google", navigate); 
+        handleSignIn(result, "Google", navigate);
       })
       .catch((error) => {
         console.error("Error signing in with Google:", error);
@@ -27,12 +26,11 @@ const Authenticate = (platform, email = null, navigate) => {
     const provider = new TwitterAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        handleSignIn(result, "Twitter", navigate); 
+        handleSignIn(result, "Twitter", navigate);
       })
       .catch((error) => {
         console.error("Error signing in with Twitter:", error);
       });
-  
   } else if (platform === "Email") {
     if (email && isSignInWithEmailLink(auth, window.location.href)) {
       signInWithEmailLink(auth, email, window.location.href)
@@ -66,23 +64,17 @@ const handleSignIn = async (result, platform, navigate) => {
     const existingUser = await response.json();
 
     if (existingUser.error) {
- 
       const userResponse = window.confirm(
         "You don't have an account yet, press okay to create a new one"
       );
 
       if (userResponse) {
-        // Create a new user
-
         createNewUser(result);
-        navigate("/Dashboard")
+        navigate("/Dashboard");
       } else {
         navigate("/");
       }
-
-
     } else {
-      // Navigate to home page or dashboard
       navigate('/Dashboard');
     }
   } catch (error) {
@@ -117,8 +109,6 @@ function SignIn() {
     setEmail(event.target.value);
   };
 
-
-  //goes to verify email
   const sendEmailVerificationLink = () => {
     setError(null);
     setIsSendingEmail(true);
@@ -154,24 +144,6 @@ function SignIn() {
   return (
     <div className="sign-in-container">
       <div className="sign-in-box">
-        <button
-          className="sign-in-button google"
-          onClick={() => Authenticate("Google", null, navigate)} 
-        >
-          <img src={Lgoogle} alt="Google Icon" className="options" />
-          Continue with Google
-        </button>
-      
-        <button
-          className="sign-in-button twitter"
-          onClick={() => Authenticate("Twitter", null, navigate)} 
-        >
-          <img src={Lx} alt="Twitter Icon" className="options" />
-          Continue with Twitter
-        </button>
-
-        <div className="or-divider">OR</div>
-
         <div className="EmailSignin">
           <p>Sign in with email</p>
           <input
@@ -180,9 +152,9 @@ function SignIn() {
             value={email}
             onChange={handleEmailInput}
             disabled={emailSent || isSendingEmail}
+            placeholder="Email"
           />
         </div>
-
         <button
           className="sign-in-button email"
           onClick={sendEmailVerificationLink}
@@ -190,7 +162,23 @@ function SignIn() {
         >
           {isSendingEmail ? "Sending..." : emailSent ? "Verification Email Sent" : "Send Verification Link"}
         </button>
+        <div className="or-divider">OR</div>
 
+        <button
+          className="sign-in-button google"
+          onClick={() => Authenticate("Google", null, navigate)}
+        >
+          <img src={Lgoogle} alt="Google Icon" className="options" />
+          Continue with Google
+        </button>
+
+        <button
+          className="sign-in-button twitter"
+          onClick={() => Authenticate("Twitter", null, navigate)}
+        >
+          <img src={Lx} alt="Twitter Icon" className="options" />
+          Continue with Twitter
+        </button>
         {error && <p className="error-message">{error}</p>}
         {emailSent && (
           <p className="success-message">
