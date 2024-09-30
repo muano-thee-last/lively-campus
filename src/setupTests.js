@@ -33,3 +33,6 @@ jest.mock('react-modal', () => ({
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+// jest.setup.js
+import fetchMock from 'jest-fetch-mock';
+fetchMock.enableMocks();
