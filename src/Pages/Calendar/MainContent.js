@@ -37,14 +37,14 @@ const MainContent = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
-        console.log('Fetched events:', data);
-        // Log unique event types
-        const uniqueTypes = [...new Set(data.map(event => event.type))];
-        console.log('Unique event types:', uniqueTypes);
         setEvents(data);
       } catch (error) {
         console.error('Error fetching events:', error);
+        setEvents([]); // Set events to an empty array in case of error
       }
     };
 
@@ -251,7 +251,7 @@ const MainContent = () => {
               id="date-filter"
               type="date" 
               value={filterDate} 
-              onChange={handleFilterDateChange}
+              onChange={handleFilterDateChange} 
               max={new Date().toISOString().split('T')[0]}
             />
             <select value={filterType} onChange={handleFilterTypeChange}>
