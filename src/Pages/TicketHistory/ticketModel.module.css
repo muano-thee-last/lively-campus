@@ -13,8 +13,8 @@
 }
 
 /* Modal content */
-.ticket-modal {
-  background-color: #fff;
+.ticketModal {
+  background-color: #f0f0f0; /* Light gray background */
   border-radius: 12px;
   width: 90%;
   max-width: 500px;
@@ -24,12 +24,12 @@
   animation: fadeIn 0.3s ease;
 }
 
-.modal-content {
+.modalContent {
   text-align: center;
 }
 
 /* Event image */
-.event-image {
+.eventImage {
   width: 100%;
   height: auto;
   max-height: 200px;
@@ -39,19 +39,19 @@
 }
 
 /* Ticket details */
-.ticket-details h2 {
+.ticketDetails h2 {
   font-size: 24px;
   color: #333;
   margin-bottom: 10px;
 }
 
-.ticket-details p {
+.ticketDetails p {
   font-size: 16px;
   color: #555;
   margin-bottom: 15px;
 }
 
-.info-row {
+.infoRow {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
@@ -59,23 +59,23 @@
   color: #666;
 }
 
-.info-row span {
+.infoRow span {
   display: inline-block;
 }
 
 /* QR Code */
-.qr-code {
+.qrCode {
   margin: 20px 0;
 }
 
-.qr-code img {
-  width: 100px;
-  height: 100px;
+.qrCode img {
+  width: 50%;
+  height: 50%;
   object-fit: contain;
 }
 
 /* Close button */
-.close-btn {
+.closeBtn {
   background-color: #ff4d4d;
   color: white;
   border: none;
@@ -87,7 +87,7 @@
   transition: background-color 0.2s ease;
 }
 
-.close-btn:hover {
+.closeBtn:hover {
   background-color: #ff6666;
 }
 
@@ -103,7 +103,8 @@
   }
 }
 
-.contents{
-  border: 2px solid black; /* 2px width, solid style, black color */
-  padding: 20px;           /* Optional: Adds space inside the border */
+.contents {
+  border: 2px solid black;
+  padding: 20px;
+  background-color: #fff; /* Optional: Set background color for the modal's content */
 }
