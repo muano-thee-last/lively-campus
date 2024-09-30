@@ -329,14 +329,19 @@ function MainContent({ searchQuery }) {
   };
 
   useEffect(() => {
-    const filtered = events.filter((event) =>
-      event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.organizerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+    const filtered = events.filter((event) => {
+      const titleMatch = event.title?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
+      const organizerMatch = event.organizerName?.toLowerCase().includes(searchQuery.toLowerCase()) || false;
+      const tagsMatch = Array.isArray(event.tags)
+        ? event.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        : false;
+      
+      return titleMatch || organizerMatch || tagsMatch;
+    });
+    
     setFilteredEvents(filtered);
   }, [searchQuery, events]);
-
+  
   // Modify the getEventsByTagGroup function to use filteredEvents
   const getEventsByTagGroup = useCallback((group) => {
     const tagsInGroup = tagGroups[group];

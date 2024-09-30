@@ -5,6 +5,7 @@ async function createNewUser(result) {
   const userId1 = result.user.uid;
 
   sessionStorage.setItem("uid", userId1);
+  localStorage.setItem("uid", userId1);
   sessionStorage.setItem("user", JSON.stringify(result.user));
   const user = {
     userId1: userId1,
