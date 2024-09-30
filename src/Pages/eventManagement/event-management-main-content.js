@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './event-management-main-content.css';
 import profile from './images-logos/profile-logo.jpg';
 import { FaSearch, FaEdit, FaTrash, FaCamera, FaUsers } from 'react-icons/fa';
@@ -7,13 +8,12 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 function EventManagementMainContent() {
   const [events, setEvents] = useState([]);
-  const [editingEvent, setEditingEvent] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUserName, setCurrentUserName] = useState('');
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState(null); 
   const upcomingSlider = useRef(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const {
     imagePreview,
@@ -30,7 +30,6 @@ function EventManagementMainContent() {
       try {
         const auth = getAuth();
 
-        // Fetch current user's information from Firebase Auth
         onAuthStateChanged(auth, (user) => {
           if (user) {
             setCurrentUserName(user.displayName);
@@ -39,7 +38,6 @@ function EventManagementMainContent() {
           }
         });
 
-        // Fetch all events from the API
         try {
           const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events/');
           if (!response.ok) {
@@ -63,14 +61,13 @@ function EventManagementMainContent() {
     return <div>Error: {error}</div>;
   }
 
-  // Filter events to include only those where organizerName matches the currentUserName
   const validEvents = events.filter(
     (event) => event.title !== 'Title not found' && event.organizerName === currentUserName
   );
 
   const handleScroll = (slider, direction) => {
     if (slider.current) {
-      const cardWidth = slider.current.querySelector('.management-card').offsetWidth + 20; // Card width + gap
+      const cardWidth = slider.current.querySelector('.management-card').offsetWidth + 20;
       const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
       slider.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
@@ -96,55 +93,17 @@ function EventManagementMainContent() {
   };
 
   const handleEdit = (event) => {
-    setEditingEvent(event);
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setEditingEvent(null);
-  };
-
-  const handleSaveChanges = async () => {
-    if (editingEvent) {
-      try {
-        const response = await fetch(
-          `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${editingEvent.id}`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              title: editingEvent.title,
-              description: editingEvent.description,
-              date: editingEvent.date,
-              location: editingEvent.location,
-              imageUrl: editingEvent.imageUrl, 
-            }),
-          }
-        );
-
-        if (response.ok) {
-          setEvents(
-            events.map((event) =>
-              event.id === editingEvent.id ? { ...event, ...editingEvent } : event
-            )
-          );
-          setIsModalOpen(false); 
-        } else {
-          console.error('Failed to update event');
-        }
-      } catch (error) {
-        console.error('Error updating event:', error);
-      }
-    }
+    navigate(`/post-event/`, { 
+      state: { 
+        editingEvent: event,
+        isEditing: true 
+      } 
+    });
   };
 
   const handleUploadImage = async () => {
     if (selectedEventId) {
       const imageUrl = await uploadImage();
-      console.log(imageUrl); 
       if (imageUrl) {
         try {
           const response = await fetch(
@@ -273,63 +232,6 @@ function EventManagementMainContent() {
           </button>
         </div>
       </div>
-
-      {isModalOpen && editingEvent && (
-        <div className="management-modal-overlay">
-          <div className="management-modal-content">
-            <h2>Edit Event</h2>
-            <label>
-              Title:
-              <input
-                type="text"
-                value={editingEvent.title || ''}
-                onChange={(e) =>
-                  setEditingEvent({ ...editingEvent, title: e.target.value })
-                }
-              />
-            </label>
-            <label>
-              Description:
-              <textarea
-                className="management-auto-resize-textarea"
-                value={editingEvent.description || ''}
-                onChange={(e) =>
-                  setEditingEvent({
-                    ...editingEvent,
-                    description: e.target.value,
-                  })
-                }
-              />
-            </label>
-
-            <label>
-              Location:
-              <input
-                type="text"
-                value={editingEvent.location || ''}
-                onChange={(e) =>
-                  setEditingEvent({ ...editingEvent, location: e.target.value })
-                }
-              />
-            </label>
-            <label>
-              Date:
-              <input
-                type="date"
-                value={editingEvent.date || ''}
-                onChange={(e) =>
-                  setEditingEvent({ ...editingEvent, date: e.target.value })
-                }
-              />
-            </label>
-
-            <div className="management-modal-buttons">
-              <button onClick={handleModalClose}>Cancel</button>
-              <button onClick={handleSaveChanges}>Save Changes</button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {uploadModalOpen && (
         <div className="management-upload-modal-overlay">

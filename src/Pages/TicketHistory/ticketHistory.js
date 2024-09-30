@@ -57,7 +57,7 @@ function TicketHistory() {
                     ticketPrice={ticket.price}
                     purchaseDate={ticket.purchaseDate}
                     ticketCode={ticket.ticketCode}
-                    location = {ticket.location}
+                    venue = {ticket.venue}
                     time = {ticket.time}
                     date = {ticket.date}
                     imageUrl = {ticket.imageUrl}

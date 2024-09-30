@@ -19,7 +19,7 @@ const CalendarPopUpCard = ({ date, events, onClose }) => {
               {events.map(event => (
                 <Link 
                   key={event.id} 
-                  to={`/details/${event.id}`}
+                  to={`/view-more-details/${event.id}`}
                   className="calendar-popup-event" 
                   onClick={onClose}
                 >
@@ -35,7 +35,7 @@ const CalendarPopUpCard = ({ date, events, onClose }) => {
               ))}
             </>
           ) : (
-            <p className="no-events-message">Oops! It looks like there's nothing scheduled for this date.</p>
+            <p className="no-events-message">Oops!! It looks like there's nothing scheduled for this date.</p>
           )}
         </div>
       </div>
