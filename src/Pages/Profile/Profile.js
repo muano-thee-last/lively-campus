@@ -137,13 +137,13 @@ export default function Profile() {
           <div className="additional-features-container">
             <div className="additional-features">
               <h2 className="add-features-bold-title">Additional Functions</h2>
-              <button role="button"
+              <button 
                 className="additional-features-buttons"
                 onClick={() => handleEventManagement()}
               >
                 Manage your Events
               </button>
-              <button role="button" className="additional-features-buttons">
+              <button  className="additional-features-buttons">
                 Create an Event
               </button>
             </div>
