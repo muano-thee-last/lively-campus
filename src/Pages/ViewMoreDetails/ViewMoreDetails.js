@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import Header from '../dashboard/header'; // Adjust the path
 import SideBar from '../dashboard/side-bar'; // Adjust the path
 import EventDetails from './EventDetails'; // Adjust the path
-import { render, screen, waitFor, act } from '@testing-library/react';
+// Remove the unused imports
+//import { render, screen, waitFor, act } from '@testing-library/react';
 //import './ViewMoreDetails.css';
 
 function ViewMoreDetails() {
