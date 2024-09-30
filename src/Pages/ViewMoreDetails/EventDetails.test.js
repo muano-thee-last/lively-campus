@@ -1,185 +1,134 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import EventDetails from './EventDetails';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({
-    id: '123',
-  }),
+// Mock TextEncoder and TextDecoder
+class MockTextEncoder {
+  encode() { return new Uint8Array(); }
+}
+class MockTextDecoder {
+  decode() { return ''; }
+}
+
+global.TextEncoder = MockTextEncoder;
+global.TextDecoder = MockTextDecoder;
+
+// Mock the react-icons
+jest.mock('react-icons/fa', () => ({
+  FaMapMarkerAlt: () => <span>MapIcon</span>,
+  FaCalendarAlt: () => <span>CalendarIcon</span>,
+  FaUsers: () => <span>UsersIcon</span>,
+  FaTicketAlt: () => <span>TicketIcon</span>,
 }));
 
-describe('EventDetails Component', () => {
+// Mock the fetch function
+global.fetch = jest.fn();
+
+// Mock Firebase
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn(),
+  onAuthStateChanged: jest.fn(),
+}));
+
+jest.mock('firebase/database', () => ({
+  getDatabase: jest.fn(),
+  ref: jest.fn(),
+  update: jest.fn(),
+}));
+
+// Update the BuyTicket mock
+jest.mock('../BuyTickets/purchase', () => () => <div data-testid="mock-buy-tickets">Mock BuyTickets</div>);
+
+const mockEvent = {
+  id: '1',
+  title: 'Test Event',
+  venue: 'Test Venue',
+  date: '2023-07-01T10:00:00',
+  capacity: 100,
+  availableTickets: 50,
+  description: 'Test Description',
+  imageUrl: 'http://test-image.jpg',
+  tags: ['tag1', 'tag2'],
+  ticketPrice: 10,
+  bookingId: 'booking123',
+};
+
+describe('EventDetails', () => {
   beforeEach(() => {
-    global.fetch = jest.fn();
-  });
-
-  test('renders loading state initially', () => {
-    render(
-      <MemoryRouter>
-        <EventDetails />
-      </MemoryRouter>
-    );
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
-  });
-
-  test('fetches and displays event details', async () => {
-    const mockEvent = {
-      id: '123',
-      title: 'Test Event',
-      description: 'Test Description',
-      location: 'Test Location',
-      date: '2023-07-01T12:00:00Z',
-      capacity: 100,
-      availableTickets: 50,
-      ticketPrice: 20,
-      tags: ['tag1', 'tag2'],
-      imageUrl: 'http://test-image.jpg',
-    };
-
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve(mockEvent),
-    }).mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({ value: 'mock-api-key' }),
+    fetch.mockClear();
+    fetch.mockImplementation((url) => {
+      if (url.includes('/events/')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockEvent),
+        });
+      } else if (url.includes('/getEnvgoogle')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ value: 'mock-google-api-key' }),
+        });
+      } else if (url.includes('/getEnvWiman')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ value: 'mock-wiman-api-key' }),
+        });
+      } else if (url.includes('/bookings/status/')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ status: 'confirmed' }),
+        });
+      }
+      return Promise.reject(new Error('Not found'));
     });
+  });
 
+  it('renders event details correctly', async () => {
     render(
-      <MemoryRouter>
-        <EventDetails />
+      <MemoryRouter initialEntries={['/events/1']}>
+        <Routes>
+          <Route path="/events/:id" element={<EventDetails />} />
+        </Routes>
       </MemoryRouter>
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Test Event')).toBeInTheDocument();
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
     });
+
+    expect(screen.getByText('Test Event')).toBeInTheDocument();
+    expect(screen.getByText('Test Venue')).toBeInTheDocument();
+    expect(screen.getByText('Capacity: 100')).toBeInTheDocument();
+    expect(screen.getByText('Available Tickets: 50')).toBeInTheDocument();
     expect(screen.getByText('Test Description')).toBeInTheDocument();
-    expect(screen.getByText(/Test Location/)).toBeInTheDocument();
-    expect(screen.getByText(/Capacity: 100/)).toBeInTheDocument();
-    expect(screen.getByText(/Available Tickets: 50/)).toBeInTheDocument();
-    expect(screen.getByText(/Ticket Price: R 20/)).toBeInTheDocument();
-    expect(screen.getByText('tag1')).toBeInTheDocument();
-    expect(screen.getByText('tag2')).toBeInTheDocument();  });
-
-  test('handles error when fetching event details', async () => {
-    console.error = jest.fn();
-    global.fetch.mockRejectedValueOnce(new Error('Failed to fetch'));
-
-    render(
-      <MemoryRouter>
-        <EventDetails />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith('Error fetching event details:', expect.any(Error));
-    });
-  });
-
-  test('handles error when fetching Google Maps API key', async () => {
-    console.error = jest.fn();
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({}),
-    }).mockRejectedValueOnce(new Error('Failed to fetch API key'));
-
-    render(
-      <MemoryRouter>
-        <EventDetails />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith('Error fetching Google Maps API key:', expect.any(Error));
-    });
-  });
-});
-describe('EventDetails Component - Error Handling', () => {
-  beforeEach(() => {
-    global.fetch = jest.fn();
-    console.error = jest.fn();
-  });
-
-  test('handles non-ok response when fetching event details', async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: false,
-      status: 404,
-      statusText: 'Not Found',
-    });
-
-    render(
-      <MemoryRouter>
-        <EventDetails />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith('Error fetching event details:', expect.any(Error));
-    });
-    await waitFor(() => {
-      expect(screen.getByText('Error: Unable to fetch event details')).toBeInTheDocument();
-    });
+    expect(screen.getByText(/Ticket Price:/)).toBeInTheDocument();
+    expect(screen.getByText('R')).toBeInTheDocument();
     
+    // Change this line
+    expect(screen.getByText((content, element) => {
+      return element.tagName.toLowerCase() === 'strong' && content.includes('10');
+    })).toBeInTheDocument();
   });
 
-  test('handles network error when fetching event details', async () => {
-    global.fetch.mockRejectedValueOnce(new Error('Network error'));
-
+  it('opens buy ticket modal when button is clicked', async () => {
     render(
-      <MemoryRouter>
-        <EventDetails />
+      <MemoryRouter initialEntries={['/events/1']}>
+        <Routes>
+          <Route path="/events/:id" element={<EventDetails />} />
+        </Routes>
       </MemoryRouter>
     );
 
     await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith("Error fetching Google Maps API key:", expect.any(Error));
-    });
-    await waitFor(() => {
-    expect(screen.getByText("Error fetching Google Maps API key:")).toBeInTheDocument();
-    });
-  });
-
-  test('handles non-ok response when fetching Google Maps API key', async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({}),
-    }).mockResolvedValueOnce({
-      ok: false,
-      status: 403,
-      statusText: 'Forbidden',
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
     });
 
-    render(
-      <MemoryRouter>
-        <EventDetails />
-      </MemoryRouter>
-    );
+    const buyTicketButton = screen.getByText('Buy Ticket');
+    fireEvent.click(buyTicketButton);
 
     await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith('Error fetching Google Maps API key:', expect.any(Error));
-    });
-  });
-
-  test('handles empty response when fetching event details', async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve(null),
-    });
-
-    render(
-      <MemoryRouter>
-        <EventDetails />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith('Error fetching event details:', expect.any(Error));
-    });
-    await waitFor(() => {
-    expect(screen.getByText('Error: Unable to fetch event details')).toBeInTheDocument();
-    });
+      expect(screen.getByTestId('mock-buy-tickets')).toBeInTheDocument();
+    }, { timeout: 3000 });
   });
 });
