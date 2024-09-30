@@ -370,15 +370,14 @@
   .sidebar {
     width: 100%;
     padding: 20px;
-    order: 2; /* Move sidebar content below the main calendar */
+    order: 2;
   }
 
   .calendar {
     padding: 20px;
-    order: 1; /* Ensure calendar is at the top */
+    order: 1;
   }
 
-  /* Reorder elements within the sidebar */
   .sidebar {
     display: flex;
     flex-direction: column;
@@ -412,9 +411,8 @@
 
   .day {
     padding: 2px;
-    min-height: auto; /* Remove fixed height */
     height: 0;
-    padding-bottom: 100%; /* Create a square aspect ratio */
+    padding-bottom: calc(100% / 7);
     position: relative;
   }
 
@@ -423,41 +421,29 @@
     top: 2px;
     left: 2px;
     font-size: 10px;
-    margin-bottom: 0;
   }
 
   .events-container {
     position: absolute;
-    top: 20px; /* Adjust based on day number size */
+    top: 20px;
     left: 2px;
     right: 2px;
     bottom: 2px;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
   }
 
   .event-details {
     font-size: 6px;
     padding: 1px 2px;
     margin-bottom: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .event-title {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .event-time {
-    display: none; /* Hide time on mobile to save space */
+    display: none;
   }
 
   .viewing-month {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .select-month {
@@ -465,63 +451,22 @@
     padding: 6px 10px;
   }
 
-  .sidebar {
-    padding: 15px;
-  }
-
-  .filters, .today-events, .upcoming-events {
-    margin-top: 20px;
-  }
-
   .mini-calendar {
-    display: none; /* Hide mini-calendar on smaller screens */
+    display: none;
   }
 }
 
 @media (max-width: 600px) {
   .calendar-container {
-    display: flex;
-    flex-direction: column;
+    font-size: 12px;
   }
 
-  .calendar {
-    order: 1;
-    width: 100%;
+  .sidebar {
     padding: 10px;
   }
 
-  .sidebar {
-    order: 2;
-    width: 100%;
-  }
-
-  .filters {
-    order: 2;
-    margin-top: 20px;
-  }
-
-  .today-events {
-    order: 3;
-  }
-
-  .upcoming-events {
-    order: 4;
-  }
-
-  .calendar-container {
-    font-size: 14px;
-  }
-
-  .sidebar {
-    padding: 15px;
-  }
-
   .month-header {
-    font-size: 20px;
-  }
-
-  .mini-calendar {
-    display: none; /* Hide mini-calendar on very small screens */
+    font-size: 18px;
   }
 
   .calendar-grid {
@@ -529,17 +474,21 @@
   }
 
   .day-name {
-    font-size: 10px;
-    padding: 2px;
+    font-size: 8px;
+    padding: 1px;
+  }
+
+  .day-number {
+    font-size: 8px;
   }
 
   .event-details {
-    padding: 2px 4px;
-    margin-bottom: 2px;
+    font-size: 5px;
+    padding: 1px;
   }
 
   .viewing-month {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .select-month {
@@ -550,53 +499,107 @@
   .filters input,
   .filters select {
     font-size: 12px;
-    padding: 6px;
+    padding: 4px;
   }
 
   .upcoming-events h4,
   .today-events h4 {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .upcoming-event-title,
   .today-event-title {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .upcoming-event-datetime,
   .today-event-time {
-    font-size: 10px;
+    font-size: 9px;
   }
 }
 
-/* Adjust the layout for very small screens */
 @media (max-width: 400px) {
+  .calendar-container {
+    font-size: 10px;
+  }
+
+  .calendar {
+    padding: 5px;
+  }
+
+  .calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .viewing-month {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  .select-month {
+    font-size: 10px;
+    padding: 2px;
+    width: 100%;
+  }
+
   .calendar-grid {
     gap: 0;
   }
 
   .day {
     border: 1px solid #e0e0e0;
-    min-height: auto;
-    padding: 2px;
   }
 
   .day-number {
-    font-size: 8px;
+    font-size: 7px;
   }
 
   .event-details {
-    font-size: 5px;
+    font-size: 4px;
+  }
+
+  .highlight-day {
+    border-width: 1px;
   }
 }
 
-/* ... (keep remaining styles) ... */
+/* Adjustments for very small screens */
+@media (max-width: 320px) {
+  .calendar-container {
+    font-size: 9px;
+  }
 
-.selected-date {
-  background-color: #FFB347 !important; /* Light orange background for selected date */
-  border: 2px solid #FF8C00 !important; /* Dark orange border */
-  color: #000 !important;
-  font-weight: bold !important;
+  .viewing-month {
+    font-size: 12px;
+  }
+
+  .select-month {
+    font-size: 9px;
+  }
+
+  .day-number {
+    font-size: 6px;
+  }
+
+  .event-details {
+    font-size: 3px;
+  }
+
+  .upcoming-events h4,
+  .today-events h4 {
+    font-size: 12px;
+  }
+
+  .upcoming-event-title,
+  .today-event-title {
+    font-size: 10px;
+  }
+
+  .upcoming-event-datetime,
+  .today-event-time {
+    font-size: 8px;
+  }
 }
 
-/* ... (keep remaining styles) ... */
+/* ... keep any remaining styles ... */
