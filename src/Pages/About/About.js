@@ -40,10 +40,18 @@ function About() {
       {/* Manually Coded Header */}
       <header className="about-page-header">
         <div className="logo-container">
-          <img src={logo} alt="LivelyCampus Logo" className="logo-image" />
-          <div className="logo-text">LivelyCampus</div>
+          <img
+            src={logo}
+            alt="LivelyCampus Logo"
+            className="logo-image"
+            data-testid="logo-image"
+          />
+          <div className="logo-text" data-testid="logo-text">LivelyCampus</div>
         </div>
-        <nav className={`about-page-nav-menu ${isMenuOpen ? 'open' : ''}`}>
+        <nav
+          className={`about-page-nav-menu ${isMenuOpen ? 'open' : ''}`}
+          role="navigation"
+        >
           <ul>
             <li><a href="/">Home</a></li>
             <li><a href="#ticket">Ticket</a></li>
@@ -63,19 +71,23 @@ function About() {
       {/* Hero Section */}
       <div className="about-hero">
         <img src={logo} alt="LivelyCampus Logo" className="about-logo" />
-        <h1>About LivelyCampus</h1>
-        <p>
+        <h1 data-testid="hero-title">About LivelyCampus</h1>
+        <p data-testid="hero-description">
           Connecting students with exciting campus events. Our platform is designed to ensure that every student has access to the vibrant events happening on campus, from academic talks to concerts and festivals.
         </p>
       </div>
 
       {/* Content Section */}
-      <section ref={sectionRef} className={`about-section ${isVisible ? 'visible' : ''}`}>
+      <section
+        ref={sectionRef}
+        className={`about-section ${isVisible ? 'visible' : ''}`}
+        data-testid="about-section"
+      >
         <h2>Our Mission</h2>
         <p>
           At LivelyCampus, our mission is to bridge the gap between students and campus activities. We believe that university life should be more than just classes—it’s about building memories and making connections.
         </p>
-        
+
         <h2>Why Choose Us?</h2>
         <ul>
           <li>Easy-to-use event creation and management tools for organizers.</li>
