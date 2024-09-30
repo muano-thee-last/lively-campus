@@ -4,8 +4,10 @@ import '@testing-library/jest-dom';
 import About from '../About/About';
 import Footer from '../dashboard/footer';
 
+// Mocking Footer component
 jest.mock('../dashboard/footer', () => () => <div>Mocked Footer</div>);
 
+// Mock IntersectionObserver behavior
 beforeEach(() => {
   global.IntersectionObserver = jest.fn(function (callback) {
     this.observe = jest.fn();
@@ -29,11 +31,22 @@ describe('About Component', () => {
 
   test('renders all elements correctly', () => {
     render(<About />);
+    // Logo and header elements
     expect(screen.getByTestId('logo-image')).toBeInTheDocument();
     expect(screen.getByTestId('logo-text')).toHaveTextContent('LivelyCampus');
+    
+    // Navigation bar elements
+    expect(screen.getByText('Home')).toBeInTheDocument();
+    expect(screen.getByText('Ticket')).toBeInTheDocument();
+    expect(screen.getByText('Contact')).toBeInTheDocument();
+    expect(screen.getByText('About Us')).toBeInTheDocument();
     expect(screen.getByText('Login')).toBeInTheDocument();
+
+    // Hero section elements
     expect(screen.getByTestId('hero-title')).toBeInTheDocument();
     expect(screen.getByTestId('hero-description')).toHaveTextContent(/Connecting students with exciting campus events/i);
+    
+    // Other section elements
     expect(screen.getByText('Our Mission')).toBeInTheDocument();
     expect(screen.getByText('Why Choose Us?')).toBeInTheDocument();
     expect(screen.getByText('How It Works')).toBeInTheDocument();
@@ -41,17 +54,59 @@ describe('About Component', () => {
     expect(screen.getByText('Mocked Footer')).toBeInTheDocument();
   });
 
+  test('renders logo image with correct attributes', () => {
+    render(<About />);
+    const logoImage = screen.getByTestId('logo-image');
+    expect(logoImage).toBeInTheDocument();
+    expect(logoImage).toHaveAttribute('src', expect.any(String)); // Ensure logo has a source
+    expect(logoImage).toHaveAttribute('alt', 'LivelyCampus Logo');
+  });
+
+  test('renders Contact Us section with correct email', () => {
+    render(<About />);
+    const emailLink = screen.getByText('support@witslivelycampus.com');
+    expect(emailLink).toBeInTheDocument();
+    expect(emailLink).toHaveAttribute('href', 'mailto:livelycampus@gmail.com');
+  });
+
+  test('renders hero section correctly', () => {
+    render(<About />);
+    const heroTitle = screen.getByTestId('hero-title');
+    const heroDescription = screen.getByTestId('hero-description');
+  
+    expect(heroTitle).toBeInTheDocument();
+    expect(heroTitle).toHaveTextContent('About LivelyCampus');
+    expect(heroDescription).toHaveTextContent('Connecting students with exciting campus events.');
+  });
+  
   test('toggles the menu when burger button is clicked', () => {
     render(<About />);
     const burgerButton = screen.getByLabelText('burger');
     const navMenu = screen.getByRole('navigation');
+    
+    // Initial state: Menu is closed
     expect(navMenu).not.toHaveClass('open');
 
+    // First click: Menu should open
     fireEvent.click(burgerButton);
     expect(navMenu).toHaveClass('open');
 
+    // Second click: Menu should close
     fireEvent.click(burgerButton);
     expect(navMenu).not.toHaveClass('open');
+  });
+
+  test('navigation links are present and clickable', () => {
+    render(<About />);
+    const homeLink = screen.getByText('Home');
+    const ticketLink = screen.getByText('Ticket');
+    const contactLink = screen.getByText('Contact');
+    const aboutUsLink = screen.getByText('About Us');
+    
+    expect(homeLink).toHaveAttribute('href', '/');
+    expect(ticketLink).toHaveAttribute('href', '#ticket');
+    expect(contactLink).toHaveAttribute('href', '#contact');
+    expect(aboutUsLink).toHaveAttribute('href', '/about');
   });
 
   test('sectionRef correctly references the section element', () => {
