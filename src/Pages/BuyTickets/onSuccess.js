@@ -87,19 +87,22 @@ const SuccessPage = () => {
   const id = externalId.uid;
 
 
+  console.log(externalId)
+  console.log(id)
+
   uploadTicketInformation(id, 200);
 
   updateTicketsAvailable(id);
   incrementTicketSalse(id);
 
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate('/ticket-history');
-    }, 4000);
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       navigate('/ticket-history');
+//     }, 4000);
 
-    return () => clearTimeout(timer); // Clean up
-  }, [navigate]);
+//     return () => clearTimeout(timer); // Clean up
+//   }, [navigate]);
 
   return (
     <div className={styles.successContainer}>
