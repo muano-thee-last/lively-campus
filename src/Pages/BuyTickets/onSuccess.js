@@ -87,8 +87,7 @@ const SuccessPage = () => {
   const id = externalId.uid;
 
 
-  console.log(externalId)
-  console.log(id)
+  console.log(JSON.parse(externalId).id)
 
   uploadTicketInformation(id, 200);
 
