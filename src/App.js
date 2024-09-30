@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage/LandingPage";
 import VerifyEmail from "./Pages/Login/verifyEmail";
-import Dashboard from "./Pages/dashboard/dashboard";
+import dashboard from "./Pages/dashboard/dashboard";
 import Calendar from "./Pages/Calendar/Calendar";
 import Notifications from './Pages/Notifications/NotificationsDashboard';
 import EventCreation from "./Pages/EventCreation/EventCreation";
