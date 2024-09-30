@@ -1,29 +1,14 @@
-import { app } from "../Login/config";
-import { getMessaging, getToken } from "firebase/messaging";
+import { messaging } from "../Login/config";
+import { getToken, onMessage } from "firebase/messaging";
 
 // Initialize Firebase Cloud Messaging and get a reference to the service
-const messaging = getMessaging(app);
+const msg = await messaging();
 const uid = sessionStorage.getItem("uid"); // Assuming the user ID is stored in session storage
-
-// Function to request permission for notifications and then get/save the token
-export async function requestPermissionAndSaveToken() {
-  console.log("Requesting notification permission...");
-
-  // Request permission from the user
-  const permission = await Notification.requestPermission();
-
-  if (permission === "granted") {
-    console.log("Notification permission granted.");
-    await saveFcmToken(); // Call the function to get and save the FCM token
-  } else {
-    console.log("Notification permission denied.");
-  }
-}
 
 // Function to get the FCM token and send it to the backend for storage
 async function saveFcmToken() {
   try {
-    const currentToken = await getToken(messaging, {
+    const currentToken = await getToken(msg, {
       vapidKey:
         "BJXnaJMiLjxe0s5X7SiwhWsAP4beRPb4-Zgpga3s-DpI9_bZH62Lm_CIaql-TfrqTrSDwddSdqWDiyKx_1L9Wcc", // Replace with your actual VAPID key
     });
@@ -51,10 +36,33 @@ async function saveFcmToken() {
       } else {
         console.error("Failed to save the FCM token to the server.");
       }
+
+      onMessage(msg, (message) => {
+        console.log("New Foreground Message: ", message);
+        // Handle the notification payload here
+        new Notification(message.notification.title, {
+          body: message.notification.body,
+        });
+      });
     } else {
       console.log("No registration token available.");
     }
   } catch (err) {
     console.error("An error occurred while retrieving the token: ", err);
+  }
+}
+
+// Function to request permission for notifications and then get/save the token
+export async function requestPermissionAndSaveToken() {
+  console.log("Requesting notification permission...");
+
+  // Request permission from the user
+  const permission = await Notification.requestPermission();
+
+  if (permission === "granted") {
+    console.log("Notification permission granted.");
+    await saveFcmToken(); // Call the function to get and save the FCM token
+  } else {
+    console.log("Notification permission denied.");
   }
 }

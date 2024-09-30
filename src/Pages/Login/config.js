@@ -7,8 +7,9 @@ import {
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getMessaging, isSupported } from "firebase/messaging";
 
-let auth, db, storage, app;
+let auth, db, storage, app, messaging;
 
 async function getData() {
   const url =
@@ -46,10 +47,19 @@ async function initializeFirebase() {
   auth = getAuth(app);
   db = getFirestore(app);
   storage = getStorage(app);
+  messaging = async () => (await isSupported()) && getMessaging(app);
 
   console.log("Firebase initialized successfully");
 }
 
 await initializeFirebase();
 
-export { auth, db, GoogleAuthProvider, TwitterAuthProvider, storage, app };
+export {
+  auth,
+  db,
+  GoogleAuthProvider,
+  TwitterAuthProvider,
+  storage,
+  app,
+  messaging,
+};

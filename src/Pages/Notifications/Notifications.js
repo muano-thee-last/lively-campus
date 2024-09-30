@@ -10,6 +10,7 @@ function Notifications() {
   const uid = sessionStorage.getItem("uid");
 
   useEffect(() => {
+    requestPermissionAndSaveToken();
     const fetchNotifications = async () => {
       try {
         let notificationsData;
