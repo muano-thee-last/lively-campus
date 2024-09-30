@@ -53,12 +53,15 @@ async function uploadTicketInformation(eventId, price) {
     const userId = sessionStorage.getItem("uid");
   
     const data = {
-      userId: userId,
+      userId: "userId",
       eventId: eventId,
       ticketCode: ticketCode,
       purchaseDate: "27 September 2024",
       price: price
     };
+
+    console.log("the data is", data)
+
     try {
       const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/addTicket', {
         method: 'POST',
@@ -84,10 +87,9 @@ const SuccessPage = () => {
   alert(externalId);
 
 
-  const id = externalId.uid;
+  const id = JSON.parse(externalId).id;
 
 
-  console.log(JSON.parse(externalId).id)
 
   uploadTicketInformation(id, 200);
 
