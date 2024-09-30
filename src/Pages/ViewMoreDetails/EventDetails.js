@@ -162,9 +162,10 @@ export default function EventDetails() {
       <div className="event-header">
         <h1 className="event-name-view">{event.title}</h1>
         <div className="eventTags chosenTags">
-          {event.tags.map((tagName) => {
+          {event.tags.map((tagName, index) => {
             return (
               <div
+                key={`${tagName}-${index}`}
                 className="chosenTag"
                 style={{ backgroundColor: randomColor(tagName) }}
               >
@@ -422,8 +423,6 @@ export default function EventDetails() {
 
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <div className="modal-content">
-          <BuyTicket/>
-        
           <BuyTicket event={event} />
         </div>
       </Modal>
