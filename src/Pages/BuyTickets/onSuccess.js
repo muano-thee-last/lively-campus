@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './SuccessPage.module.css';
@@ -76,11 +78,27 @@ async function uploadTicketInformation(eventId, price) {
 
 const SuccessPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const externalId = searchParams.get("externalId");  // Retrieve externalId from URL
+  console.log(externalId)
+  alert(externalId);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate('/dashboard');
-    }, 4000);
+
+  const id = externalId.uid;
+
+
+  console.log(JSON.parse(externalId).id)
+
+  uploadTicketInformation(id, 200);
+
+  updateTicketsAvailable(id);
+  incrementTicketSalse(id);
+
+
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       navigate('/ticket-history');
+//     }, 4000);
 
 //     return () => clearTimeout(timer); // Clean up
 //   }, [navigate]);
