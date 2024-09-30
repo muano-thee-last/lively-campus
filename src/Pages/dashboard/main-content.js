@@ -303,9 +303,9 @@ function MainContent() {
                           <div className="card-second-row">
                             <img
                               src={event.organizerImg ? event.organizerImg : profile}
-                              style={event.organizerImg ? { borderRadius: 50 } : {}}
+                              style={event.organizerImg ? { borderRadius: "50%" } : {}}
                               alt="Profile"
-                              className="profile-image"
+                              className={event.organizerImg ? "imported-image" : "profile-image"}
                             />
                             <p className="event-organizer">
                               {event.organizerName}

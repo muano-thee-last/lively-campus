@@ -363,6 +363,10 @@ display: none; /* For Webkit-based browsers */
   white-space: nowrap; /* Prevent text wrapping */
   text-align: center;
 }
+.chosenTag p{
+  font-size: unset !important;
+  color: white !important;
+}
 .nowrap{
   white-space: nowrap;
 }

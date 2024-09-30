@@ -103,7 +103,12 @@ function ApproveEvents() {
                 </h4>
               </div>
               <div className="card-second-row override-organizer">
-                <img src={profile} alt="Profile " className="profile-image" />
+                <img
+                  src={event.organizerImg ? event.organizerImg : profile}
+                  style={event.organizerImg ? { borderRadius: "50%", maxWidth: "70px", maxHeight: "70px"} : {}}
+                  alt="Profile"
+                  className={event.organizerImg ? "imported-image" : "profile-image"}
+                />
                 <p className="event-organizer">{event.organizerName}</p>
               </div>
               <div className="card-third-row override-image">

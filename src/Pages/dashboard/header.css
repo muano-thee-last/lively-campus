@@ -13,6 +13,11 @@
     align-items: center;
   }
   
+  .header-right-section .hamburger-logo{
+    padding-left: 12px;
+    margin-right: 10px;
+    justify-self: center;
+  }
   .lively-campus-logo {
     height: 40px; /* Adjust logo size */
     margin-right: 10px;

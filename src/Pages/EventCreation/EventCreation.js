@@ -13,18 +13,18 @@ import {
 import { FaTicketAlt } from "react-icons/fa";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import add from "./images-logos/add.svg";
-import location from "./images-logos/location.svg";
 import calendar from "./images-logos/calendar.svg";
 import clock from "./images-logos/clock.svg";
 import upload from "./images-logos/upload.svg";
 import locationButton from "./images-logos/location-button.svg";
+import locationSVG from "./images-logos/location.svg";
 import "./styles/EventCreationStyles.css";
 import PopupCard from "./components/PopupCard";
 import person from "./images-logos/person.svg";
 import { storage } from "../../Pages/Login/config";
 import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../dashboard/footer";
 
 const EVENTS_API =
@@ -33,19 +33,33 @@ const EVENTS_API =
 const WIMAN_API = "https://wiman.azurewebsites.net/api/";
 
 export default function EventCreation() {
-  const [availableVenues, setAvailableVenues] = useState([]);
+  const location = useLocation();
+  const {editingEvent, isEditing} = location.state || {};
   const navigate = useNavigate();
+
+  const [availableVenues, setAvailableVenues] = useState([]);
   const [MAP_API_KEY, SET_MAP_API_KEY] = useState("");
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [wimanBearerKey, setWimanBearerKey] = useState("");
   const [startDate, setStartDate] = useState("");
   const endDate = "";
 
+  // Function to toggle sidebar
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
   };
 
-  const [eventData, setEventData] = useState({
+  const [eventData,setEventData] = useState(isEditing?{
+    eventName: editingEvent.title,
+    eventDescription: editingEvent.description,
+    ticketPrice: editingEvent.ticketPrice,
+    availableTickets: editingEvent.availableTickets,
+    capacity: editingEvent.capacity,
+    eventDate: editingEvent.date,
+    eventTime: editingEvent.time,
+    eventLocation: editingEvent.location,
+    eventVenue: editingEvent.venue,
+  }: {
     eventName: "",
     eventDescription: "",
     ticketPrice: 0,
@@ -59,12 +73,12 @@ export default function EventCreation() {
   const id = useId();
   const fileInputRef = useRef(null);
   const [image, setImage] = useState("");
-  const [imageUrlLocal, setImageUrlLocal] = useState("");
+  const [imageUrlLocal, setImageUrlLocal] = useState(isEditing ? editingEvent.imageUrl : "");
   const [isPopupTagOpen, setIsPopupTagOpen] = useState(false);
   const [isPopupLocationOpen, setIsPopupLocationOpen] = useState(false);
   const [isAvailableTimePopup, setIsAvailableTimePopup] = useState(false);
 
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState(isEditing ? editingEvent.tags : []);
   const aboutTags = [
     "Music",
     "Dance",
@@ -111,11 +125,13 @@ export default function EventCreation() {
     // Update the state with the filtered venues
     setFilteredVenues(filteredVenues);
   }
+
   const [user, setUser] = useState({});
   useEffect(() => {
     setUser(JSON.parse(sessionStorage.getItem("user")));
   }, []);
 
+  // Function to handle checkbox changes for tags
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     if (checked) {
@@ -126,21 +142,31 @@ export default function EventCreation() {
       );
     }
   };
+
+  // Function to handle file input click
   function handleDivClick() {
     fileInputRef.current.click();
   }
+
+  // Function to handle file change
   function handleFileChange(event) {
     setImage(event.target.files[0]);
     setImageUrlLocal(URL.createObjectURL(event.target.files[0]));
   }
+
+  // Function to handle form input changes
   function handleChange(event) {
     setEventData((prevFormData) => {
       return { ...prevFormData, [event.target.name]: event.target.value };
     });
   }
+
+  // Function to handle form submission
   function handleSubmit(event) {
     event.preventDefault();
   }
+
+  // Function to open tag popup
   function openTagPopup() {
     setIsPopupTagOpen(true);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -149,6 +175,8 @@ export default function EventCreation() {
       }
     );
   }
+
+  // Function to close tag popup
   function closeTagPopup() {
     setIsPopupTagOpen(false);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -158,6 +186,7 @@ export default function EventCreation() {
     );
   }
 
+  // Function to open location popup
   function openLocationPopup() {
     setIsPopupLocationOpen(true);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -166,6 +195,8 @@ export default function EventCreation() {
       }
     );
   }
+
+  // Function to close location popup
   function closeLocationPopup() {
     setIsPopupLocationOpen(false);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -174,6 +205,8 @@ export default function EventCreation() {
       }
     );
   }
+
+  // Function to open available time popup
   function openAvailableTimePopup() {
     setIsAvailableTimePopup(true);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -182,6 +215,8 @@ export default function EventCreation() {
       }
     );
   }
+
+  // Function to close available time popup
   function closeAvailableTimePopup() {
     setIsAvailableTimePopup(false);
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
@@ -190,6 +225,7 @@ export default function EventCreation() {
       }
     );
   }
+
   useEffect(() => {
     const getGoogleKey = async () => {
       const url =
@@ -208,6 +244,7 @@ export default function EventCreation() {
 
     getGoogleKey();
   }, []);
+
   useEffect(() => {
     const getWimanBearerKey = async () => {
       const url =
@@ -228,10 +265,12 @@ export default function EventCreation() {
     getWimanBearerKey();
   }, []);
 
+  // Function to handle submit button click
   async function handleSubmitButton() {
     // Validation: Check if all required fields are filled
 
-    if (
+    if (!isEditing) {
+      if (
       !eventData.eventName ||
       !eventData.eventDescription ||
       !eventData.ticketPrice ||
@@ -239,24 +278,20 @@ export default function EventCreation() {
       !eventData.eventDate ||
       !eventData.eventTime ||
       !eventData.eventLocation ||
-      !selectedTags.length || // assuming selectedTags is an array
+      !selectedTags.length ||
       !image ||
-      eventData.ticketPrice < 0 ||
-      !eventData.availableTickets ||
-      eventData.availableTickets < 0 ||
-      Number(eventData.availableTickets) > Number(eventData.capacity)
-    ) {
-      console.error("All fields must be filled out before submission.");
-      return; // Stop execution if any field is empty
+      !eventData.availableTickets
+    ){
+        console.error("All fields must be filled out before submission.");
+        console.log(eventData);
+        alert("Please fill out all the fields before submission.");
+        return; // Stop execution if any field is empty
+      }
     }
 
     const imageRef = ref(storage, `images/${image.name}`);
 
     try {
-      // Upload image and get download URL
-      await uploadBytes(imageRef, image);
-
-      const url = await getDownloadURL(imageRef);
 
       let headersList = {
         Accept: "*/*",
@@ -264,55 +299,59 @@ export default function EventCreation() {
         "Content-Type": "application/json",
       };
 
-      let bodyContent = JSON.stringify({
-        organizerName: user.displayName,
-        organizerId: user.uid,
-        title: eventData.eventName,
-        description: eventData.eventDescription,
-        ticketPrice: Number(eventData.ticketPrice),
-        capacity: Number(eventData.capacity),
-        availableTickets: Number(eventData.availableTickets),
-        date: eventData.eventDate,
-        time: eventData.eventTime,
-        imageUrl: url,
-        tags: selectedTags,
-        venue: eventData.eventLocation,
-        likes: 0,
-        comments: [],
-        createdAt: new Date().toISOString(),
-        organizerImg: user.photoURL,
-      });
-      let alertCampusBodyContent = JSON.stringify({
-        id: "d290f1ee-6c54-4b01-90e6-d701748f0851",
-        type: "Type 1",
-        description: "Emergency medical situation",
-        location: {
-          latitude: 0,
-          longitude: 0,
+      let responseWiman = await fetch(`${WIMAN_API}/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${wimanBearerKey}`,
         },
-        userId: "user123",
-        createdAt: "2024-08-18T09:12:33.001Z",
+        body: JSON.stringify({
+          date: startDate,
+          startTime: startTime,
+          endTime: endTime,
+          venueId: venueId,
+          eventName: eventData.eventName,
+          repeatFrequency: "none",
+          repeatUntil: startDate,
+        }),
       });
+      const dataWiman = await responseWiman.json();
 
-      let notifyCampusSafety =
-        await ("https://virtserver.swaggerhub.com/2380759_1/CampusSafety/1.0.0/alerts",
-        {
-          method: "POST",
-          headers: headersList,
-          body: alertCampusBodyContent,
+      if (responseWiman.ok) {
+        if(image)
+          await uploadBytes(imageRef, image);
+        const url = await getDownloadURL(imageRef);
+
+        let bodyContent = JSON.stringify({
+          organizerName: user.displayName,
+          organizerId: user.uid,
+          title: eventData.eventName,
+          description: eventData.eventDescription,
+          ticketPrice: Number(eventData.ticketPrice),
+          capacity: Number(eventData.capacity),
+          availableTickets: Number(eventData.availableTickets),
+          date: eventData.eventDate,
+          time: eventData.eventStartTime,
+          imageUrl: url,
+          tags: selectedTags,
+          venue: eventData.eventLocation,
+          likes: isEditing? eventData.likes : 0,
+          comments: isEditing? eventData.comments : [],
+          createdAt: isEditing? eventData.createdAt : new Date(),
+          organizerImg: user.photoURL,
+          bookingId: dataWiman.bookingId,
         });
 
-      // Send the POST request
-      let response = await fetch(EVENTS_API, {
-        method: "POST",
-        headers: headersList,
-        body: bodyContent,
-      });
+        // Send the POST request
+       let response = await fetch(isEditing?`${EVENTS_API}/${editingEvent.id}`: EVENTS_API,{
+          method : isEditing? "PUT" : "POST",
+          headers: headersList,
+          body: bodyContent,
+        });
+        console.log("Response Status:", response.status);
+        navigate("/dashboard");
+      }
 
-      console.log("Notify Campus Response Status:", notifyCampusSafety.status);
-
-      console.log("Response Status:", response.status);
-      navigate("/Dashboard");
     } catch (error) {
       console.error("Error uploading image:", error);
       navigate("/dashboard");
@@ -417,10 +456,17 @@ export default function EventCreation() {
 
       try {
         const response = await fetch(
-          `${WIMAN_API}/venues/${venueId}/reservations`
+          `${WIMAN_API}/venues/${venueId}/reservations`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${wimanBearerKey}`,
+            },
+          }
         );
         const json = await response.json();
-        setVenueAvailabilitySlots(json);
+        setVenueAvailabilitySlots(findAvailableTimeForDate(json, startDate));
         console.log(json);
       } catch (error) {
         console.error("Error fetching venue availability:", error);
@@ -444,7 +490,7 @@ export default function EventCreation() {
     if (venueId && startDate) {
       getVenueAvailability();
     }
-  }, [venueId, startDate]);
+  }, [venueId, startDate, wimanBearerKey]);
 
   function AddTagContent() {
     return (
@@ -480,7 +526,7 @@ export default function EventCreation() {
           <label htmlFor="search-bar"></label>
         </div>
 
-        {filteredVenues.map((venue) => (
+        {filteredVenues.length > 0 ? (filteredVenues.map((venue) => (
           <div className="venue-card" key={venue.venueId}>
             <div className="venue-details">
               <iframe
@@ -494,7 +540,7 @@ export default function EventCreation() {
               ></iframe>
               <div className="venue-info">
                 <div className="logo-name">
-                  <img src={location} alt="logo" height="25" width="25" />
+                  <img src={locationSVG} alt="Location icon" height="25" width="25" />
                   <span>{`${venue.campusName} ${venue.buildingName} ${venue.venueId}`}</span>
                 </div>
                 <div className="logo-name">
@@ -531,7 +577,10 @@ export default function EventCreation() {
               Check Venue Availability
             </button>
           </div>
-        ))}
+        ))
+        ) : (
+          <h2 style={{ textAlign: "center" , margin: "0 auto", color: "var(--primary-color)"}}>No venues found.</h2>
+        )}
       </div>
     );
   }
@@ -578,14 +627,15 @@ export default function EventCreation() {
 
       // Check if the time is valid before proceeding
       if (validateTimeSelection()) {
-        closeAvailableTimePopup(); // Close the popup if no errors
-        setEventData((prevFormData) => ({
-          ...prevFormData,
-          eventDate: startDate,
-          eventStartTime: startTime,
-          eventEndTime: endTime,
-          eventVenue: venueId,
-        }));
+        closeAvailableTimePopup(); 
+        setEventData((prevFormData) => {
+          return {
+            ...prevFormData,
+            eventDate: startDate,
+            eventTime: startTime,
+            eventVenue: venueId,
+          };
+        });
         setIsValidDateTime(true);
         console.log("Form submitted successfully!");
       }
@@ -855,7 +905,7 @@ export default function EventCreation() {
                   style={eventData.eventLocation ? { top: "-24px" } : {}}
                 >
                   <span>Venue</span>
-                  <img src={location} alt="location" />
+                  <img src={locationSVG} alt="location" />
                 </label>
                 <div className="add-selected-location">
                   {eventData.eventLocation && (
@@ -941,7 +991,7 @@ export default function EventCreation() {
 
               <div className="center-button">
                 <button className="create-button" onClick={handleSubmitButton}>
-                  Create Event
+                  {isEditing?"Update Event" : "Create Event"}
                 </button>
               </div>
             </div>
