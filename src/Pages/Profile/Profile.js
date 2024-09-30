@@ -2,10 +2,8 @@ import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState, useCallback } from "react";
 
 import "../EventCreation/styles/Profile.css";
-import genderLogo from "../EventCreation/images-logos/gender-male.svg";
-import birthdayLogo from "../EventCreation/images-logos/birthday.svg";
 import emailLogo from "../EventCreation/images-logos/email.svg";
-import phoneLogo from "../EventCreation/images-logos/phone.svg";
+
 import witsBackground from "../EventCreation/images-logos/wits-background.png";
 import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
@@ -26,18 +24,16 @@ export default function Profile() {
     name: user.displayName,
     myImg: user.photoURL,
     title: "Student",
-    gender: "many-genders-issue",
-    birthday: "to-be-added",
     email: user.email,
-    phone: "to-be-added",
+
   };
 
-  const { myImg, name, title, gender, birthday, email, phone } = userData;
+  const { myImg, name, title, email} = userData;
 
   useEffect(() => {
     setUser(JSON.parse(sessionStorage.getItem("user")));
   }, []);
-
+  console.log(user);
   const fetchUserLikedEvents = useCallback(() => {
     fetch(
       `https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`
@@ -129,37 +125,25 @@ export default function Profile() {
               <p>{title}</p>
             </div>
           </div>
-          <div className="about-section">
+          <div className="profile-about-section">
             <h2 className="bold-title">About</h2>
             <div className="details-container">
               <div>
-                <img src={genderLogo} alt="gender" />
-                <span>{gender}</span>
-              </div>
-              <div>
-                <img src={birthdayLogo} alt="dob" />
-                <span>{birthday}</span>
-              </div>
-              <div>
                 <img src={emailLogo} alt="email" />
                 <span>{email}</span>
-              </div>
-              <div>
-                <img src={phoneLogo} alt="phone" />
-                <span>{phone}</span>
               </div>
             </div>
           </div>
           <div className="additional-features-container">
             <div className="additional-features">
               <h2 className="add-features-bold-title">Additional Functions</h2>
-              <button
+              <button role="button"
                 className="additional-features-buttons"
                 onClick={() => handleEventManagement()}
               >
                 Manage your Events
               </button>
-              <button className="additional-features-buttons">
+              <button role="button" className="additional-features-buttons">
                 Create an Event
               </button>
             </div>
@@ -196,6 +180,7 @@ export default function Profile() {
                         <button
                           className="like-button active"
                           onClick={() => handleUnlike(event.id)}
+                          aria-label={`Unlike ${event.title}`}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -203,6 +188,7 @@ export default function Profile() {
                             width="24"
                             height="24"
                             className="like-icon"
+                            role="button"
                           >
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                           </svg>

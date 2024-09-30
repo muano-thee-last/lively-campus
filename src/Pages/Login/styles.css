@@ -3,22 +3,22 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: rgb(255, 255, 255);
-    width: 50%;
+    background-color:rgba(109, 109, 109, 0.8);
+    width: 150%;
     flex: 1;
-    border-top-left-radius: 25px;
-    border-top-right-radius: 25px;
   }
   
   .sign-in-box {
     background-color: white;
-    padding: 15px;
+    padding: 25px;
     border-radius: 10px;
     width: 300px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     text-align: center;
     max-height: 90vh;
     overflow-y: auto;
+    transform: translateZ(30px);
+    transform: translateY(-15px);
   }
   
   .sign-in-button {
@@ -105,7 +105,7 @@
   }
   @media(max-width: 900px){
     .sign-in-container {
-      width: 100%;
+      width: 120%;
      
     }
   }
