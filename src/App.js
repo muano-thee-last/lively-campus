@@ -40,7 +40,6 @@ function App() {
         <Route path="/approve-events" element={<ApproveEventsPage/>} />
         <Route path="/payment/success" element={<SuccessPage />} />
         <Route path="/payment/failure" element={<FailurePage />} />
-
       </Routes>
     </Router>
   );
