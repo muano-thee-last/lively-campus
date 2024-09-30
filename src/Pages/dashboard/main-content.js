@@ -330,18 +330,20 @@ function MainContent({ searchQuery }) {
 
   useEffect(() => {
     const filtered = events.filter((event) =>
-      event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.organizerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      event && event.title && event.organizerName && event.tags ? (
+        event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.organizerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      ) : false
     );
     setFilteredEvents(filtered);
   }, [searchQuery, events]);
 
-  // Modify the getEventsByTagGroup function to use filteredEvents
+  // Modify the getEventsByTagGroup function to use filteredEvents and handle potential undefined events
   const getEventsByTagGroup = useCallback((group) => {
     const tagsInGroup = tagGroups[group];
     return filteredEvents.filter((event) =>
-      event.tags.some((tag) => tagsInGroup.includes(tag))
+      event && event.tags ? event.tags.some((tag) => tagsInGroup.includes(tag)) : false
     );
   }, [filteredEvents]);
 
@@ -373,76 +375,75 @@ function MainContent({ searchQuery }) {
                   ref={sliderRefs.current[group]}
                 >
                   {groupedEvents.map((event, index) => (
-                    <div className="dashboard-card" key={index}>
-                      <div
-                       className="card-inner"
-                      >
-                        {/* Front Side */}
-                        <div className="card-front">
-                          <div className="card-first-row">
-                            <h4 className="event-title">{event.title}</h4>
-                          </div>
-                          <div className="card-second-row">
-                            <img
-                              src={event.organizerImg ? event.organizerImg : profile}
-                              style={event.organizerImg ? { borderRadius: "990px" } : {}}
-                              alt="Profile"
-                              className="profile-image"
-                            />
-                            <p className="event-organizer">
-                              {event.organizerName}
-                            </p>
-                          </div>
-                          <div className="card-third-row">
-                            <img
-                              className="event-images"
-                              src={event.imageUrl}
-                              alt="Event"
-                            />
-                          </div>
-                          <div className="card-fourth-row">
-                            <div className="like-comment">
-                              <button
-                                aria-label={`like-button-${event.id}`}
-                                className={`like-button ${
-                                  liked[event.id] ? "active" : ""
-                                }`}
-                                onClick={() => handleLike(event.id)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 24 24"
-                                  width="24"
-                                  height="24"
-                                  className="like-icon"
-                                >
-                                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                </svg>
-                              </button>
+                    event && event.title ? (
+                      <div className="dashboard-card" key={index}>
+                        <div className="card-inner">
+                          {/* Front Side */}
+                          <div className="card-front">
+                            <div className="card-first-row">
+                              <h4 className="event-title">{event.title}</h4>
+                            </div>
+                            <div className="card-second-row">
                               <img
-                                src={comments}
-                                alt="Comments"
-                                className="comments-image"
-                                onClick={() => handleCommentsClick(event.id)}
+                                src={event.organizerImg ? event.organizerImg : profile}
+                                style={event.organizerImg ? { borderRadius: "990px" } : {}}
+                                alt="Profile"
+                                className="profile-image"
                               />
-                              <p className="like-count">
-                                likes {event.likes}
-                              </p>
-                              <p className="comment-count">
-                                {event.comments.length}
+                              <p className="event-organizer">
+                                {event.organizerName}
                               </p>
                             </div>
-                            <button  aria-label="view-more-details-button"
-                              className="details-button"
-                              onClick={() => handleViewDetails(event.id)}
-                            >
-                              View more details
-                            </button>
+                            <div className="card-third-row">
+                              <img
+                                className="event-images"
+                                src={event.imageUrl}
+                                alt="Event"
+                              />
+                            </div>
+                            <div className="card-fourth-row">
+                              <div className="like-comment">
+                                <button
+                                  aria-label={`like-button-${event.id}`}
+                                  className={`like-button ${
+                                    liked[event.id] ? "active" : ""
+                                  }`}
+                                  onClick={() => handleLike(event.id)}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="24"
+                                    height="24"
+                                    className="like-icon"
+                                  >
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                  </svg>
+                                </button>
+                                <img
+                                  src={comments}
+                                  alt="Comments"
+                                  className="comments-image"
+                                  onClick={() => handleCommentsClick(event.id)}
+                                />
+                                <p className="like-count">
+                                  likes {event.likes}
+                                </p>
+                                <p className="comment-count">
+                                  {event.comments.length}
+                                </p>
+                              </div>
+                              <button  aria-label="view-more-details-button"
+                                className="details-button"
+                                onClick={() => handleViewDetails(event.id)}
+                              >
+                                View more details
+                              </button>
+                            </div>
                           </div>
                         </div>
-                        </div>
                       </div>
-                   
+                    ) : null
                   ))}
                 </div>
               </div>

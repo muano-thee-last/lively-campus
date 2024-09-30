@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Header from '../dashboard/header'; // Adjust the path
 import SideBar from '../dashboard/side-bar'; // Adjust the path
 import EventDetails from './EventDetails'; // Adjust the path
+import { render, screen, waitFor, act } from '@testing-library/react';
 //import './ViewMoreDetails.css';
 
 function ViewMoreDetails() {
@@ -14,12 +15,14 @@ function ViewMoreDetails() {
   };
 
   return (
-    <div id='main-footer-separator'>
-      <div id='ViewMoreDetails'>
+    <div data-testid="main-footer-separator">
+      <div id="ViewMoreDetails" data-testid="ViewMoreDetails">
         <Header toggleSidebar={toggleSidebar} />
-        <div id='content'>
+        <div id="content" data-testid="content">
           <SideBar isSidebarOpen={isSidebarOpen} />
-          <EventDetails id={id} />
+          <div data-testid="event-details">
+            <EventDetails id={id} />
+          </div>
         </div>
       </div>
     </div>

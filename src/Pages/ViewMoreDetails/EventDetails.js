@@ -32,6 +32,8 @@ export default function EventDetails() {
   const [wimanBearerKey, setWimanBearerKey] = useState("");
   const [isVenueApproved, setIsVenueApproved] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   function handleReject() {
     setIsRejectModalOpen(true);
   }
@@ -67,9 +69,12 @@ export default function EventDetails() {
       })
       .then((data) => {
         setEvent(data);
+        console.log('Event data fetched:', data);
+        setIsLoading(false);  // Set loading to false when data is fetched
       })
       .catch((error) => {
         console.error("Error fetching event details:", error);
+        setIsLoading(false);  // Set loading to false even if there's an error
       });
     try {
       setApproveEvent(location.state.approveEvent);
@@ -145,12 +150,12 @@ export default function EventDetails() {
     setIsAcceptModalOpen(false); // Close accept modal as well
   };
 
-  if (!event || !googleMapsApiKey) {
+  if (isLoading) {
     return <p>Loading...</p>;
   }
 
   return (
-    <div className="event-creation-container">
+    <div className="event-creation-container" data-testid="event-details-container">
       <div className={""}>
         <img
           src={event.imageUrl}
@@ -162,9 +167,10 @@ export default function EventDetails() {
       <div className="event-header">
         <h1 className="event-name-view">{event.title}</h1>
         <div className="eventTags chosenTags">
-          {event.tags.map((tagName) => {
+          {event.tags.map((tagName, index) => {
             return (
               <div
+                key={index}
                 className="chosenTag"
                 style={{ backgroundColor: randomColor(tagName) }}
               >
@@ -238,9 +244,9 @@ export default function EventDetails() {
         </div>
       )}
 
-      <div className="event-buy-tickets">
+      <div className="event-buy-tickets" data-testid="event-buy-tickets">
         <p>
-          <strong>
+          <strong data-testid="ticket-price">
             Ticket Price: <span>R</span> {event.ticketPrice}{" "}
           </strong>
         </p>
@@ -421,9 +427,8 @@ export default function EventDetails() {
       </Modal>
 
       <Modal open={isModalOpen} onClose={handleCloseModal}>
-        <div className="modal-content">
+        <div className="modal-content" data-testid="modal-content">
           <BuyTicket/>
-        
           <BuyTicket event={event} />
         </div>
       </Modal>

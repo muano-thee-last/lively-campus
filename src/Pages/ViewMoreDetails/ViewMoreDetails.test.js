@@ -1,29 +1,35 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+// Remove this line: import '@testing-library/jest-dom/extend-expect';
 import ViewMoreDetails from './ViewMoreDetails';
-import Header from '../dashboard/header';
-import SideBar from '../dashboard/side-bar';
-import EventDetails from './EventDetails';
+import { MemoryRouter } from 'react-router-dom';
 
-jest.mock('../../components/Header/Header', () => ({ toggleSidebar }) => (
+jest.mock('../dashboard/header', () => ({ toggleSidebar }) => (
   <div data-testid="header" onClick={toggleSidebar}>Header</div>
 ));
-jest.mock('../../components/SideBar/SideBar', () => ({ isSidebarOpen }) => (
+jest.mock('../dashboard/side-bar', () => ({ isSidebarOpen }) => (
   <div data-testid="sidebar">{isSidebarOpen ? 'Open' : 'Closed'}</div>
 ));
-jest.mock('./EventDetails', () => () => <div data-testid="event-details">Event Details</div>);
+jest.mock('./EventDetails', () => jest.fn(() => <div data-testid="event-details">Mocked Event Details</div>));
 
 describe('ViewMoreDetails Component', () => {
   test('renders ViewMoreDetails component with initial closed sidebar', () => {
-    render(<ViewMoreDetails />);
+    render(
+      <MemoryRouter>
+        <ViewMoreDetails />
+      </MemoryRouter>
+    );
     expect(screen.getByTestId('header')).toBeInTheDocument();
     expect(screen.getByTestId('sidebar')).toHaveTextContent('Closed');
     expect(screen.getByTestId('event-details')).toBeInTheDocument();
   });
 
   test('toggles sidebar when Header is clicked', () => {
-    render(<ViewMoreDetails />);
+    render(
+      <MemoryRouter>
+        <ViewMoreDetails />
+      </MemoryRouter>
+    );
     const header = screen.getByTestId('header');
     const sidebar = screen.getByTestId('sidebar');
 
@@ -35,7 +41,11 @@ describe('ViewMoreDetails Component', () => {
   });
 
   test('renders correct layout structure', () => {
-    render(<ViewMoreDetails />);
+    render(
+      <MemoryRouter>
+        <ViewMoreDetails />
+      </MemoryRouter>
+    );
     const mainFooterSeparator = screen.getByTestId('main-footer-separator');
     const viewMoreDetails = screen.getByTestId('ViewMoreDetails');
     const content = screen.getByTestId('content');
