@@ -57,7 +57,6 @@ function VerifyEmail() {
 
             sessionStorage.setItem("uid", myUID);
 
-
             const userExists = await checkUserExistsAlready(email);
             if (!userExists) {
               const userResponse = window.confirm(
@@ -66,7 +65,7 @@ function VerifyEmail() {
 
               if (userResponse) {
                 createNewUser(result);
-                navigate("/Dashboard");
+                navigate("/dashboard");
               } else {
                 // Go back to the landing page
                 navigate("/");

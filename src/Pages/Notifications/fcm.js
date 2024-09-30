@@ -5,6 +5,21 @@ import { getMessaging, getToken } from "firebase/messaging";
 const messaging = getMessaging(app);
 const uid = sessionStorage.getItem("uid"); // Assuming the user ID is stored in session storage
 
+// Function to request permission for notifications and then get/save the token
+export async function requestPermissionAndSaveToken() {
+  console.log("Requesting notification permission...");
+
+  // Request permission from the user
+  const permission = await Notification.requestPermission();
+
+  if (permission === "granted") {
+    console.log("Notification permission granted.");
+    await saveFcmToken(); // Call the function to get and save the FCM token
+  } else {
+    console.log("Notification permission denied.");
+  }
+}
+
 // Function to get the FCM token and send it to the backend for storage
 async function saveFcmToken() {
   try {
@@ -41,20 +56,5 @@ async function saveFcmToken() {
     }
   } catch (err) {
     console.error("An error occurred while retrieving the token: ", err);
-  }
-}
-
-// Function to request permission for notifications and then get/save the token
-export async function requestPermissionAndSaveToken() {
-  console.log("Requesting notification permission...");
-
-  // Request permission from the user
-  const permission = await Notification.requestPermission();
-
-  if (permission === "granted") {
-    console.log("Notification permission granted.");
-    await saveFcmToken(); // Call the function to get and save the FCM token
-  } else {
-    console.log("Notification permission denied.");
   }
 }
