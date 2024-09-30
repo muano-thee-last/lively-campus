@@ -50,6 +50,7 @@ const handleSignIn = async (result, platform, navigate) => {
   const userID = result.user.uid;
 
   sessionStorage.setItem("uid", userID);
+  localStorage.setItem("uid", userID)
   sessionStorage.setItem("user", JSON.stringify(result.user));
   const url = `https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userID}`;
 

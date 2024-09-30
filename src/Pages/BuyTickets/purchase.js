@@ -1,21 +1,22 @@
 /* eslint-disable */
-
-
 import { useState, useEffect } from 'react';
 
 
-async function validatePayment(){
-
-}
-
-async function getRedirectLink(amount) {
-    try {
+async function getRedirectLink(amount, id) {
+    const userString = sessionStorage.getItem('user');
+    try {   
         const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/getPaymentUrl', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ amount: amount }),
+            body: JSON.stringify({ 
+                amount: amount,
+                externalId : JSON.stringify({
+                    id : id,
+                    uid : JSON.parse(userString).uid
+                })
+            }),
         });
 
         if (!response.ok) {
@@ -42,7 +43,7 @@ function BuyTicket({ event }) {
             try {
                 if (event && event.ticketPrice) {
                     console.log(event);
-                    const url = await getRedirectLink(event.ticketPrice);
+                    const url = await getRedirectLink(event.ticketPrice, event.id);
                     if (url) {
                         setRedirectUrl(url);
                     }
