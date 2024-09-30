@@ -89,6 +89,8 @@ const SuccessPage = () => {
     }
   }, [id]);
 
+  navigate('/Dashboard');
+
   return (
     <div className={styles.successContainer}>
       <div className={styles.successMessage}>
