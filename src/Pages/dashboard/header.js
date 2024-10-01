@@ -131,12 +131,12 @@ function Header({ toggleSidebar, onSearch }) {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    if (location.pathname === "/dashboard" && onSearch) {
+    if ((location.pathname === "/dashboard" || location.pathname === "/Dashboard") && onSearch) {
       onSearch(e.target.value);
     }
   };
 
-  const isDashboard = location.pathname === "/dashboard";
+  const isDashboardOrDashboard = location.pathname === "/dashboard" || location.pathname === "/Dashboard";
 
   return (
     <div id="header">
@@ -163,7 +163,7 @@ function Header({ toggleSidebar, onSearch }) {
             placeholder="Search"
             value={searchQuery}
             onChange={handleSearchChange}
-            disabled={!isDashboard}
+            disabled={!isDashboardOrDashboard}
             inputProps={{ 'aria-label': 'search' }}
           />
           <IconButton type="submit" className="search-button" style={{scale: "2.5"}}>
