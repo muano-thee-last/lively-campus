@@ -42,6 +42,13 @@ function TicketHistory() {
   const validTickets = ticketDetails.filter(ticket => ticket.eventTitle !== 'Title not found');
   console.log(validTickets);
 
+  if (validTickets.length === 0) {
+  return (
+    <h1>No tickets bought yet</h1>
+  );
+}
+
+
   return (
     <div id="main-footer-separator">
       <div id="dashboard">
