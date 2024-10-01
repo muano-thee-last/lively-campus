@@ -4,7 +4,7 @@
   width: 100%;
   gap: 1%;
   padding-bottom: 15%;
-  overflow: hidden;
+  overflow: visible;
   flex: 1;
 }
 
@@ -49,7 +49,7 @@
   border: none;
   border-radius: 8px;
   display: flex;
-  
+
   transition: background 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0px 0px 6px 1px rgba(121, 121, 121, 0.6);
 
@@ -77,7 +77,6 @@
   height: 100%;
   backface-visibility: hidden;
   transform-style: preserve-3d;
-  
 }
 .card-front {
   z-index: 2;
@@ -89,7 +88,6 @@
   z-index: 1;
   background-color: white;
   position: relative;
-
 }
 /* Feedback container styles */
 .feedback1-container {
@@ -99,34 +97,33 @@
   flex-direction: column;
   gap: 0.5rem;
   border-radius: 1rem;
- padding-top: 2.53rem;
+  padding-top: 2.53rem;
   font-size: 0.875rem;
   transform: translateZ(5rem);
   backface-visibility: hidden;
-   align-items: center;
-
+  align-items: center;
 }
 
 .feedback1-title {
   grid-column: span 6;
   font-size: 1.25rem;
   font-weight: bold;
-  color: #003B5C;
+  color: #003b5c;
   transform: translateZ(0deg);
   position: relative;
 }
 .close-comment-button {
   position: absolute;
- top: -125%;
- right: -15%;
- background-color: transparent;
- border: none;
- color: #003B5C;
- cursor: pointer;
- border-radius: 1rem;
- font-weight: bold;
- padding: 0.4rem;
- font-size: large;
+  top: -125%;
+  right: -15%;
+  background-color: transparent;
+  border: none;
+  color: #003b5c;
+  cursor: pointer;
+  border-radius: 1rem;
+  font-weight: bold;
+  padding: 0.4rem;
+  font-size: large;
 }
 .feedback1-textarea {
   background-color: #f1f5f9;
@@ -151,16 +148,14 @@
 
 .feedback1-buttons {
   display: flex;
-align-items: center;
- gap: 30%;;
+  align-items: center;
+  gap: 30%;
 }
-
 
 .submit1-button {
   background-color: #f1f5f9;
   border: 1px solid #cbd5e1;
 
- 
   border-radius: 0.5rem;
   padding-top: 7%;
   padding-bottom: 7%;
@@ -182,7 +177,6 @@ body.modal-open {
   align-items: center;
   justify-content: center;
   z-index: 10000000; /* Ensure it's above other elements */
-  
 }
 
 .overlay-content {
@@ -201,15 +195,15 @@ body.modal-open {
 }
 .content-visible {
   opacity: 1; /* Fully visible */
-  transform: translateX(0px);  /* Full size */
+  transform: translateX(0px); /* Full size */
 }
-.overlay-content h2{
-  color: #003B5C;
+.overlay-content h2 {
+  color: #003b5c;
 }
 .close-overlay-button {
   background: transparent;
   border: none;
-  color: #003B5C; /* Red for close button */
+  color: #003b5c; /* Red for close button */
   cursor: pointer;
   font-size: 16px;
   float: right; /* Position to the right */
@@ -223,9 +217,7 @@ body.modal-open {
   margin: 10px 0;
   padding: 10px; /* Add padding for the comments area */
   border-radius: 8px; /* Rounded corners */
-  
- 
-  
+
   /* Light shadow for depth */
 }
 /* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
@@ -256,21 +248,19 @@ body.modal-open {
   border-bottom-style: solid;
   border-bottom-width: thin;
   border-color: rgba(207, 207, 207, 0.8);
-
-
 }
-.comment-img-comment{
+.comment-img-comment {
   display: flex;
   align-items: flex-start;
   margin-bottom: 10px;
 }
-.commentor{
-  color: #003B5C;
+.commentor {
+  color: #003b5c;
   font-size: medium;
 }
 .comment-text {
   font-size: 16px; /* Adjust as needed */
-  color: #003B5C;
+  color: #003b5c;
 }
 .profile-pic {
   width: 40px; /* Size of the profile picture */
@@ -302,16 +292,15 @@ body.modal-open {
   margin-top: 5px; /* Space between text and timestamp */
 }
 
-.post-comments{
+.post-comments {
   position: absolute;
   bottom: 10%;
   left: 0;
   right: 0;
-  border-top-style:solid ;
+  border-top-style: solid;
   border-top-width: thin;
   border-color: rgba(207, 207, 207, 0.8);
   background-color: white;
-
 }
 .comment-input {
   width: 90%;
@@ -322,7 +311,7 @@ body.modal-open {
   margin-top: 2%;
   margin-left: 4%;
 }
-.comment-input:focus{
+.comment-input:focus {
   outline: none;
 }
 .comment-error-message {
@@ -332,7 +321,7 @@ body.modal-open {
 }
 
 .submit-button {
-  background-color: #003B5C; /* Green for submit button */
+  background-color: #003b5c; /* Green for submit button */
   color: white;
   padding: 10px 15px;
   border: none;
@@ -343,16 +332,16 @@ body.modal-open {
 }
 
 .submit-button:hover {
-  background-color:white;
-  color: #003B5C; /* Darker green on hover */
-  border: #003B5C;
+  background-color: white;
+  color: #003b5c; /* Darker green on hover */
+  border: #003b5c;
   border-style: solid;
   border-width: thin;
 }
 
 .feedback-button1:hover,
 .submit1-button:hover {
-  background-color: #003B5C;
+  background-color: #003b5c;
   fill: white;
 }
 
@@ -374,28 +363,25 @@ body.modal-open {
   flex-grow: 2;
 }
 
-.card-first-row{
+.card-first-row {
   flex: 0.1;
   display: flex;
-  
+
   justify-content: end;
- padding-right: 5%;
-  
+  padding-right: 5%;
 }
-.card-second-row{
+.card-second-row {
   display: flex;
   padding-left: 1%;
   align-items: center;
   flex: 0.2;
   padding-bottom: 2%;
-  
 }
-.card-third-row{
- display: flex;
+.card-third-row {
+  display: flex;
   flex: 0.5;
-
 }
-.card-fourth-row{
+.card-fourth-row {
   display: flex;
   padding-left: 5%;
   padding-right: 3%;
@@ -404,34 +390,31 @@ body.modal-open {
   flex: 0.2;
 }
 .profile-image {
-  flex: 0.2;
-  max-width: 70px;
+  margin-left: 2%;
+  height: 6vh;
+  border-radius: 50%;
   object-fit: contain;
   object-position: center;
 }
-.event-organizer{
+.event-organizer {
   flex: 0.8;
   padding-left: 5%;
-  color: #003B5C;
+  color: #003b5c;
   font-weight: bold;
 }
-.event-images{
+.event-images {
   width: 100%;
   height: 25vh;
   object-fit: fill;
-  
 }
-.comments-image{
+.comments-image {
   height: 6.2vh;
   cursor: pointer;
-  
- 
-} 
+}
 
 .dashboard-card:hover {
-
   box-shadow: 0px 0px 6px 3px rgba(2, 18, 61, 0.3);
- }
+}
 
 .arrow-button {
   position: absolute;
@@ -446,13 +429,11 @@ body.modal-open {
   z-index: 10;
   font-weight: bold;
   font-size: large;
-  
 }
 
 .arrow-button.left {
   left: -5px; /* Adjust to position correctly */
   border-radius: 55vh;
-
 }
 
 .arrow-button.right {
@@ -472,27 +453,27 @@ body.modal-open {
 }
 
 .dashboard-slider-container .arrow-button:hover {
-  background: #003B5C;
+  background: #003b5c;
   opacity: 1;
 }
 
-.details-button{
+.details-button {
   border: none;
-  background-color: #003B5C;
+  background-color: #003b5c;
   border-radius: 0.8vh;
   color: white;
   padding: 3%;
   margin-top: 1%;
 }
-.details-button:hover{
+.details-button:hover {
   opacity: 0.8;
 }
-.details-button:active{
+.details-button:active {
   background-color: white;
-  color: #003B5C;
+  color: #003b5c;
   border-style: solid;
   border-width: thin;
-  border-color: #003B5C;
+  border-color: #003b5c;
 }
 .like-button {
   background: none;
@@ -501,16 +482,16 @@ body.modal-open {
   padding: 5%;
   transition: background-color 0.3s ease;
 }
-.dashboard-tags{
+.dashboard-tags {
   margin-left: 2.5% !important;
-  color: #003B5C;
+  color: #003b5c;
   font-size: 1.5rem;
   font-weight: bold;
   padding-top: 15px;
 }
 .like-icon {
   fill: rgb(134, 134, 134);
-  
+
   transition: fill 0.3s ease;
 }
 
@@ -518,34 +499,34 @@ body.modal-open {
   fill: rgb(255, 0, 0);
 }
 
-.like-comment{
+.like-comment {
   display: flex;
   align-items: center;
   position: relative;
 }
-.like-count{
+.like-count {
   position: absolute;
   left: -10%;
-  bottom:-25%;
+  bottom: -25%;
   font-size: 0.8rem;
   font-weight: bold;
-  color: #003B5C;
+  color: #003b5c;
   white-space: nowrap;
 }
-.comment-count{
+.comment-count {
   position: absolute;
   right: 10%;
-  bottom:-25%;
+  bottom: -25%;
   font-size: 0.8rem;
   font-weight: bold;
-  color: #003B5C;
+  color: #003b5c;
   white-space: nowrap;
 }
 .feedback-box {
   position: fixed;
   right: 20px;
   bottom: 25%;
-  background-color: #003B5C;
+  background-color: #003b5c;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 10px;
@@ -591,20 +572,18 @@ body.modal-open {
   background-color: #0056b3;
 }
 
-
 @media (max-width: 950px) {
   .dashboard-card-container {
     width: 100%; /* Show only one card at a time */
     gap: 7%; /* Remove gap to fit one card properly */
-    
-   /* Space between cards */
-  transition: transform 0.3s ease;
 
-  overflow-x: auto; /* Enables horizontal scrolling */
-  scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  
+    /* Space between cards */
+    transition: transform 0.3s ease;
+
+    overflow-x: auto; /* Enables horizontal scrolling */
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
   }
 
   .dashboard-slider-container {
@@ -616,31 +595,21 @@ body.modal-open {
   }
   .arrow-button {
     padding: 2%;
-    
-    
   }
   .dashboard-card {
     flex: 0 0 80%; /* Make each card take up the full width */
     height: 42vh; /* Adjust height to fit the screen better */
   }
   .dashboard-card:hover {
-
     box-shadow: 0px 0px 6px 1px rgba(0, 47, 92, 0.3);
-  
   }
-  
-  .comments-image{
+
+  .comments-image {
     height: 4.3vh;
-    
-   
-  } 
-  #dashboard-main-content{
-  
-   padding-bottom: 55%;
   }
-
-  
-
+  #dashboard-main-content {
+    padding-bottom: 55%;
+  }
 }
 
 /* Responsive adjustments */
@@ -648,17 +617,15 @@ body.modal-open {
   .dashboard-card-container {
     width: 100%; /* Show only one card at a time */
     gap: 7%; /* Remove gap to fit one card properly */
-    
-   /* Space between cards */
-  transition: transform 0.3s ease;
 
-  overflow-x: auto; /* Enables horizontal scrolling */
-  scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  
+    /* Space between cards */
+    transition: transform 0.3s ease;
+
+    overflow-x: auto; /* Enables horizontal scrolling */
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
   }
- 
 
   .dashboard-slider-container {
     display: flex;
@@ -669,36 +636,28 @@ body.modal-open {
   }
   .arrow-button {
     padding: 2%;
-    
-    
   }
-  .arrow-button.left{
+  .arrow-button.left {
     display: none;
-    
   }
-  .comments-image{
+  .comments-image {
     height: 5.1vh;
-    
-   
-  } 
-/* Comments list styles */
-.comments-list {
-  height: 62vh;
-  
-}
+  }
+  /* Comments list styles */
+  .comments-list {
+    height: 62vh;
+  }
   .submit-button {
     margin-left: 75%;
   }
   .overlay-content {
     margin-top: 25%;
-
   }
   .comment {
     max-width: 250px;
-
   }
 }
-.dashboard-events-section{
-  color:#003B5C ;
+.dashboard-events-section {
+  color: #003b5c;
 }
 

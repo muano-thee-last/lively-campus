@@ -47,7 +47,7 @@
 .header-middle-section h1{
     
     flex-wrap: nowrap;
-flex-shrink: 0;
+
 }
 
 .search{
@@ -137,7 +137,6 @@ border-width:1px;
     display: flex;
     align-items: center;
     margin-right: 5%;
-    flex-shrink: 0;
     justify-content: center;
    
 }
@@ -191,7 +190,6 @@ max-width: 100%;
     .header-middle-section h1{
         font-size: medium;
         flex-wrap: nowrap;
-    flex-shrink: 0;
     }
 }
 

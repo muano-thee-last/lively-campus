@@ -150,7 +150,7 @@ function Header({ toggleSidebar, onSearch }) {
           alt="Livelycampus Logo"
           onClick={handleDashboardNavigation}
         />
-        <h4 onClick={handleDashboardNavigation} className="pointer">
+        <h4 onClick={handleDashboardNavigation} className="header-title pointer">
           Livelycampus
         </h4>
       </section>

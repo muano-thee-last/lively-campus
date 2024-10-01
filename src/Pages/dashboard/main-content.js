@@ -235,7 +235,8 @@ function MainContent({ searchQuery }) {
       const currentTime = new Date();
       const commentTime = new Date(timestamp); // This timestamp should be fixed from submission time
       const timeDifference = currentTime - commentTime; // Difference in milliseconds
-    
+      console.log("current time",currentTime)
+      console.log("comment time",commentTime)
       const minutesAgo = Math.floor(timeDifference / (1000 * 60)); // Convert to minutes
       const hoursAgo = Math.floor(minutesAgo / 60);
       const daysAgo = Math.floor(hoursAgo / 24);
@@ -390,7 +391,7 @@ function MainContent({ searchQuery }) {
                           <div className="card-second-row">
                             <img
                               src={event.organizerImg ? event.organizerImg : profile}
-                              style={event.organizerImg ? { borderRadius: "990px" } : {}}
+                              style={event.organizerImg ? {  } : {}}
                               alt="Profile"
                               className="profile-image"
                             />

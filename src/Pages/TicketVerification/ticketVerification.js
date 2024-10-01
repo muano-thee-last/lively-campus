@@ -1,33 +1,35 @@
 import React, { useState } from "react";
+import { QrReader } from "react-qr-reader";
 import "./ticketVerification.css";
-import TicketInfo from "./ticketDetails";
 
-function TicketVerification() {
+export default function TicketVerification() {
   const [ticket, setTicket] = useState(null);
   const [ticketNum, setTicketNum] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isCameraActive, setIsCameraActive] = useState(false);
 
+  // Function to handle changes in the input field
   const handleInputChange = (event) => {
     setTicketNum(event.target.value);
   };
 
-  const verifyTicket = () => {
-    setIsLoading(true); 
-    setError("");        
+  // Function to verify the ticket code
+  const verifyTicket = (code) => {
+    setIsLoading(true);
+    setError("");
 
-    fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/verifyTicket?ticketCode=${ticketNum}`)
+    fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/verifyTicket?ticketCode=${code}`)
       .then((response) => {
-        setIsLoading(false); 
+        setIsLoading(false);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        console.log(response.json)
         return response.json();
       })
       .then((data) => {
         const ticketData = {
-          price: `R${data.price}`,  
+          price: `R${data.price}`,
           purchaseDate: data.purchaseDate,
           code: data.ticketCode,
         };
@@ -36,35 +38,74 @@ function TicketVerification() {
       .catch((error) => {
         console.error("Error fetching ticket:", error);
         setError("Unable to verify ticket. Please try again.");
-        setTicket(null); 
-        setIsLoading(false); 
+        setTicket(null);
+        setIsLoading(false);
       });
   };
 
+  // Function to handle scanned QR code data
+  const handleScan = (data) => {
+    if (data) {
+      setTicketNum(data); // Set the scanned ticket number
+      verifyTicket(data); // Verify the ticket code
+      setIsCameraActive(false); // Close the camera after scanning
+    }
+  };
+
+  // Function to handle errors from the QR reader
+  const handleError = (error) => {
+    console.error(error);
+    setError("Error accessing camera. Please try manual input.");
+  };
+
   return (
-    <div>
-      <div className="main-container">
-        <div className="ticket-verification-container">
-          <input
-            placeholder="Enter ticket code"
-            className="input"
-            id="ticketCode"
-            value={ticketNum}
-            onChange={handleInputChange}
-          />
-          <button 
-            className="button" 
-            onClick={verifyTicket} 
-            disabled={isLoading}
-          >
-            {isLoading ? "Verifying..." : "Verify"}
-          </button>
-          {error && <div className="error-message">{error}</div>} 
-          <TicketInfo ticket={ticket} />
-        </div>
+    <div className="ticket-verification-container">
+      <h2>Ticket Verification</h2>
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="Enter ticket code"
+          value={ticketNum}
+          onChange={handleInputChange}
+          className="input"
+        />
+        <button
+          onClick={() => verifyTicket(ticketNum)}
+          disabled={isLoading}
+          className="button"
+        >
+          {isLoading ? "Verifying..." : "Verify"}
+        </button>
+        <button
+          onClick={() => setIsCameraActive(!isCameraActive)}
+          className="button camera-button"
+        >
+          📷
+        </button>
       </div>
+
+      {isCameraActive && (
+        <div className="camera-container">
+          <QrReader
+            delay={300}
+            onError={handleError}
+            onScan={handleScan}
+            style={{ width: '100%' }}
+            constraints={{ facingMode: "environment" }} // Ensure the back camera is used
+          />
+        </div>
+      )}
+
+      {error && <div className="error-message">{error}</div>}
+
+      {ticket && (
+        <div className="ticket-info">
+          <h3>Ticket Information</h3>
+          <p>Price: {ticket.price}</p>
+          <p>Purchase Date: {ticket.purchaseDate}</p>
+          <p>Code: {ticket.code}</p>
+        </div>
+      )}
     </div>
   );
 }
-
-export default TicketVerification;
