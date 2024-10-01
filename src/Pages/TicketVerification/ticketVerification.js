@@ -41,10 +41,10 @@ export default function TicketVerification() {
       });
   };
 
-  const handleScan = (result) => {
-    if (result) {
-      setTicketNum(result);
-      verifyTicket(result);
+  const handleScan = (data) => {
+    if (data) {
+      setTicketNum(data);
+      verifyTicket(data);
       setIsCameraActive(false);
     }
   };
@@ -83,9 +83,9 @@ export default function TicketVerification() {
       {isCameraActive && (
         <div className="camera-container">
           <QrReader
-            onResult={(result) => result && handleScan(result.getText())}
+            delay={300}
             onError={handleError}
-            constraints={{ facingMode: "environment" }}
+            onScan={handleScan}
             style={{ width: '100%' }}
           />
         </div>
