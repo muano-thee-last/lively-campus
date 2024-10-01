@@ -1,6 +1,3 @@
-
-
-
 function NoTickets(){
 
     return (
@@ -10,4 +7,4 @@ function NoTickets(){
     )
 }
 
-export default NoTickets();
+export default NoTickets;
