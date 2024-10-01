@@ -82,14 +82,13 @@ const SuccessPage = () => {
       await uploadTicketInformation(id, 200);
       await updateTicketsAvailable(id);
       await incrementTicketSalse(id);
+      navigate('/dashboard'); 
     };
 
     if (id) {
       handlePurchase();
     }
-  }, [id]);
-
-  navigate('/Dashboard');
+  }, [id, navigate]); 
 
   return (
     <div className={styles.successContainer}>
