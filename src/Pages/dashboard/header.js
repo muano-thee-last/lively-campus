@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu as MenuIcon, Notifications as NotificationsIcon, AccountCircle as AccountCircleIcon } from "@mui/icons-material"; // MUI icons
+import {
+  Menu as MenuIcon,
+  Notifications as NotificationsIcon,
+  AccountCircle as AccountCircleIcon,
+} from "@mui/icons-material"; // MUI icons
 import { IconButton, InputBase, Badge } from "@mui/material";
 import logo from "./images-logos/logo.png";
 import "./header.css";
@@ -37,17 +41,10 @@ function Header({ toggleSidebar, onSearch }) {
 
   const fetchAndCleanNotifications = React.useCallback(async (uid) => {
     try {
-      let notificationsData;
-      const storedNotifications = sessionStorage.getItem("notifications");
-
-      if (storedNotifications) {
-        notificationsData = JSON.parse(storedNotifications);
-      } else {
-        const response = await fetch(
-          "https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications"
-        );
-        notificationsData = await response.json();
-      }
+      const response = await fetch(
+        "https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications"
+      );
+      const notificationsData = await response.json();
 
       const viewedNotifications = await fetchViewedNotifications(uid);
 
@@ -78,11 +75,6 @@ function Header({ toggleSidebar, onSearch }) {
       console.log(validNotifications);
       const filteredNotifications = validNotifications.filter(
         (notification) => notification !== null
-      );
-
-      sessionStorage.setItem(
-        "notifications",
-        JSON.stringify(filteredNotifications)
       );
 
       const unviewedCount = filteredNotifications.filter(
@@ -131,12 +123,17 @@ function Header({ toggleSidebar, onSearch }) {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    if ((location.pathname === "/dashboard" || location.pathname === "/Dashboard") && onSearch) {
+    if (
+      (location.pathname === "/dashboard" ||
+        location.pathname === "/Dashboard") &&
+      onSearch
+    ) {
       onSearch(e.target.value);
     }
   };
 
-  const isDashboardOrDashboard = location.pathname === "/dashboard" || location.pathname === "/Dashboard";
+  const isDashboardOrDashboard =
+    location.pathname === "/dashboard" || location.pathname === "/Dashboard";
 
   return (
     <div id="header">
@@ -150,7 +147,10 @@ function Header({ toggleSidebar, onSearch }) {
           alt="Livelycampus Logo"
           onClick={handleDashboardNavigation}
         />
-        <h4 onClick={handleDashboardNavigation} className="header-title pointer">
+        <h4
+          onClick={handleDashboardNavigation}
+          className="header-title pointer"
+        >
           Livelycampus
         </h4>
       </section>
@@ -164,9 +164,13 @@ function Header({ toggleSidebar, onSearch }) {
             value={searchQuery}
             onChange={handleSearchChange}
             disabled={!isDashboardOrDashboard}
-            inputProps={{ 'aria-label': 'search' }}
+            inputProps={{ "aria-label": "search" }}
           />
-          <IconButton type="submit" className="search-button" style={{scale: "2.5"}}>
+          <IconButton
+            type="submit"
+            className="search-button"
+            style={{ scale: "2.5" }}
+          >
             {/* <SearchIcon /> */}
           </IconButton>
         </div>
@@ -211,11 +215,9 @@ function Header({ toggleSidebar, onSearch }) {
             <AccountCircleIcon className="pointer" style={{ fontSize: 40 }} />
           )}
         </IconButton>
-
       </section>
     </div>
   );
 }
 
 export default Header;
-
