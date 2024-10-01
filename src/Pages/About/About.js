@@ -94,7 +94,7 @@ function About() {
           <li>Personalized recommendations based on user preferences.</li>
           <li>Google login for fast and secure access.</li>
           <li>Automated email reminders for registered events.</li>
-          <li>Seamless payment system using PayFast for tickets.</li>
+          <li>Seamless payment system using Yoco for tickets.</li>
         </ul>
 
         <h2>How It Works</h2>

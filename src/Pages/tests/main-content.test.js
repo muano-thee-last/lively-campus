@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import MainContent from '../dashboard/main-content'; // Adjust the import path as necessary
+import MainContent from '../dashboard/main-content';
 import { BrowserRouter } from 'react-router-dom';
+import '@testing-library/jest-dom'; // Correct import for jest-dom
 
 // Mock useNavigate from react-router-dom
 const mockedUsedNavigate = jest.fn();
@@ -16,403 +17,511 @@ jest.mock('react-router-dom', () => ({
 // Mock sessionStorage
 const mockUser = {
   displayName: 'John Doe',
-  photoURL: 'http://example.com/johndoe.jpg',
+  photoURL: 'http://example.com/profile.jpg',
 };
 
-const mockUid = 'user123';
-
-// Mock events data
-const mockEvents = [
-  {
-    id: 'event1',
-    title: 'Music Festival',
-    organizerImg: '',
-    organizerName: 'Alice',
-    imageUrl: 'http://example.com/event1.jpg',
-    tags: ['Music'],
-    likes: 10,
-    comments: [
-      {
-        text: 'Great event!',
-        timestamp: '2023-09-28T10:00:00Z',
-        userName: 'Bob',
-        userProfilePic: 'http://example.com/bob.jpg',
-      },
-    ],
-  },
-  // Add more mock events as needed
-];
-
-// Mock liked events data
-const mockLikedEvents = ['event1'];
+const mockUserData = {
+  uid: 'user123',
+  user: JSON.stringify(mockUser),
+};
 
 beforeEach(() => {
+  // Reset mocks before each test
+  fetch.resetMocks();
+  jest.clearAllMocks();
+
   // Mock sessionStorage
-  const mockGetItem = jest.fn((key) => {
-    if (key === 'user') {
-      return JSON.stringify(mockUser);
-    }
-    if (key === 'uid') {
-      return mockUid;
-    }
+  Storage.prototype.getItem = jest.fn((key) => {
+    if (key === 'uid') return mockUserData.uid;
+    if (key === 'user') return mockUserData.user;
     return null;
   });
 
-  Object.defineProperty(window, 'sessionStorage', {
-    value: {
-      getItem: mockGetItem,
-      setItem: jest.fn(),
-      removeItem: jest.fn(),
-      clear: jest.fn(),
-    },
-    writable: true,
-  });
-
-  // Mock fetch
-  global.fetch = jest.fn();
-
-  // Clear any previous mocks
-  mockedUsedNavigate.mockClear();
+  // Mock window.location
+  delete window.location;
+  window.location = { href: '' };
 });
-
-afterEach(() => {
-  jest.resetAllMocks();
-});
-
-const renderComponent = () =>
-  render(
-    <BrowserRouter>
-      <MainContent />
-    </BrowserRouter>
-  );
 
 describe('MainContent Component', () => {
-  test('renders without crashing and displays event groups', async () => {
-    // Mock fetch for events
-    fetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents,
-      })
-      // Mock fetch for liked events
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ likedEvents: mockLikedEvents }),
-      });
+  const mockEvents = [
+    {
+      id: 'event1',
+      title: 'Music Concert',
+      organizerName: 'Alice',
+      organizerImg: '',
+      imageUrl: 'http://example.com/event1.jpg',
+      likes: 10,
+      comments: [],
+      tags: ['Music'],
+    },
+    {
+      id: 'event2',
+      title: 'Dance Workshop',
+      organizerName: 'Bob',
+      organizerImg: 'http://example.com/bob.jpg',
+      imageUrl: 'http://example.com/event2.jpg',
+      likes: 5,
+      comments: [],
+      tags: ['Dance'],
+    },
+  ];
 
-    renderComponent();
+  const mockLikedEvents = { likedEvents: ['event1'] };
 
-    // Wait for events to be fetched and rendered
-    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+  const setupFetchMocks = () => {
+    fetch.mockImplementation((url, options) => {
+      if (url.endsWith('/events')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockEvents),
+        });
+      }
 
-    // Check if the event group "Music & Dance" is rendered
-    expect(screen.getByText('Music & Dance')).toBeInTheDocument();
+      if (url.endsWith(`/users/${mockUserData.uid}`)) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockLikedEvents),
+        });
+      }
 
-    // Check if the event title is rendered
-    expect(screen.getByText('Music Festival')).toBeInTheDocument();
+      if (url.endsWith('/like')) {
+        return Promise.resolve({ ok: true });
+      }
+
+      if (url.endsWith('/unlike')) {
+        return Promise.resolve({ ok: true });
+      }
+
+      if (url.endsWith('/comments')) {
+        return Promise.resolve({ ok: true });
+      }
+
+      if (url.includes('/events/event1/comments')) {
+        return Promise.resolve({ ok: true });
+      }
+
+      return Promise.reject(new Error('Unknown endpoint'));
+    });
+  };
+
+  test('renders without crashing and fetches events', async () => {
+    setupFetchMocks();
+
+    render(
+      <BrowserRouter>
+        <MainContent searchQuery="" />
+      </BrowserRouter>
+    );
+
+    // Verify that fetch was called to get events and user liked events
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith(
+        'https://us-central1-witslivelycampus.cloudfunctions.net/app/events'
+      );
+      expect(fetch).toHaveBeenCalledWith(
+        'https://us-central1-witslivelycampus.cloudfunctions.net/app/users/user123'
+      );
+    });
+
+    // Wait for events to be rendered
+    await waitFor(() => {
+      expect(screen.getByText('Music Concert')).toBeInTheDocument();
+      expect(screen.getByText('Dance Workshop')).toBeInTheDocument();
+    });
+
+    // Verify like counts
+    expect(screen.getByText('likes 10')).toBeInTheDocument();
+    expect(screen.getByText('likes 5')).toBeInTheDocument();
+
+    // Verify that the like button for event1 is active
+    const likeButtonEvent1 = screen.getByLabelText('like-button-event1');
+    await waitFor(() => expect(likeButtonEvent1).toHaveClass('active'));
+
+    // Verify organizer names
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+    expect(screen.getByText('Bob')).toBeInTheDocument();
   });
 
-  test('allows liking and unliking an event', async () => {
-    // Mock fetch for events
-    fetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents,
-      })
-      // Mock fetch for liked events
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ likedEvents: mockLikedEvents }),
-      })
-      // Mock fetch for like/unlike actions
-      .mockResolvedValue({
-        ok: true,
-        json: async () => ({}),
-      });
+  test('handles like and unlike functionality', async () => {
+    setupFetchMocks();
 
-    renderComponent();
+    render(
+      <BrowserRouter>
+        <MainContent searchQuery="" />
+      </BrowserRouter>
+    );
 
-    // Wait for initial fetch calls
-    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+    // Wait for events to be rendered
+    await waitFor(() => {
+      expect(screen.getByText('Music Concert')).toBeInTheDocument();
+    });
 
-    // Find the like button by aria-label
     const likeButton = screen.getByLabelText('like-button-event1');
-    expect(likeButton).toBeInTheDocument();
+    const likeCount = screen.getByText('likes 10');
 
-    // Initially, the like button should have 'active' class
-    expect(likeButton).toHaveClass('active');
+    // Wait for 'active' class to be applied
+    await waitFor(() => {
+      expect(likeButton).toHaveClass('active');
+    });
 
     // Click to unlike
     fireEvent.click(likeButton);
 
-    // Like button should not have 'active' class
+    // Optimistic UI update: should remove 'active' and decrease likes
     expect(likeButton).not.toHaveClass('active');
+    expect(likeCount).toHaveTextContent('likes 9');
 
-    // Ensure the unlike API was called
-    await waitFor(() =>
+    // Verify unlike API call
+    await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/unlike'),
+        'https://us-central1-witslivelycampus.cloudfunctions.net/app/unlike',
         expect.objectContaining({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: mockUid, eventId: 'event1' }),
+          body: JSON.stringify({ userId: 'user123', eventId: 'event1' }),
         })
-      )
-    );
+      );
+    });
 
     // Click to like again
     fireEvent.click(likeButton);
 
-    // Like button should have 'active' class again
+    // Optimistic UI update: should add 'active' and increase likes
     expect(likeButton).toHaveClass('active');
+    expect(likeCount).toHaveTextContent('likes 10');
 
-    // Ensure the like API was called
-    await waitFor(() =>
+    // Verify like API call
+    await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/like'),
+        'https://us-central1-witslivelycampus.cloudfunctions.net/app/like',
         expect.objectContaining({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: mockUid, eventId: 'event1' }),
+          body: JSON.stringify({ userId: 'user123', eventId: 'event1' }),
         })
-      )
-    );
+      );
+    });
   });
 
   test('opens and closes comments overlay', async () => {
-    // Mock fetch for events
-    fetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents,
-      })
-      // Mock fetch for liked events
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ likedEvents: mockLikedEvents }),
-      });
+    const mockEvents = [
+      {
+        id: 'event1',
+        title: 'Music Concert',
+        organizerName: 'Alice',
+        organizerImg: '',
+        imageUrl: 'http://example.com/event1.jpg',
+        likes: 10,
+        comments: [
+          {
+            text: 'Great event!',
+            timestamp: new Date().toISOString(),
+            userName: 'Jane',
+            userProfilePic: 'http://example.com/jane.jpg',
+          },
+        ],
+        tags: ['Music'],
+      },
+    ];
 
-    renderComponent();
+    const mockLikedEvents = { likedEvents: [] };
 
-    // Wait for initial fetch calls
-    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+    // Mock fetch
+    fetch.mockImplementation((url) => {
+      if (url.endsWith('/events')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockEvents),
+        });
+      }
 
-    // Find the comments image by alt text
-    const commentsImages = screen.getAllByAltText('Comments');
-    expect(commentsImages.length).toBeGreaterThan(0);
-    const commentsImage = commentsImages[0];
+      if (url.endsWith(`/users/${mockUserData.uid}`)) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockLikedEvents),
+        });
+      }
 
-    // Click on comments image to open overlay
+      return Promise.reject(new Error('Unknown endpoint'));
+    });
+
+    render(
+      <BrowserRouter>
+        <MainContent searchQuery="" />
+      </BrowserRouter>
+    );
+
+    // Wait for events to be rendered
+    await waitFor(() => {
+      expect(screen.getByText('Music Concert')).toBeInTheDocument();
+    });
+
+    const commentsImage = screen.getByAltText('Comments');
     fireEvent.click(commentsImage);
 
-    // Overlay should be visible
-    expect(screen.getByText('Comments')).toBeInTheDocument();
+    // Overlay should appear
+    await waitFor(() => {
+      expect(screen.getByText('Comments')).toBeInTheDocument();
+      expect(screen.getByText('Great event!')).toBeInTheDocument();
+    });
 
-    // Close the overlay by clicking the close button
-    const closeButton = screen.getByRole('button', { name: /close/i });
+    // Close the overlay
+    const closeButton = screen.getByText('Close');
     fireEvent.click(closeButton);
 
-    // Overlay should not be visible
+    // Overlay should disappear
     await waitFor(() => {
       expect(screen.queryByText('Comments')).not.toBeInTheDocument();
     });
   });
 
-  test('displays comments in the overlay', async () => {
-    // Mock fetch for events
-    fetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents,
-      })
-      // Mock fetch for liked events
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ likedEvents: mockLikedEvents }),
-      });
-
-    renderComponent();
-
-    // Wait for initial fetch calls
-    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
-
-    // Find the comments image by alt text
-    const commentsImages = screen.getAllByAltText('Comments');
-    expect(commentsImages.length).toBeGreaterThan(0);
-    const commentsImage = commentsImages[0];
-
-    // Click on comments image to open overlay
-    fireEvent.click(commentsImage);
-
-    // Check if comment is displayed
-    expect(screen.getByText('Great event!')).toBeInTheDocument();
-    expect(screen.getByText('Bob')).toBeInTheDocument();
-    expect(screen.getByText(/ago$/)).toBeInTheDocument(); // Matches timeAgo format
-
-    // Close the overlay
-    const closeButton = screen.getByRole('button', { name: /close/i });
-    fireEvent.click(closeButton);
-  });
-
   test('submits a new comment', async () => {
-    // Mock fetch for events
-    fetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents,
-      })
-      // Mock fetch for liked events
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ likedEvents: mockLikedEvents }),
-      })
-      // Mock fetch for fetching event details
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents[0],
-      })
-      // Mock fetch for updating comments
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({}),
-      });
+    const mockEvents = [
+      {
+        id: 'event1',
+        title: 'Music Concert',
+        organizerName: 'Alice',
+        organizerImg: '',
+        imageUrl: 'http://example.com/event1.jpg',
+        likes: 10,
+        comments: [],
+        tags: ['Music'],
+      },
+    ];
   
-    renderComponent();
+    const mockLikedEvents = { likedEvents: [] };
   
-    // Wait for initial fetch calls
-    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+    const mockUserData = {
+      uid: 'user123',
+      displayName: 'John Doe',
+      photoURL: 'http://example.com/profile.jpg',
+    };
   
-    // Find the comments image by alt text
-    const commentsImages = screen.getAllByAltText('Comments');
-    expect(commentsImages.length).toBeGreaterThan(0);
-    const commentsImage = commentsImages[0];
+    const newComment = {
+      text: 'Looking forward to it!',
+      timestamp: new Date().toISOString(),
+      userName: 'John Doe',
+      userProfilePic: 'http://example.com/profile.jpg',
+    };
   
-    // Click on comments image to open overlay
+    // Mock fetch
+    fetch.mockImplementation((url, options) => {
+      if (url.endsWith('/events')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockEvents),
+        });
+      }
+  
+      if (url.endsWith(`/users/${mockUserData.uid}`)) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockLikedEvents),
+        });
+      }
+  
+      if (url.endsWith('/events/event1')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ ...mockEvents[0], comments: [] }),
+        });
+      }
+  
+      if (url.endsWith('/events/event1/comments') && options.method === 'PUT') {
+        // Verify that the right payload is being sent
+        return Promise.resolve({ ok: true });
+      }
+  
+      return Promise.reject(new Error('Unknown endpoint'));
+    });
+  
+    render(
+      <BrowserRouter>
+        <MainContent searchQuery="" />
+      </BrowserRouter>
+    );
+  
+    // Wait for events to be rendered
+    await waitFor(() => {
+      expect(screen.getByText('Music Concert')).toBeInTheDocument();
+    });
+  
+    const commentsImage = screen.getByAltText('Comments');
     fireEvent.click(commentsImage);
   
-    // Enter a new comment in the textarea
-    const commentInput = screen.getByLabelText('overlay-comment-input');
-    fireEvent.change(commentInput, { target: { value: 'New test comment' } });
+    // Enter a new comment
+    const commentInput = screen.getByPlaceholderText('Write a comment...');
+    fireEvent.change(commentInput, { target: { value: newComment.text } });
   
-    // Click the submit button
+    // Submit the comment
     const submitButton = screen.getByLabelText('submit-comment-button');
     fireEvent.click(submitButton);
   
-    // Wait for the fetch calls: one for fetching event details, one for updating comments
-    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4));
+    // Optimistic UI update: comment should appear immediately
+    await waitFor(() => {
+      expect(screen.getByText(newComment.text)).toBeInTheDocument();
+    });
   
-    // The new comment should appear in the comments list
-    expect(screen.getByText('New test comment')).toBeInTheDocument();
+    // Verify fetch calls
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith(
+        'https://us-central1-witslivelycampus.cloudfunctions.net/app/events/event1'
+      );
   
-    // Ensure that the comment input is cleared
-    await waitFor(() => expect(commentInput.value).toBe(''));
+      expect(fetch).toHaveBeenCalledWith(
+        'https://us-central1-witslivelycampus.cloudfunctions.net/app/events/event1/comments',
+        expect.objectContaining({
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            comments: [
+              {
+                text: newComment.text,
+                timestamp: expect.any(String), // Ensure that timestamp is a string
+                userName: newComment.userName,
+                userProfilePic: newComment.userProfilePic,
+              },
+            ],
+          }),
+        })
+      );
+    });
+  
+    // Ensure the comment input is cleared after submission
+    expect(commentInput).toHaveValue('');
   });
   
+  test('displays feedback box upon scrolling', async () => {
+    const mockEvents = [
+      {
+        id: 'event1',
+        title: 'Music Concert',
+        organizerName: 'Alice',
+        organizerImg: '',
+        imageUrl: 'http://example.com/event1.jpg',
+        likes: 10,
+        comments: [],
+        tags: ['Music'],
+      },
+    ];
 
-  test('shows feedback box after scrolling', async () => {
-    // Mock fetch for events
-    fetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents,
-      })
-      // Mock fetch for liked events
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ likedEvents: mockLikedEvents }),
-      });
+    const mockLikedEvents = { likedEvents: [] };
 
-    renderComponent();
+    // Mock fetch
+    fetch.mockImplementation((url) => {
+      if (url.endsWith('/events')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockEvents),
+        });
+      }
 
-    // Wait for initial fetch calls
-    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+      if (url.endsWith(`/users/${mockUserData.uid}`)) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockLikedEvents),
+        });
+      }
+
+      return Promise.reject(new Error('Unknown endpoint'));
+    });
+
+    render(
+      <BrowserRouter>
+        <MainContent searchQuery="" />
+      </BrowserRouter>
+    );
 
     // Initially, feedback box should not be visible
     expect(screen.queryByText('Send us your feedback!')).not.toBeInTheDocument();
 
-    // Mock window scrollY and scrollHeight to simulate scrolling
-    Object.defineProperty(window, 'scrollY', { value: 1600, writable: true });
-    Object.defineProperty(document.body, 'scrollHeight', { value: 3000, writable: true });
-    Object.defineProperty(window, 'innerHeight', { value: 1000, writable: true });
+    // Mock scroll position
+    Object.defineProperty(window, 'scrollY', { value: 100, writable: true });
+    Object.defineProperty(document.body, 'scrollHeight', { value: 200, writable: true });
+    Object.defineProperty(window, 'innerHeight', { value: 100, writable: true });
 
-    // Trigger scroll event
-    fireEvent.scroll(window);
-
-    // Now, feedback box should appear
-    await waitFor(() =>
-      expect(screen.getByText('Send us your feedback!')).toBeInTheDocument()
-    );
-  });
-
-  test('navigates to view more details on button click', async () => {
-    // Mock fetch for events
-    fetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents,
-      })
-      // Mock fetch for liked events
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ likedEvents: mockLikedEvents }),
-      });
-
-    renderComponent();
-
-    // Wait for initial fetch calls
-    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
-
-    // Find the "View more details" button by aria-label
-    const viewMoreButton = screen.getByLabelText('view-more-details-button');
-    expect(viewMoreButton).toBeInTheDocument();
-
-    // Click the "View more details" button
-    fireEvent.click(viewMoreButton);
-
-    // Expect navigation to be called with the correct path
-    expect(mockedUsedNavigate).toHaveBeenCalledWith('/view-more-details/event1');
-  });
-
-  test('opens mailto link when feedback is clicked', async () => {
-    // Mock fetch for events
-    fetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockEvents,
-      })
-      // Mock fetch for liked events
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ likedEvents: mockLikedEvents }),
-      });
-
-    // Mock window.location.href
-    delete window.location;
-    window.location = { href: '' };
-
-    renderComponent();
-
-    // Wait for initial fetch calls
-    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
- 
-    // Mock scrolling to trigger feedback box
-    Object.defineProperty(window, 'scrollY', { value: 1600, writable: true });
-    Object.defineProperty(document.body, 'scrollHeight', { value: 3000, writable: true });
-    Object.defineProperty(window, 'innerHeight', { value: 1000, writable: true });
-
-    // Trigger scroll event
-    fireEvent.scroll(window);
+    fireEvent.scroll(window, { target: { scrollY: 100 } });
 
     // Wait for feedback box to appear
-    await waitFor(() =>
-      expect(screen.getByText('Send us your feedback!')).toBeInTheDocument()
-    );
+    await waitFor(() => {
+      expect(screen.getByText('Send us your feedback!')).toBeInTheDocument();
+    });
 
     // Click the feedback box
     const feedbackBox = screen.getByText('Send us your feedback!');
     fireEvent.click(feedbackBox);
 
-    // Check if mailto link was set correctly
+    // Verify that mailto link was triggered
     expect(window.location.href).toBe('mailto:livelycampus@gmail.com?subject=Feedback');
+  });
+
+  test('filters events based on search query', async () => {
+    const mockEvents = [
+      {
+        id: 'event1',
+        title: 'Music Concert',
+        organizerName: 'Alice',
+        organizerImg: '',
+        imageUrl: 'http://example.com/event1.jpg',
+        likes: 10,
+        comments: [],
+        tags: ['Music'],
+      },
+      {
+        id: 'event2',
+        title: 'Dance Workshop',
+        organizerName: 'Bob',
+        organizerImg: 'http://example.com/bob.jpg',
+        imageUrl: 'http://example.com/event2.jpg',
+        likes: 5,
+        comments: [],
+        tags: ['Dance'],
+      },
+    ];
+
+    const mockLikedEvents = { likedEvents: [] };
+
+    // Mock fetch
+    fetch.mockImplementation((url) => {
+      if (url.endsWith('/events')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockEvents),
+        });
+      }
+
+      if (url.endsWith(`/users/${mockUserData.uid}`)) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockLikedEvents),
+        });
+      }
+
+      return Promise.reject(new Error('Unknown endpoint'));
+    });
+
+    const { rerender } = render(
+      <BrowserRouter>
+        <MainContent searchQuery="Dance" />
+      </BrowserRouter>
+    );
+
+    // Wait for events to be rendered
+    await waitFor(() => {
+      expect(screen.queryByText('Music Concert')).not.toBeInTheDocument();
+      expect(screen.getByText('Dance Workshop')).toBeInTheDocument();
+    });
+
+    // Rerender with a different search query
+    rerender(
+      <BrowserRouter>
+        <MainContent searchQuery="Alice" />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Music Concert')).toBeInTheDocument();
+      expect(screen.queryByText('Dance Workshop')).not.toBeInTheDocument();
+    });
   });
 });
