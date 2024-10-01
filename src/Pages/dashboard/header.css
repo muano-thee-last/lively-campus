@@ -2,9 +2,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 10px 0px;
     background-color: #fff; 
     color: var(--primary-color); 
+  
   }
   
   .header-right-section {
@@ -13,10 +14,11 @@
   }
   
   .header-right-section .hamburger-logo{
-    height: 40px;
-    width: 40px;
+    height: 28px;
+    width: 28px;
     margin-right: 10px;
     justify-self: center;
+    margin-left: 10px;
   }
   .lively-campus-logo {
     height: 40px; 
