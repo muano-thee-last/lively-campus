@@ -41,6 +41,11 @@ const MainContent = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        // Log any events with missing properties
+        data.forEach((event, index) => {
+          if (!event.venue) console.warn(`Event at index ${index} is missing venue property`);
+          if (!event.tags) console.warn(`Event at index ${index} is missing tags property`);
+        });
         setEvents(data);
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -77,10 +82,11 @@ const MainContent = () => {
     const matchesDate = filterDate ? eventDate.toDateString() === new Date(filterDate).toDateString() : true;
     
     // Check if the event's tags include the selected filter type
-    const matchesType = filterType ? event.tags.some(tag => tag.toLowerCase() === filterType.toLowerCase()) : true;
+    const matchesType = filterType ? (event.tags && event.tags.some(tag => tag.toLowerCase() === filterType.toLowerCase())) : true;
     
-    // Update this line to use the venue field
-    const matchesLocation = filterLocation ? event.venue.toLowerCase().includes(filterLocation.toLowerCase()) : true;
+    // Update this line to use the venue field and handle undefined cases
+    const matchesLocation = filterLocation ? (event.venue && event.venue.toLowerCase().includes(filterLocation.toLowerCase())) : true;
+    
     return matchesDate && matchesType && matchesLocation;
   });
 
