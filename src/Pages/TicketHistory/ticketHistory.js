@@ -35,7 +35,7 @@ function TicketHistory() {
   }, []);
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>No tickets bought yet</div>;
   }
 
   // Filter tickets to exclude those with "Title not found"
