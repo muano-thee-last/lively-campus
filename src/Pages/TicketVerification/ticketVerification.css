@@ -1,53 +1,32 @@
-/* Flexbox for vertical centering of the content */
-body, html {
-  height: 100%;
-  margin: 0;
-  font-family: Arial, sans-serif;
-
-}
-
-.main-container {
-  display: flex;
-  flex-direction: column; /* Stack items vertically */
-  justify-content: center;
-  align-items: center;
-  height: 100vh; /* Full viewport height */
-}
-
-/* Container to hold the ticket verification content */
 .ticket-verification-container {
-  text-align: center;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   max-width: 400px;
-  width: 100%;
-  display: flex;
-  flex-direction: column; /* Ensure input and button are stacked vertically */
-  align-items: center; /* Center the elements horizontally */
-}
-
-/* Input styling */
-.input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
+  margin: 0 auto;
+  padding: 20px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Button styling */
+.input-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .button {
+  padding: 8px 16px;
   background-color: #007bff;
   color: white;
-  padding: 10px 20px;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 4px;
   cursor: pointer;
-  width: 100%;
 }
 
 .button:disabled {
@@ -55,21 +34,25 @@ body, html {
   cursor: not-allowed;
 }
 
-.button:hover:enabled {
-  background-color: #0056b3;
+.camera-button {
+  background-color: #28a745;
 }
 
-/* Error message styling */
+.camera-container {
+  margin-bottom: 20px;
+}
+
 .error-message {
-  color: red;
-  margin-top: 10px;
-  font-size: 14px;
+  color: #dc3545;
+  margin-bottom: 10px;
 }
 
-/* Responsive behavior */
-@media screen and (max-width: 768px) {
-  .container {
-    max-width: 90%;
-    padding: 15px;
-  }
+.ticket-info {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.ticket-info h3 {
+  margin-top: 0;
 }
