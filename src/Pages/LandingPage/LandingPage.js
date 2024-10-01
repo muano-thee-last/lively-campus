@@ -124,7 +124,7 @@ function Header({ handleButtonClick }) {
           <li><button className="btn-secondary" onClick={handleButtonClick} aria-label='Login'>Login</button></li>
         </ul>
       </nav>
-      <label className="burger" htmlFor="burger">
+      <label className="burger" aria-label="burger" htmlFor="burger">
         <input type="checkbox" id="burger" onClick={toggleMenu} />
         <span></span>
         <span></span>
@@ -210,6 +210,7 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
                 key={index}
                 className={`dot ${currentIndex === index ? 'active' : ''}`}
                 onClick={() => handleDotClick(index)}
+                aria-label = {`Slide ${index + 1 }` }
               />
             ))}
           </div>
