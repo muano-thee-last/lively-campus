@@ -336,6 +336,11 @@
   height: 40px;
   border-radius: 10px;
 }
+
+.chosenTag p{
+  font-size: unset;
+  color: white;
+}
 @media screen and (max-width: 400px) {
   .chosenTags{
     margin-left: 70px;
