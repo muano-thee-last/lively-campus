@@ -9,10 +9,12 @@ export default function TicketVerification() {
   const [error, setError] = useState("");
   const [isCameraActive, setIsCameraActive] = useState(false);
 
+  // Function to handle changes in the input field
   const handleInputChange = (event) => {
     setTicketNum(event.target.value);
   };
 
+  // Function to verify the ticket code
   const verifyTicket = (code) => {
     setIsLoading(true);
     setError("");
@@ -41,14 +43,16 @@ export default function TicketVerification() {
       });
   };
 
+  // Function to handle scanned QR code data
   const handleScan = (data) => {
     if (data) {
-      setTicketNum(data);
-      verifyTicket(data);
-      setIsCameraActive(false);
+      setTicketNum(data); // Set the scanned ticket number
+      verifyTicket(data); // Verify the ticket code
+      setIsCameraActive(false); // Close the camera after scanning
     }
   };
 
+  // Function to handle errors from the QR reader
   const handleError = (error) => {
     console.error(error);
     setError("Error accessing camera. Please try manual input.");
@@ -87,6 +91,7 @@ export default function TicketVerification() {
             onError={handleError}
             onScan={handleScan}
             style={{ width: '100%' }}
+            constraints={{ facingMode: "environment" }} // Ensure the back camera is used
           />
         </div>
       )}
