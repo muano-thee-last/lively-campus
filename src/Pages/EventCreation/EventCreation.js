@@ -241,15 +241,15 @@ export default function EventCreation() {
         console.error("Error fetching Google Maps API key:", error);
       }
     };
-
+  
     getGoogleKey();
   }, []);
-
+  
   useEffect(() => {
     const getWimanBearerKey = async () => {
       const url =
         "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvWiman";
-
+  
       try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -261,44 +261,41 @@ export default function EventCreation() {
         console.error("Error fetching Wiman API key:", error);
       }
     };
-
+  
     getWimanBearerKey();
   }, []);
-
+  
   // Function to handle submit button click
   async function handleSubmitButton() {
     // Validation: Check if all required fields are filled
-
     if (!isEditing) {
       if (
-      !eventData.eventName ||
-      !eventData.eventDescription ||
-      !eventData.ticketPrice ||
-      !eventData.capacity ||
-      !eventData.eventDate ||
-      !eventData.eventStartTime ||
-      !eventData.eventLocation ||
-      !selectedTags.length ||
-      !image ||
-      !eventData.availableTickets
-    ){
+        !eventData.eventName ||
+        !eventData.eventDescription ||
+        !eventData.ticketPrice ||
+        !eventData.capacity ||
+        !eventData.eventDate ||
+        !eventData.eventTime ||
+        !eventData.eventLocation ||
+        !selectedTags.length ||
+        !image ||
+        !eventData.availableTickets
+      ) {
         console.error("All fields must be filled out before submission.");
         alert("Please fill out all the fields before submission.");
         return; // Stop execution if any field is empty
       }
     }
-
-    const imageRef = ref(storage, `images/${image.name}`);
-
+  
     try {
-
-      let headersList = {
-        Accept: "*/*",
-        "User-Agent": "lively-campus",
-        "Content-Type": "application/json",
-      };
-
-      let responseWiman = await fetch(`${WIMAN_API}/bookings`, {
+      // Upload the image if present
+      const imageRef = ref(storage, `images/${image.name}`);
+      await uploadBytes(imageRef, image); 
+      let imageUrl = await getDownloadURL(imageRef);
+      console.log("Uploaded image:", imageUrl); 
+  
+      // Book with Wiman API
+      const responseWiman = await fetch(`${WIMAN_API}/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -314,14 +311,13 @@ export default function EventCreation() {
           repeatUntil: startDate,
         }),
       });
+  
       const dataWiman = await responseWiman.json();
-
+  
       if (responseWiman.ok) {
-        if(image)
-          await uploadBytes(imageRef, image);
-        const url = await getDownloadURL(imageRef);
-
-        let bodyContent = JSON.stringify({
+        
+        // Prepare the event data to send to EVENTS API
+        const bodyContent = JSON.stringify({
           organizerName: user.displayName,
           organizerId: user.uid,
           title: eventData.eventName,
@@ -330,32 +326,46 @@ export default function EventCreation() {
           capacity: Number(eventData.capacity),
           availableTickets: Number(eventData.availableTickets),
           date: eventData.eventDate,
-          time: eventData.eventStartTime,
-          imageUrl: url,
+          time: eventData.eventTime,
+          imageUrl: imageUrl,
           tags: selectedTags,
           venue: eventData.eventLocation,
-          likes: isEditing? eventData.likes : 0,
-          comments: isEditing? eventData.comments : [],
-          createdAt: isEditing? eventData.createdAt : new Date(),
+          likes: isEditing ? eventData.likes : 0,
+          comments: isEditing ? eventData.comments : [],
+          createdAt: isEditing ? eventData.createdAt : new Date().toISOString(),
           organizerImg: user.photoURL,
           bookingId: dataWiman.bookingId,
         });
-
-        // Send the POST request
-       let response = await fetch(isEditing?`${EVENTS_API}/${editingEvent.id}`: EVENTS_API,{
-          method : isEditing? "PUT" : "POST",
-          headers: headersList,
-          body: bodyContent,
-        });
-        console.log("Response Status:", response.status);
-        navigate("/dashboard");
+  
+        // Send the POST/PUT request to the EVENTS API
+        const response = await fetch(
+          isEditing ? `${EVENTS_API}/${editingEvent.id}` : EVENTS_API,
+          {
+            method: isEditing ? "PUT" : "POST",
+            headers: {
+              Accept: "*/*",
+              "User-Agent": "lively-campus",
+              "Content-Type": "application/json",
+            },
+            body: bodyContent,
+          }
+        );
+  
+        if (response.ok) {
+          console.log("Event successfully saved!");
+          navigate("/dashboard");
+        } else {
+          console.log(bodyContent);
+          console.error("Error saving event:", response.status);
+        }
+      } else {
+        console.error("Error booking venue with Wiman API:", responseWiman.status);
       }
-
     } catch (error) {
-      console.error("Error uploading image:", error);
-      navigate("/dashboard");
+      console.error("Error during submission:", error);
     }
   }
+  
 
   useEffect(() => {
     const getVenues = async () => {
@@ -539,7 +549,7 @@ export default function EventCreation() {
               ></iframe>
               <div className="venue-info">
                 <div className="logo-name">
-                  <img src="./images-logos/location.svg" alt="Location icon" height="25" width="25" />
+                  <img src={locationSVG} alt="Location icon" height="25" width="25" />
                   <span>{`${venue.campusName} ${venue.buildingName} ${venue.venueId}`}</span>
                 </div>
                 <div className="logo-name">
