@@ -1,51 +1,115 @@
 import React from 'react';
-import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import TicketVerification from './ticketVerification';
 
-// Mock the TicketInfo component
-jest.mock('./ticketDetails', () => ({ ticket }) => (
-  <div>{ticket ? `Ticket Code: ${ticket.code}` : "No Ticket"}</div>
-));
+// Mock the QrReader component
+jest.mock('react-qr-reader', () => ({
+  QrReader: ({ onScan }) => (
+    <button onClick={() => onScan('mocked-qr-code')}>Scan QR Code</button>
+  ),
+}));
 
-// Mock fetch function
+// Mock the fetch function
 global.fetch = jest.fn();
 
 describe('TicketVerification Component', () => {
   beforeEach(() => {
-    fetch.mockClear();
+    jest.clearAllMocks();
   });
 
-  test('renders input, button, and no ticket initially', () => {
+  test('renders TicketVerification component', () => {
     render(<TicketVerification />);
-    
-    // Check if input, button, and no ticket info are rendered
+    expect(screen.getByText('Ticket Verification')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Enter ticket code')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /verify/i })).toBeInTheDocument();
-    expect(screen.getByText(/No Ticket/i)).toBeInTheDocument();
+    expect(screen.getByText('Verify')).toBeInTheDocument();
+    expect(screen.getByText('📷')).toBeInTheDocument();
   });
 
+  test('handles input change', () => {
+    render(<TicketVerification />);
+    const input = screen.getByPlaceholderText('Enter ticket code');
+    fireEvent.change(input, { target: { value: 'TEST123' } });
+    expect(input.value).toBe('TEST123');
+  });
 
-  test('displays error message when fetch fails', async () => {
-    // Mock the fetch to throw an error
-    fetch.mockResolvedValueOnce({
-      ok: false,
-      status: 404,
+  test('verifies ticket on button click', async () => {
+    const mockTicketData = {
+      price: 100,
+      purchaseDate: '2023-05-01',
+      ticketCode: 'TEST123',
+    };
+
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockTicketData),
     });
 
     render(<TicketVerification />);
-    
-    // Simulate input change
-    fireEvent.change(screen.getByPlaceholderText('Enter ticket code'), {
-      target: { value: 'invalid-code' },
+    const input = screen.getByPlaceholderText('Enter ticket code');
+    const verifyButton = screen.getByText('Verify');
+
+    fireEvent.change(input, { target: { value: 'TEST123' } });
+    fireEvent.click(verifyButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Ticket Information')).toBeInTheDocument();
+      expect(screen.getByText('Price: R100')).toBeInTheDocument();
+      expect(screen.getByText('Purchase Date: 2023-05-01')).toBeInTheDocument();
+      expect(screen.getByText('Code: TEST123')).toBeInTheDocument();
+    });
+  });
+
+  test('displays error message on failed verification', async () => {
+    global.fetch.mockRejectedValueOnce(new Error('API Error'));
+
+    render(<TicketVerification />);
+    const input = screen.getByPlaceholderText('Enter ticket code');
+    const verifyButton = screen.getByText('Verify');
+
+    fireEvent.change(input, { target: { value: 'INVALID' } });
+    fireEvent.click(verifyButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Unable to verify ticket. Please try again.')).toBeInTheDocument();
+    });
+  });
+
+  test('toggles camera when camera button is clicked', () => {
+    render(<TicketVerification />);
+    const cameraButton = screen.getByText('📷');
+
+    fireEvent.click(cameraButton);
+    expect(screen.getByText('Scan QR Code')).toBeInTheDocument();
+
+    fireEvent.click(cameraButton);
+    expect(screen.queryByText('Scan QR Code')).not.toBeInTheDocument();
+  });
+
+  test('handles QR code scan', async () => {
+    const mockTicketData = {
+      price: 200,
+      purchaseDate: '2023-05-02',
+      ticketCode: 'QR123',
+    };
+
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockTicketData),
     });
 
-    // Simulate button click
-    fireEvent.click(screen.getByRole('button', { name: /verify/i }));
+    render(<TicketVerification />);
+    const cameraButton = screen.getByText('📷');
+    fireEvent.click(cameraButton);
 
-    // Wait for error message to appear
-    await waitFor(() => expect(screen.getByText(/Unable to verify ticket/i)).toBeInTheDocument());
-    
-    // Verify that no ticket information is displayed
-    expect(screen.getByText(/No Ticket/i)).toBeInTheDocument();
+    const scanButton = screen.getByText('Scan QR Code');
+    fireEvent.click(scanButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Ticket Information')).toBeInTheDocument();
+      expect(screen.getByText('Price: R200')).toBeInTheDocument();
+      expect(screen.getByText('Purchase Date: 2023-05-02')).toBeInTheDocument();
+      expect(screen.getByText('Code: QR123')).toBeInTheDocument();
+    });
   });
 });
