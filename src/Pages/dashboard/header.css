@@ -82,4 +82,9 @@
     background-color: #000000;
     color: #fff;
   }
-
+@media screen and (max-width: 500px) {
+  .header-title{
+    display: none !important;
+    color: red;
+  }
+}

@@ -1,7 +1,7 @@
 import React,{useState} from 'react';
-import ManagementHeader from "./managementheader";
 import Footer from "../dashboard/footer";
 import SideBar from "../dashboard/side-bar";
+import Header from "../dashboard/header";
 import EventManagementMainContent from "./event-management-main-content";
 import './eventManagement.css';
 
@@ -15,7 +15,7 @@ function EventManagement(){
     return(
       <div id='main-footer-separator'>
         <div id='eventManagement'>
-      <ManagementHeader toggleSidebar={toggleSidebar}/>
+      <Header toggleSidebar={toggleSidebar}/>
        <div id='content'>
           <SideBar isSidebarOpen={isSidebarOpen}/>
         <EventManagementMainContent/>
