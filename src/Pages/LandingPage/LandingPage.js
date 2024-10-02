@@ -158,7 +158,6 @@ function AboutSec() {
 function EventsSection({ title, events, currentIndex, handleDotClick, showBookNow, handleButtonClick }) {
   const sectionRef = useRef(null);
   const [animationKey, setAnimationKey] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const sectionElement = sectionRef.current;
@@ -184,18 +183,8 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
   }, []);
 
   useEffect(() => {
-    if (!isAnimating) {
-      setIsAnimating(true);
-      setAnimationKey(prevKey => prevKey + 1);
-      
-      // Set a timeout to change the image after the animation completes
-      const timeoutId = setTimeout(() => {
-        setIsAnimating(false);
-      }, 5000); // 5000ms matches the animation duration
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [currentIndex, isAnimating]);
+    setAnimationKey(prevKey => prevKey + 1);
+  }, [currentIndex]);
 
   const filteredEvents = events.filter(event => 
     title === "Upcoming Events" 
@@ -219,14 +208,18 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
           <div className="event-content">
             <div className="event-card-description">
               <h2 className="event-title" key={animationKey}>
-                <span className="event-title-wrapper">
-                  {currentEvent.title.split('').map((char, index) => (
-                    <span 
-                      key={index} 
-                      className={`event-title-letter ${char === ' ' ? 'space' : ''}`} 
-                      style={{animationDelay: `${index * 0.1}s`}}
-                    >
-                      {char === ' ' ? '\u00A0' : char}
+                <span className="event-title-text">
+                  {currentEvent.title.split(' ').map((word, wordIndex) => (
+                    <span key={wordIndex} className="event-title-word">
+                      {word.split('').map((char, charIndex) => (
+                        <span
+                          key={charIndex}
+                          className="event-title-letter"
+                          style={{ animationDelay: `${(wordIndex * word.length + charIndex) * 0.05}s` }}
+                        >
+                          {char}
+                        </span>
+                      ))}
                     </span>
                   ))}
                 </span>

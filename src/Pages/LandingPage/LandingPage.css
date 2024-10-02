@@ -826,49 +826,44 @@ padding: 12%; */
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-.event-title-wrapper {
+.event-title-text {
   display: inline-block;
-  overflow: hidden;
+}
+
+.event-title-word {
+  display: inline-block;
+  margin-right: 0.3em; /* Add space between words */
 }
 
 .event-title-letter {
   display: inline-block;
   opacity: 0;
-  transform: translateY(50px);
-  animation: fadeInUpAndBounce 5s forwards;
+  transform: translateY(1em);
+  animation: typeLetterIn 0.3s ease-out forwards;
 }
 
-.event-title-letter.space {
-  width: 0.3em; /* Adjust this value to control space width */
-}
-
-@keyframes fadeInUpAndBounce {
-  0% {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  10% {
+@keyframes typeLetterIn {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
-  20% {
-    transform: translateY(-10px);
-  }
-  25%, 90% {  /* Pause for 3.25 seconds (65% of 5s) */
-    transform: translateY(0);
-  }
-  95% {
-    transform: translateY(50px);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(50px);
-    opacity: 0;
-  }
 }
 
-/* Remove all hover-based animations */
-.card:hover .event-title-letter,
-.card .event-title-letter {
-  animation: fadeInUpAndBounce 5s forwards;
+/* Add a sliding underline effect */
+.event-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0;
+  height: 3px;
+  background-color: #ffffff;
+  animation: slideUnderline 0.5s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes slideUnderline {
+  to {
+    width: 100%;
+  }
 }
