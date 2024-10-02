@@ -34,7 +34,8 @@ const WIMAN_API = "https://wiman.azurewebsites.net/api/";
 
 export default function EventCreation() {
   const location = useLocation();
-  const {editingEvent, isEditing} = location.state || {};
+  const { editingEvent, isEditing } = location.state || {};
+  //console.log(editingEvent, isEditing);
   const navigate = useNavigate();
 
   const [availableVenues, setAvailableVenues] = useState([]);
@@ -43,42 +44,66 @@ export default function EventCreation() {
   const [wimanBearerKey, setWimanBearerKey] = useState("");
   const [startDate, setStartDate] = useState("");
   const endDate = "";
+  const [skipWiman, setSkipWiman] = useState(false);
+  const [startTime, setStartTime] = useState(
+    isEditing ? editingEvent.time.split("-")[0] : ""
+  );
+  const [endTime, setEndTime] = useState(
+    isEditing ? editingEvent.endTime.split("-")[0] : ""
+  );
+  const [error, setError] = useState("");
+  const [isValidDateTime, setIsValidDateTime] = useState(
+    isEditing ? true : false
+  );
 
   // Function to toggle sidebar
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
   };
 
-  const [eventData,setEventData] = useState(isEditing?{
-    eventName: editingEvent.title,
-    eventDescription: editingEvent.description,
-    ticketPrice: editingEvent.ticketPrice,
-    availableTickets: editingEvent.availableTickets,
-    capacity: editingEvent.capacity,
-    eventDate: editingEvent.date,
-    eventTime: editingEvent.time,
-    eventLocation: editingEvent.location,
-    eventVenue: editingEvent.venue,
-  }: {
-    eventName: "",
-    eventDescription: "",
-    ticketPrice: 0,
-    availableTickets: 0,
-    capacity: 0,
-    eventDate: "",
-    eventTime: "",
-    eventLocation: "",
-    eventVenue: "",
-  });
+  const [eventData, setEventData] = useState(
+    isEditing
+      ? {
+          eventName: editingEvent.title,
+          eventDescription: editingEvent.description,
+          ticketPrice: editingEvent.ticketPrice,
+          availableTickets: editingEvent.availableTickets,
+          capacity: editingEvent.capacity,
+          eventDate: new Date(editingEvent.date).toLocaleDateString(), // Format date
+          eventTime: new Date(
+            "1970-01-01T" + editingEvent.time
+          ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), // Format time
+          eventLocation: editingEvent.venue,
+          eventVenue: editingEvent.venue,
+        }
+      : {
+          eventName: "",
+          eventDescription: "",
+          ticketPrice: 0,
+          availableTickets: 0,
+          capacity: 0,
+          eventDate: "",
+          eventTime: "",
+          eventLocation: "",
+          eventVenue: "",
+        }
+  );
+
+  //console.log(eventData);
+
   const id = useId();
   const fileInputRef = useRef(null);
   const [image, setImage] = useState("");
-  const [imageUrlLocal, setImageUrlLocal] = useState(isEditing ? editingEvent.imageUrl : "");
+  const [imageUrlLocal, setImageUrlLocal] = useState(
+    isEditing ? editingEvent.imageUrl : ""
+  );
   const [isPopupTagOpen, setIsPopupTagOpen] = useState(false);
   const [isPopupLocationOpen, setIsPopupLocationOpen] = useState(false);
   const [isAvailableTimePopup, setIsAvailableTimePopup] = useState(false);
 
-  const [selectedTags, setSelectedTags] = useState(isEditing ? editingEvent.tags : []);
+  const [selectedTags, setSelectedTags] = useState(
+    isEditing ? editingEvent.tags : []
+  );
   const aboutTags = [
     "Music",
     "Dance",
@@ -241,15 +266,15 @@ export default function EventCreation() {
         console.error("Error fetching Google Maps API key:", error);
       }
     };
-  
+
     getGoogleKey();
   }, []);
-  
+
   useEffect(() => {
     const getWimanBearerKey = async () => {
       const url =
         "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvWiman";
-  
+
       try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -261,10 +286,10 @@ export default function EventCreation() {
         console.error("Error fetching Wiman API key:", error);
       }
     };
-  
+
     getWimanBearerKey();
   }, []);
-  
+
   // Function to handle submit button click
   async function handleSubmitButton() {
     // Validation: Check if all required fields are filled
@@ -286,36 +311,98 @@ export default function EventCreation() {
         return; // Stop execution if any field is empty
       }
     }
-  
+
     try {
       // Upload the image if present
       const imageRef = ref(storage, `images/${image.name}`);
-      await uploadBytes(imageRef, image); 
+      await uploadBytes(imageRef, image);
       let imageUrl = await getDownloadURL(imageRef);
-      console.log("Uploaded image:", imageUrl); 
-  
+      //console.log("Uploaded image:", imageUrl);
+
       // Book with Wiman API
-      const responseWiman = await fetch(`${WIMAN_API}/bookings`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${wimanBearerKey}`,
-        },
-        body: JSON.stringify({
-          date: startDate,
+      if (isEditing) {
+        if (
+          editingEvent.venue !== eventData.eventLocation ||
+          editingEvent.date !== eventData.eventDate ||
+          editingEvent.time !== eventData.eventTime ||
+          editingEvent.endTime !== endTime ||
+          editingEvent.title !== eventData.eventName
+        ) {
+          const cancelWiman = await fetch(
+            `${WIMAN_API}/bookings/cancel/${editingEvent.bookingId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${wimanBearerKey}`,
+              },
+            }
+          );
+          const cancelData = await cancelWiman.json();
+          console.log("Cancel data:", cancelData);
+          console.log("Cancelling Wiman booking...");
+          if (cancelWiman.ok) {
+            console.log("Wiman booking cancelled successfully.");
+          } else {
+            alert("Failed to cancel Wiman booking.");
+            return;
+          }
+        }
+      }
+      console.log("Comparing values:");
+      console.log("editingEvent.title:", editingEvent.title);
+      console.log("eventData.title:", eventData.eventName);
+      console.log(
+        "editingEvent.date (formatted):",
+        new Date(editingEvent.date).toLocaleDateString()
+      );
+      console.log(
+        "eventData.date (formatted):",
+        eventData.eventDate
+      );
+      console.log("editingEvent.time:", editingEvent.time);
+      console.log("startTime:", startTime);
+      console.log("editingEvent.endTime:", editingEvent.endTime);
+      console.log("endTime:", endTime);
+
+      console.log("editingEvent.venue:", editingEvent.venue);
+      console.log("eventData.venue:", eventData.eventLocation);
+
+      if (isEditing &&
+        editingEvent.title === eventData.eventName &&
+        new Date(editingEvent.date).toLocaleDateString() ===
+          new Date(eventData.eventDate).toLocaleDateString() &&
+        editingEvent.time === startTime &&
+        editingEvent.endTime === endTime &&
+        editingEvent.venue === eventData.eventLocation
+      ) {
+        console.log("No changes detected. Skipping Wiman booking.");
+        setSkipWiman(true);
+      } else {
+        const wimanBody = {
+          date: isEditing ? eventData.eventDate : startDate,
           startTime: startTime,
           endTime: endTime,
-          venueId: venueId,
+          venueId: isEditing ? eventData.eventVenue.split(" ").pop() : venueId,
           eventName: eventData.eventName,
           repeatFrequency: "none",
-          repeatUntil: startDate,
-        }),
-      });
-  
-      const dataWiman = await responseWiman.json();
-  
-      if (responseWiman.ok) {
-        
+          repeatUntil: isEditing ? eventData.eventDate : startDate,
+        };
+        //console.log("Wiman body:", wimanBody);
+        var responseWiman = await fetch(`${WIMAN_API}/bookings`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${wimanBearerKey}`,
+          },
+          body: JSON.stringify(wimanBody),
+        });
+
+        var dataWiman = await responseWiman.json();
+        console.log("Wiman booking data:", dataWiman);
+      }
+
+      if (skipWiman || responseWiman.ok) {
         // Prepare the event data to send to EVENTS API
         const bodyContent = JSON.stringify({
           organizerName: user.displayName,
@@ -327,16 +414,21 @@ export default function EventCreation() {
           availableTickets: Number(eventData.availableTickets),
           date: eventData.eventDate,
           time: eventData.eventTime,
-          imageUrl: imageUrl,
+          endTime: endTime,
+          imageUrl: isEditing
+            ? editingEvent.imageUrl === imageUrlLocal
+              ? editingEvent.imageUrl
+              : imageUrl
+            : imageUrl,
           tags: selectedTags,
           venue: eventData.eventLocation,
           likes: isEditing ? eventData.likes : 0,
           comments: isEditing ? eventData.comments : [],
           createdAt: isEditing ? eventData.createdAt : new Date().toISOString(),
           organizerImg: user.photoURL,
-          bookingId: dataWiman.bookingId,
+          bookingId: isEditing ? editingEvent.bookingId :dataWiman.bookingId,
         });
-  
+
         // Send the POST/PUT request to the EVENTS API
         const response = await fetch(
           isEditing ? `${EVENTS_API}/${editingEvent.id}` : EVENTS_API,
@@ -350,7 +442,7 @@ export default function EventCreation() {
             body: bodyContent,
           }
         );
-  
+
         if (response.ok) {
           console.log("Event successfully saved!");
           navigate("/dashboard");
@@ -359,13 +451,15 @@ export default function EventCreation() {
           console.error("Error saving event:", response.status);
         }
       } else {
-        console.error("Error booking venue with Wiman API:", responseWiman.status);
+        console.error(
+          "Error booking venue with Wiman API:",
+          responseWiman.status
+        );
       }
     } catch (error) {
       console.error("Error during submission:", error);
     }
   }
-  
 
   useEffect(() => {
     const getVenues = async () => {
@@ -535,69 +629,79 @@ export default function EventCreation() {
           <label htmlFor="search-bar"></label>
         </div>
 
-        {filteredVenues.length > 0 ? (filteredVenues.map((venue) => (
-          <div className="venue-card" key={venue.venueId}>
-            <div className="venue-details">
-              <iframe
-                title={`Map showing location of ${venue.buildingName} ${venue.venueId}`}
-                src={`https://www.google.com/maps/embed/v1/place?key=${MAP_API_KEY}&q=${encodeURIComponent(
-                  `${venue.campusName} ${venue.buildingName} ${venue.venueId}`
-                )}`}
-                allowFullScreen
-                height="115"
-                width="220"
-              ></iframe>
-              <div className="venue-info">
-                <div className="logo-name">
-                  <img src={locationSVG} alt="Location icon" height="25" width="25" />
-                  <span>{`${venue.campusName} ${venue.buildingName} ${venue.venueId}`}</span>
-                </div>
-                <div className="logo-name">
-                  <img src={person} alt="logo" height="25" width="25" />
-                  <span>Max Capacity {venue.capacity}</span>
-                </div>
-                <div className="logo-name">
-                  Type: <span>{venue.type}</span>
+        {filteredVenues.length > 0 ? (
+          filteredVenues.map((venue) => (
+            <div className="venue-card" key={venue.venueId}>
+              <div className="venue-details">
+                <iframe
+                  title={`Map showing location of ${venue.buildingName} ${venue.venueId}`}
+                  src={`https://www.google.com/maps/embed/v1/place?key=${MAP_API_KEY}&q=${encodeURIComponent(
+                    `${venue.campusName} ${venue.buildingName} ${venue.venueId}`
+                  )}`}
+                  allowFullScreen
+                  height="115"
+                  width="220"
+                ></iframe>
+                <div className="venue-info">
+                  <div className="logo-name">
+                    <img
+                      src={locationSVG}
+                      alt="Location icon"
+                      height="25"
+                      width="25"
+                    />
+                    <span>{`${venue.campusName} ${venue.buildingName} ${venue.venueId}`}</span>
+                  </div>
+                  <div className="logo-name">
+                    <img src={person} alt="logo" height="25" width="25" />
+                    <span>Max Capacity {venue.capacity}</span>
+                  </div>
+                  <div className="logo-name">
+                    Type: <span>{venue.type}</span>
+                  </div>
                 </div>
               </div>
+              <button
+                className="create-button centered"
+                onClick={() => {
+                  setVenueId(venue.venueId);
+                  handleChange({
+                    target: {
+                      name: "eventLocation",
+                      value: `${venue.campusName} ${venue.buildingName} ${venue.venueId}`,
+                    },
+                  });
+                  handleChange({
+                    target: {
+                      name: "capacity",
+                      value: `${venue.capacity}`,
+                    },
+                  });
+                  closeLocationPopup();
+                  openAvailableTimePopup();
+                }}
+                name="eventLocation"
+                value={venue.name}
+              >
+                Check Venue Availability
+              </button>
             </div>
-            <button
-              className="create-button centered"
-              onClick={() => {
-                setVenueId(venue.venueId);
-                handleChange({
-                  target: {
-                    name: "eventLocation",
-                    value: `${venue.campusName} ${venue.buildingName} ${venue.venueId}`,
-                  },
-                });
-                handleChange({
-                  target: {
-                    name: "capacity",
-                    value: `${venue.capacity}`,
-                  },
-                });
-                closeLocationPopup();
-                openAvailableTimePopup();
-              }}
-              name="eventLocation"
-              value={venue.name}
-            >
-              Check Venue Availability
-            </button>
-          </div>
-        ))
+          ))
         ) : (
-          <h2 style={{ textAlign: "center" , margin: "0 auto", color: "var(--primary-color)"}}>No venues found.</h2>
+          <h2
+            style={{
+              textAlign: "center",
+              margin: "0 auto",
+              color: "var(--primary-color)",
+            }}
+          >
+            Error Fetching Venues From Classroom and Infrastructure Management,
+            Please refresh the page
+          </h2>
         )}
       </div>
     );
   }
-
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [error, setError] = useState("");
-  const [isValidDateTime, setIsValidDateTime] = useState(false);
 
   function AddVenueTimeContent() {
     const validateTimeSelection = () => {
@@ -636,12 +740,13 @@ export default function EventCreation() {
 
       // Check if the time is valid before proceeding
       if (validateTimeSelection()) {
-        closeAvailableTimePopup(); 
+        closeAvailableTimePopup();
         setEventData((prevFormData) => {
           return {
             ...prevFormData,
             eventDate: startDate,
             eventTime: startTime,
+            endTime: endTime,
             eventVenue: venueId,
           };
         });
@@ -943,7 +1048,9 @@ export default function EventCreation() {
                       <img src={calendar} alt="calendar" />
                     </label>
                     <h4 className="selected-el">
-                      {startDate === endDate ? (
+                      {isEditing ? (
+                        eventData.eventDate
+                      ) : startDate === endDate ? (
                         <span>{startDate}</span>
                       ) : (
                         <span>{startDate}</span>
@@ -1000,7 +1107,7 @@ export default function EventCreation() {
 
               <div className="center-button">
                 <button className="create-button" onClick={handleSubmitButton}>
-                  {isEditing?"Update Event" : "Create Event"}
+                  {isEditing ? "Update Event" : "Create Event"}
                 </button>
               </div>
             </div>
