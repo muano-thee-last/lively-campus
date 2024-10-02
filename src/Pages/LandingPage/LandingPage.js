@@ -181,7 +181,13 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
     };
   }, []);
 
-  const currentEvent = events[currentIndex];
+  const filteredEvents = events.filter(event => 
+    title === "Upcoming Events" 
+      ? ["Tech Innovators Conference", "Wits 100 Celebration"].includes(event.title)
+      : ["Jaiv'ujuluke", "Mountain Biking Challenge"].includes(event.title)
+  );
+
+  const currentEvent = filteredEvents[currentIndex % filteredEvents.length];
 
   return (
     <section ref={sectionRef} className="landing-page-events-section">
@@ -195,28 +201,27 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
           }}
         >
           <div className="event-content">
+            <h2>{currentEvent.title}</h2>
             <div className="event-card-description">
-              <h2>{currentEvent.title}</h2>
               <p>{currentEvent.description}</p>
             </div>
             {showBookNow && (
               <button className="btn-primary" onClick={handleButtonClick} aria-label='Login'>Get Ticket</button>
-
             )}
           </div>
           <div className="dots">
-            {events.map((_, index) => (
+            {filteredEvents.map((_, index) => (
               <span
                 key={index}
-                className={`dot ${currentIndex === index ? 'active' : ''}`}
+                className={`dot ${currentIndex % filteredEvents.length === index ? 'active' : ''}`}
                 onClick={() => handleDotClick(index)}
-                aria-label = {`Slide ${index + 1 }` }
+                aria-label={`Slide ${index + 1}`}
               />
             ))}
           </div>
         </div>
       ) : (
-        <p>No events available yet</p>
+        <p>No events available</p>
       )}
     </section>
   );
