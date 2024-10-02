@@ -251,151 +251,161 @@ padding: 12%; */
 }
 
 /* Events Section */
-/* Styles the events section */
 .landing-page-events-section {
   position: relative;
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 60px;
   opacity: 0;
-  transform: translateX(-90%);
+  transform: translateY(50px);
   transition: transform 0.8s ease, opacity 0.8s ease;
   padding: 0 5%;
 }
+
 .landing-page-events-section.visible {
   opacity: 1;
-  transform: translateX(0);
-}
-.landing-page-events-section h1 {
-  opacity: 0;
-  transform: translateY(-20px); /* Moves title from slightly above */
-  transition: transform 0.5s ease, opacity 0.5s ease;
-  transition-delay: 0.2s; /* Delay for a more sequential effect */
-}
-
-.landing-page-events-section.visible h1 {
-  opacity: 1;
-  transform: translateY(0);
-}
-.landing-page-events-section .card {
-  opacity: 0;
-  transform: translateY(20px); /* Moves card slightly from below */
-  transition: transform 0.8s ease, opacity 0.8s ease;
-  transition-delay: 0.4s; /* Delay after title */
-}
-.landing-page-events-section.visible .card {
-  opacity: 1;
   transform: translateY(0);
 }
 
-
-.landing-page-events-section .event-content {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: transform 0.5s ease, opacity 0.5s ease;
-  transition-delay: 0.6s; /* Delay after the card appears */
- 
-}
-.landing-page-events-section.visible .event-content {
-  opacity: 1;
-  transform: translateY(0);
-}
-.landing-page-events-section .dots {
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  transition-delay: 0.8s; /* Delay after the event content */
-}
-
-.landing-page-events-section.visible .dots {
-  opacity: 1;
-  
-}
-
-/* Styles the events section heading */
-.landing-page-events-section h1 {
-  text-align: left;
-  margin-left: 2%;
-  margin-top: 2%;
+.events-title {
+  font-size: 3rem;
   color: #003B5C;
-  font-size: xx-large;
+  margin-bottom: 50px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%; /* Add this line to ensure full width */
 }
 
-/* Styles the events section subheading */
-.landing-page-events-section h2 {
-  color: white;
+.events-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%; /* Change this from 0 to 50% */
+  transform: translateX(-50%); /* Add this line */
+  width: 60%; /* Adjust this value to control the length of the underline */
+  height: 3px;
+  background: linear-gradient(to right, transparent, #003B5C, transparent);
 }
 
-/* Styles individual event cards */
 .card {
   width: 100%;
-  height: 60vh;
+  height: 400px;
   border: none;
-  border-radius: 15px;
+  border-radius: 20px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   margin: 30px auto;
   display: flex;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  flex-direction: column;
+  transition: all 0.3s ease;
 }
 
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
 
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
 
+.card:hover::before {
+  opacity: 1;
+}
 
-/* Styles the content within event cards */
-.card .event-content {
-  display: flex;
-  flex: 1;
+.event-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   padding: 30px;
-  flex-direction: column;
-  align-items: start;
-  justify-content: flex-end;
-  transition: opacity 0.5s ease-in-out;
-  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  color: white;
+  text-align: left;
+  transform: translateY(100px);
+  transition: all 0.3s ease;
 }
-.card .event-content h2{
-  font-size: 2.5rem;
-  margin-bottom: 15px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+
+.card:hover .event-content {
+  transform: translateY(0);
 }
-.event-card-description{
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  padding: 20px;
+
+.event-card-description {
   margin-bottom: 20px;
 }
-.event-card-description p{
-  font-weight: 500;
-  text-align: left;
-  color: white;
+
+.event-card-description h2 {
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 15px;
+  line-height: 1.2;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.event-card-description p {
   font-size: 1.1rem;
+  color: #f0f0f0;
   line-height: 1.6;
-} 
+  margin-bottom: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
 
-/* Positions the button in upcoming events */
+.card:hover .event-card-description p {
+  opacity: 1;
+}
 
-/* Styles the dots for event navigation */
+.btn-primary {
+  padding: 12px 25px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #003B5C;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.card:hover .btn-primary {
+  opacity: 1;
+}
+
+.btn-primary:hover {
+  background-color: #005580;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 59, 92, 0.3);
+}
+
 .dots {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 12px;
+  gap: 10px;
+  z-index: 10;
 }
 
-/* Styles individual dots */
 .dot {
-  height: 12px;
-  width: 12px;
+  height: 10px;
+  width: 10px;
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   display: inline-block;
@@ -403,10 +413,64 @@ padding: 12%; */
   cursor: pointer;
 }
 
-/* Styles the active dot */
-.dot.active {
+.dot.active, .dot:hover {
   background-color: #ffffff;
   transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+  .events-title {
+    font-size: 2.5rem;
+  }
+
+  .card {
+    height: 300px;
+  }
+
+  .card .event-content h2 {
+    font-size: x-large;
+  }
+
+  .event-card-description {
+    width: 80%;
+    padding: 15px;
+  }
+
+  .event-card-description h2 {
+    font-size: 2rem;
+  }
+
+  .event-card-description p {
+    font-size: 1rem;
+  }
+
+  .btn-primary {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .events-title {
+    font-size: 2rem;
+  }
+
+  .card {
+    height: 250px;
+  }
+
+  .card .event-content h2 {
+    font-size: large;
+  }
+
+  .event-card-description p {
+    font-size: small;
+  }
+
+  .btn-primary {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
 }
 
 /* Footer Styles */
@@ -744,7 +808,6 @@ padding: 12%; */
   }
 
 
- 
 
   .btn-primary{
     width: auto;
@@ -752,4 +815,60 @@ padding: 12%; */
     font-size: 10px;
     padding: 8px 16px;
   }
+}
+
+.event-title {
+  position: relative;
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 15px;
+  line-height: 1.2;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.event-title-wrapper {
+  display: inline-block;
+  overflow: hidden;
+}
+
+.event-title-letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(50px);
+  animation: fadeInUpAndBounce 5s forwards;
+}
+
+.event-title-letter.space {
+  width: 0.3em; /* Adjust this value to control space width */
+}
+
+@keyframes fadeInUpAndBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(-10px);
+  }
+  25%, 90% {  /* Pause for 3.25 seconds (65% of 5s) */
+    transform: translateY(0);
+  }
+  95% {
+    transform: translateY(50px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+}
+
+/* Remove all hover-based animations */
+.card:hover .event-title-letter,
+.card .event-title-letter {
+  animation: fadeInUpAndBounce 5s forwards;
 }
