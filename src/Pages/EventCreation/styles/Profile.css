@@ -4,6 +4,7 @@
     width: 100%;
     flex-direction: row;
     padding-top: 2%;
+    
 }
 
 .profile {
@@ -156,3 +157,9 @@ h2 {
     border-width: thin;
     border-color: #003B5C;
   }
+  @media (max-width: 600px) {
+    .container {
+        background-color:rgba(5, 27, 48, 0.3);
+      }
+      
+}
