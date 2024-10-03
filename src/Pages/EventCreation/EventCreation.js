@@ -26,6 +26,9 @@ import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
 import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../dashboard/footer";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const EVENTS_API =
   "https://us-central1-witslivelycampus.cloudfunctions.net/app/events";
@@ -44,7 +47,6 @@ export default function EventCreation() {
   const [wimanBearerKey, setWimanBearerKey] = useState("");
   const [startDate, setStartDate] = useState("");
   const endDate = "";
-  const [skipWiman, setSkipWiman] = useState(false);
   const [startTime, setStartTime] = useState(
     isEditing ? editingEvent.time.split("-")[0] : ""
   );
@@ -55,6 +57,8 @@ export default function EventCreation() {
   const [isValidDateTime, setIsValidDateTime] = useState(
     isEditing ? true : false
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [renderWithMockData, setRenderWithMockData] = useState(false);
 
   // Function to toggle sidebar
   const toggleSidebar = () => {
@@ -130,6 +134,189 @@ export default function EventCreation() {
     "Alumni Reunion",
     "Networking Event",
   ];
+  const mockData = [
+    {
+      venueId: "FH-FF",
+      capacity: 400,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/Flower-Hall.jpg",
+      type: "HALL",
+      isUnderMaintenance: false,
+      amenities: ["Air Conditioning", "Wi-Fi"],
+      buildingName: "Flower Hall",
+      campusName: "West Campus",
+      location: {
+        lat: -26.191749231525343,
+        lng: 28.026097082309278,
+      },
+    },
+    {
+      venueId: "FH-GF",
+      capacity: 400,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/Flower-Hall.jpg",
+      type: "HALL",
+      isUnderMaintenance: false,
+      amenities: ["Air Conditioning", "Wi-Fi"],
+      buildingName: "Flower Hall",
+      campusName: "West Campus",
+      location: {
+        lat: -26.191749231525343,
+        lng: 28.026097082309278,
+      },
+    },
+    {
+      venueId: "FNB33",
+      capacity: 100,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/FNB-building.jpg",
+      type: "LECTURE",
+      isUnderMaintenance: false,
+      amenities: ["projector", "Air Conditioning", "Wi-Fi"],
+      buildingName: "First National Bank Building",
+      campusName: "West Campus",
+      location: {
+        lat: -26.18860966118155,
+        lng: 28.026387782014314,
+      },
+    },
+    {
+      venueId: "FNB36",
+      capacity: 100,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/FNB-building.jpg",
+      type: "LECTURE",
+      isUnderMaintenance: false,
+      amenities: ["projector", "Air Conditioning", "Wi-Fi"],
+      buildingName: "First National Bank Building",
+      campusName: "West Campus",
+      location: {
+        lat: -26.18860966118155,
+        lng: 28.026387782014314,
+      },
+    },
+    {
+      venueId: "OMSH",
+      capacity: 1000,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/sports-hall.jpg",
+      type: "HALL",
+      isUnderMaintenance: false,
+      amenities: ["Wi-Fi"],
+      buildingName: "Old Mutual Sports Hall",
+      campusName: "East Campus",
+      location: {
+        lat: -26.189442852140527,
+        lng: 28.029317829500492,
+      },
+    },
+    {
+      venueId: "P115",
+      capacity: 300,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/Physics-Building-Braamfontein-Campus-East.png",
+      type: "LECTURE",
+      isUnderMaintenance: false,
+      amenities: ["Wi-Fi", "whiteboard", "projector"],
+      buildingName: "Physics Building",
+      campusName: "East Campus",
+      location: {
+        lat: -26.19061797755485,
+        lng: 28.030991597387718,
+      },
+    },
+    {
+      venueId: "PHYS-LAB",
+      capacity: 200,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/physics-lab.jpg",
+      type: "LAB",
+      isUnderMaintenance: false,
+      amenities: ["whiteboard", "Air Conditioning", "Wi-Fi"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+    {
+      venueId: "WSS100",
+      capacity: 25,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/wss1.jpg",
+      type: "HALL",
+      isUnderMaintenance: false,
+      amenities: ["projector", "Air Conditioning", "Wi-Fi"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+    {
+      venueId: "WSS102",
+      capacity: 150,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/wss1.jpg",
+      type: "LECTURE",
+      isUnderMaintenance: false,
+      amenities: ["projector", "whiteboard"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+    {
+      venueId: "WSS103",
+      capacity: 150,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/wss1.jpg",
+      type: "LECTURE",
+      isUnderMaintenance: false,
+      amenities: ["projector", "Air Conditioning", "Wi-Fi"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+    {
+      venueId: "WSS201",
+      capacity: 60,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/wss1.jpg",
+      type: "TUTORIAL",
+      isUnderMaintenance: false,
+      amenities: ["whiteboard"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+    {
+      venueId: "WSS300",
+      capacity: 35,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/wss1.jpg",
+      type: "MEETING",
+      isUnderMaintenance: false,
+      amenities: ["whiteboard", "Air Conditioning"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+  ];
+
   const [venueSearchTerm, setVenueSearchTerm] = useState("");
   const [filteredVenues, setFilteredVenues] = useState([]);
   function handleVenueSearch(event) {
@@ -167,6 +354,41 @@ export default function EventCreation() {
       );
     }
   };
+
+  const successMessage = () => {
+    toast.success("Event created successfully", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      onClose: () => navigate("/dashboard"),
+    });
+  };
+  const fillFormMessage = () => {
+    toast.error("Please fill in the form", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    })
+  }
+  const errorMessage = () => {
+    toast.error("Error saving event. Please try again.", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
 
   // Function to handle file input click
   function handleDivClick() {
@@ -292,6 +514,7 @@ export default function EventCreation() {
 
   // Function to handle submit button click
   async function handleSubmitButton() {
+    setIsSubmitting(true);
     // Validation: Check if all required fields are filled
     if (!isEditing) {
       if (
@@ -307,7 +530,8 @@ export default function EventCreation() {
         !eventData.availableTickets
       ) {
         console.error("All fields must be filled out before submission.");
-        alert("Please fill out all the fields before submission.");
+        fillFormMessage();
+        setIsSubmitting(false);
         return; // Stop execution if any field is empty
       }
     }
@@ -322,11 +546,13 @@ export default function EventCreation() {
       // Book with Wiman API
       if (isEditing) {
         if (
-          editingEvent.venue !== eventData.eventLocation ||
-          editingEvent.date !== eventData.eventDate ||
-          editingEvent.time !== eventData.eventTime ||
-          editingEvent.endTime !== endTime ||
-          editingEvent.title !== eventData.eventName
+          isEditing &&
+        !(editingEvent.title === eventData.eventName &&
+        new Date(editingEvent.date).toLocaleDateString() ===
+          new Date(eventData.eventDate).toLocaleDateString() &&
+        editingEvent.time === startTime &&
+        editingEvent.endTime === endTime &&
+        editingEvent.venue === eventData.eventLocation)
         ) {
           const cancelWiman = await fetch(
             `${WIMAN_API}/bookings/cancel/${editingEvent.bookingId}`,
@@ -344,31 +570,15 @@ export default function EventCreation() {
           if (cancelWiman.ok) {
             console.log("Wiman booking cancelled successfully.");
           } else {
-            alert("Failed to cancel Wiman booking.");
+            toast.warning("Error cancelling Wiman booking. Please try again.");
+            setIsSubmitting(false);
             return;
           }
         }
       }
-      console.log("Comparing values:");
-      console.log("editingEvent.title:", editingEvent.title);
-      console.log("eventData.title:", eventData.eventName);
-      console.log(
-        "editingEvent.date (formatted):",
-        new Date(editingEvent.date).toLocaleDateString()
-      );
-      console.log(
-        "eventData.date (formatted):",
-        eventData.eventDate
-      );
-      console.log("editingEvent.time:", editingEvent.time);
-      console.log("startTime:", startTime);
-      console.log("editingEvent.endTime:", editingEvent.endTime);
-      console.log("endTime:", endTime);
-
-      console.log("editingEvent.venue:", editingEvent.venue);
-      console.log("eventData.venue:", eventData.eventLocation);
-
-      if (isEditing &&
+      let skipWiman = false;
+      if (
+        isEditing &&
         editingEvent.title === eventData.eventName &&
         new Date(editingEvent.date).toLocaleDateString() ===
           new Date(eventData.eventDate).toLocaleDateString() &&
@@ -376,8 +586,8 @@ export default function EventCreation() {
         editingEvent.endTime === endTime &&
         editingEvent.venue === eventData.eventLocation
       ) {
-        console.log("No changes detected. Skipping Wiman booking.");
-        setSkipWiman(true);
+        skipWiman = true
+        console.log("No changes detected. Skipping Wiman booking."); 
       } else {
         const wimanBody = {
           date: isEditing ? eventData.eventDate : startDate,
@@ -401,7 +611,7 @@ export default function EventCreation() {
         var dataWiman = await responseWiman.json();
         console.log("Wiman booking data:", dataWiman);
       }
-
+      console.log(skipWiman);
       if (skipWiman || responseWiman.ok) {
         // Prepare the event data to send to EVENTS API
         const bodyContent = JSON.stringify({
@@ -426,7 +636,7 @@ export default function EventCreation() {
           comments: isEditing ? eventData.comments : [],
           createdAt: isEditing ? eventData.createdAt : new Date().toISOString(),
           organizerImg: user.photoURL,
-          bookingId: isEditing ? editingEvent.bookingId :dataWiman.bookingId,
+          bookingId: isEditing ? editingEvent.bookingId : dataWiman.bookingId,
         });
 
         // Send the POST/PUT request to the EVENTS API
@@ -445,19 +655,27 @@ export default function EventCreation() {
 
         if (response.ok) {
           console.log("Event successfully saved!");
-          navigate("/dashboard");
+          successMessage();
+          setIsSubmitting(false);
         } else {
-          console.log(bodyContent);
-          console.error("Error saving event:", response.status);
+          errorMessage();
+          setIsSubmitting(false);
+          return;
         }
       } else {
         console.error(
           "Error booking venue with Wiman API:",
           responseWiman.status
         );
+        errorMessage();
+        setIsSubmitting(false);
+        return;
       }
     } catch (error) {
       console.error("Error during submission:", error);
+      errorMessage();
+      setIsSubmitting(false);
+      return;
     }
   }
 
@@ -477,6 +695,7 @@ export default function EventCreation() {
         console.log(json);
       } catch (error) {
         console.error("Error fetching venues:", error);
+        setRenderWithMockData(true);
       }
     };
     getVenues();
@@ -688,16 +907,33 @@ export default function EventCreation() {
             </div>
           ))
         ) : (
-          <h2
-            style={{
-              textAlign: "center",
-              margin: "0 auto",
-              color: "var(--primary-color)",
-            }}
-          >
-            Error Fetching Venues From Classroom and Infrastructure Management,
-            Please refresh the page
-          </h2>
+          <div>
+            {renderWithMockData && (
+              <div>
+                <h2
+                  style={{
+                    textAlign: "center",
+                    margin: "0 auto",
+                    color: "red",
+                    fontSize: "1rem",
+                  }}
+                >
+                  Error Fetching Venues From Classroom and Infrastructure
+                  Management, Please refresh the page
+                </h2>
+
+                <button
+                  className="create-button centered"
+                  onClick={() => {
+                    setAvailableVenues(mockData);
+                    setFilteredVenues(mockData);
+                  }}
+                >
+                  Load mock data
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
     );
@@ -1106,7 +1342,11 @@ export default function EventCreation() {
               )}
 
               <div className="center-button">
-                <button className="create-button" onClick={handleSubmitButton}>
+                <button
+                  className="create-button"
+                  onClick={handleSubmitButton}
+                  disabled={isSubmitting}
+                >
                   {isEditing ? "Update Event" : "Create Event"}
                 </button>
               </div>
@@ -1114,6 +1354,7 @@ export default function EventCreation() {
           </form>
         </div>
       </div>
+      <ToastContainer />
       <Footer />
     </div>
   );
