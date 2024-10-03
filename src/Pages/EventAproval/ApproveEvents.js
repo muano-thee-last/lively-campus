@@ -6,7 +6,7 @@ import {
   FormControl,
   FormControlLabel,
 } from "@mui/material"; // MUI components
-import "../EventCreation/styles/Profile.css";
+import "../Profile/Profile.css";
 import "./ApproveEvents.css";
 import profile from "../EventCreation/images-logos/profile-logo.jpg";
 
@@ -42,7 +42,6 @@ function ApproveEvents() {
     };
     fetchEvents();
   }, []);
-  
 
   // Function to handle filter changes
   const handleFilterChange = (event) => {
