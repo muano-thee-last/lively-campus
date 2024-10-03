@@ -7,7 +7,7 @@ import useImageUpload from "./useImageUpload";
 
 function EventManagementMainContent() {
   const [events, setEvents] = useState([]);
-  const [currentUserName] = useState("");
+  const [currentUserName, setCurrentUserName] = useState(""); // Initialize state
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState(null);
   const upcomingSlider = useRef(null);
@@ -25,23 +25,29 @@ function EventManagementMainContent() {
   } = useImageUpload();
 
   useEffect(() => {
+    // Retrieve user from sessionStorage and set currentUserName
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user && user.displayName) {
+      setCurrentUserName(user.displayName);
+    } else {
+      console.warn("User data not found or displayName is missing.");
+    }
+  }, []); // Run once on component mount
+
+  useEffect(() => {
     const fetchEvents = async () => {
       try {
-        try {
-          const response = await fetch(
-            "https://us-central1-witslivelycampus.cloudfunctions.net/app/events/"
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-
-          const data = await response.json();
-          setEvents(data);
-        } catch (fetchError) {
-          setError(fetchError.message);
+        const response = await fetch(
+          "https://us-central1-witslivelycampus.cloudfunctions.net/app/events/"
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      } catch (error) {
-        setError(error.message);
+
+        const data = await response.json();
+        setEvents(data);
+      } catch (fetchError) {
+        setError(fetchError.message);
       }
     };
 
@@ -52,6 +58,7 @@ function EventManagementMainContent() {
     return <div>Error: {error}</div>;
   }
 
+  // Filter events based on the current user's name
   const validEvents = events.filter(
     (event) =>
       event.title !== "Title not found" &&
