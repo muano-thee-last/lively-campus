@@ -7,6 +7,7 @@
     flex-direction: column;
     align-items: center;
     transition: width 0.3s ease;
+   
   }
   
   #side-bar.expanded {
@@ -128,7 +129,14 @@
         
     }
     #side-bar.expanded {
-  background-color:rgba(7, 65, 119, 0.6);
+  background-color:rgba(7, 65, 119, 0.8);
+  margin-top: 65.5px;
+  position: fixed;
+  z-index: 1000000;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  backdrop-filter: blur(40px); 
     }
 
     

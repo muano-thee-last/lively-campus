@@ -96,9 +96,13 @@
   @media (max-width: 600px) {
     #header {
  
-      background-color:rgba(7, 65, 119, 0.6);
-   
-
+      background-color:rgba(7, 65, 119, 0.8);
+      position: fixed;
+      z-index: 1000000;
+      top: 0;
+      left: 0;
+      right: 0;
+      backdrop-filter: blur(40px); 
       
     }
   }
