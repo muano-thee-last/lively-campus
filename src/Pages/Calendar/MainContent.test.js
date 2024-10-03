@@ -3,6 +3,7 @@ import { render, screen, waitFor, act, fireEvent } from '@testing-library/react'
 import { BrowserRouter as Router } from 'react-router-dom';
 import MainContent from './MainContent';
 import '@testing-library/jest-dom';
+import CalendarPopUpCard from './components/CalendarPopUpCard';
 
 // Mock the fetch function
 global.fetch = jest.fn(() =>
@@ -27,6 +28,19 @@ beforeEach(() => {
 // Mock the current date to ensure consistent testing
 const mockDate = new Date('2024-09-30T00:00:00.000Z');
 const RealDate = Date;
+
+// Add this mock at the top of your file
+jest.mock('./components/CalendarPopUpCard', () => {
+  return function DummyCalendarPopUpCard({ date, events, onClose }) {
+    return (
+      <div data-testid="calendar-popup">
+        <div>{date}</div>
+        {events.map(event => <div key={event.id}>{event.title}</div>)}
+        <button onClick={onClose}>Close</button>
+      </div>
+    );
+  };
+});
 
 describe('MainContent', () => {
   beforeAll(() => {
@@ -182,5 +196,157 @@ describe('MainContent', () => {
     expect(console.error).toHaveBeenCalledWith('Error fetching events:', "API is down");
 
     console.error = originalError;
+  });
+
+  test('renders mini calendar', async () => {
+    await act(async () => {
+      render(
+        <Router>
+          <MainContent />
+        </Router>
+      );
+    });
+    const miniCalendarRow = screen.getAllByText('S')[0].closest('.mini-calendar-row');
+    expect(miniCalendarRow).toHaveTextContent(/S.*M.*T.*W.*T.*F.*S/);
+  });
+
+  test('displays today events', async () => {
+    const mockEvents = [
+      { id: 1, title: 'Test Event 1', date: '2024-09-30T10:00:00.000Z' },
+      { id: 2, title: 'Test Event 2', date: '2024-09-30T14:00:00.000Z' },
+    ];
+
+    fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockEvents),
+      })
+    );
+
+    await act(async () => {
+      render(
+        <Router>
+          <MainContent />
+        </Router>
+      );
+    });
+
+    await waitFor(() => {
+      const todayEventsList = screen.getByText('Today').nextElementSibling;
+      expect(todayEventsList).toHaveTextContent('Test Event 1');
+      expect(todayEventsList).toHaveTextContent('Test Event 2');
+    });
+  });
+
+  test('displays upcoming events', async () => {
+    const mockEvents = [
+      { id: 1, title: 'Future Event 1', date: '2024-10-01T10:00:00.000Z' },
+      { id: 2, title: 'Future Event 2', date: '2024-10-02T14:00:00.000Z' },
+    ];
+
+    fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockEvents),
+      })
+    );
+
+    await act(async () => {
+      render(
+        <Router>
+          <MainContent />
+        </Router>
+      );
+    });
+
+    await waitFor(() => {
+      const upcomingEventsList = screen.getByText('Upcoming Events').nextElementSibling;
+      expect(upcomingEventsList).toHaveTextContent('Future Event 1');
+      expect(upcomingEventsList).toHaveTextContent('Future Event 2');
+    });
+  });
+
+  test('handles date click and shows popup', async () => {
+    await act(async () => {
+      render(
+        <Router>
+          <MainContent />
+          <CalendarPopUpCard date="Sun Sep 15 2024" events={[]} onClose={() => {}} />
+        </Router>
+      );
+    });
+
+    const dayElement = screen.getAllByText('15')[0]; // Get the first element with text '15'
+    fireEvent.click(dayElement);
+
+    await waitFor(() => {
+      const popup = screen.getByTestId('calendar-popup');
+      expect(popup).toBeInTheDocument();
+      expect(popup).toHaveTextContent('Sun Sep 15 2024');
+    }, { timeout: 3000 });
+  });
+
+  test('closes popup when close button is clicked', async () => {
+    const handleClose = jest.fn();
+    await act(async () => {
+      render(
+        <Router>
+          <MainContent />
+          <CalendarPopUpCard date="Sun Sep 15 2024" events={[]} onClose={handleClose} />
+        </Router>
+      );
+    });
+
+    const dayElement = screen.getAllByText('15')[0];
+    fireEvent.click(dayElement);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('calendar-popup')).toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    const closeButton = screen.getByText('Close');
+    fireEvent.click(closeButton);
+
+    await waitFor(() => {
+      expect(handleClose).toHaveBeenCalled();
+    }, { timeout: 3000 });
+  });
+
+  // Add this test if you want to check the swipe functionality
+  test('handles swipe gestures', async () => {
+    console.log = jest.fn();
+    await act(async () => {
+      render(
+        <Router>
+          <MainContent />
+        </Router>
+      );
+    });
+
+    const calendar = screen.getByTestId('calendar-container');
+
+    // Simulate swipe left (to go to next month)
+    fireEvent.touchStart(calendar, { touches: [{ clientX: 100 }] });
+    fireEvent.touchMove(calendar, { touches: [{ clientX: 50 }] });
+    fireEvent.touchEnd(calendar, { changedTouches: [{ clientX: 0 }] });
+
+    await waitFor(() => {
+      const viewingMonth = screen.getByTestId('viewing-month');
+      console.log('After left swipe:', viewingMonth.textContent);
+      expect(viewingMonth).toHaveTextContent('September 2024');
+    }, { timeout: 3000 });
+
+    // Simulate swipe right (to go back to previous month)
+    fireEvent.touchStart(calendar, { touches: [{ clientX: 0 }] });
+    fireEvent.touchMove(calendar, { touches: [{ clientX: 50 }] });
+    fireEvent.touchEnd(calendar, { changedTouches: [{ clientX: 100 }] });
+
+    await waitFor(() => {
+      const viewingMonth = screen.getByTestId('viewing-month');
+      console.log('After right swipe:', viewingMonth.textContent);
+      expect(viewingMonth).toHaveTextContent('September 2024');
+    }, { timeout: 3000 });
+
+    console.log('Console logs:', console.log.mock.calls);
   });
 });

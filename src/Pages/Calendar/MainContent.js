@@ -220,13 +220,22 @@ const MainContent = () => {
     };
 
     const handleSwipe = () => {
+      console.log('Swipe detected. Start:', touchStartX, 'End:', touchEndX);
       if (touchStartX - touchEndX > 50) {
         // Swipe left, go to next month
-        setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
+        setCurrentDate(prevDate => {
+          const nextMonth = new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 1);
+          console.log('Swiping to next month:', nextMonth);
+          return nextMonth;
+        });
       }
       if (touchEndX - touchStartX > 50) {
         // Swipe right, go to previous month
-        setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
+        setCurrentDate(prevDate => {
+          const prevMonth = new Date(prevDate.getFullYear(), prevDate.getMonth() - 1, 1);
+          console.log('Swiping to previous month:', prevMonth);
+          return prevMonth;
+        });
       }
     };
 
@@ -321,7 +330,7 @@ const MainContent = () => {
         </div>
       </div>
 
-      <div className="calendar" ref={calendarRef}>
+      <div className="calendar" ref={calendarRef} data-testid="calendar-container">
         <div className="calendar-header">
           <h2 className='viewing-month' data-testid="viewing-month">{months[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
           <select 
