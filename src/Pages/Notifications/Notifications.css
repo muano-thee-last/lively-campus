@@ -1,4 +1,7 @@
 .notifications-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
     justify-content: center;
     width: 100%;
     padding-right: 20px;
@@ -15,25 +18,24 @@
 
 .notification-item {
   display: flex;
-  align-items: center;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+  align-items: flex-start;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #ffffff;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
   width: 100%;
   cursor: pointer;
 }
 
 .notification-item:hover {
-  background-color: #e9e9e9;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .notification-image {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   margin-right: 15px;
   object-fit: cover;
@@ -42,27 +44,33 @@
 .notification-details {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 }
 
 .notification-event {
   font-weight: bold;
   margin-bottom: 5px;
-  color: #333;
+  color: #003B5C;
+  font-size: 1.1em;
 }
 
 .notification-message {
   color: #555;
+  font-size: 0.9em;
+  margin-top: 5px;
 }
 
 /* Unviewed notification style */
 .unviewed {
-  background-color: #f9f9f9; /* Light background for unviewed notifications */
+  background-color: #f0f7ff; /* Light background for unviewed notifications */
+  border-left: 4px solid #003B5C; /* Add a left border */
   font-weight: bold; /* Emphasize unviewed notifications */
 }
 
 /* Viewed notification style */
 .viewed {
-  background-color: #e9e9e9; /* Slightly darker background for viewed notifications */
+  background-color: #ffffff; /* Slightly darker background for viewed notifications */
+  border-left: 4px solid transparent; /* Remove left border */
   font-weight: normal; /* Regular weight for viewed notifications */
 }
 
@@ -70,4 +78,11 @@
 .notification-item:hover {
   transform: scale(1.02); /* Slightly scale up on hover */
   cursor: pointer; /* Change cursor to pointer */
+}
+
+.loading-message {
+  text-align: center;
+  color: #003B5C;
+  font-size: 1.1em;
+  margin-top: 20px;
 }

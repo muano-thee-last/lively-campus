@@ -138,48 +138,48 @@ function Notifications() {
     return dateString === today;
   };
 
+  const renderNotificationItem = (notification) => (
+    <li
+      key={notification.id}
+      className={`notification-item ${
+        viewedNotifications.has(notification.id) ? "viewed" : "unviewed"
+      }`}
+      onClick={() => handleViewNotification(notification.id)}
+    >
+      <img
+        src={notification.imageUrl}
+        alt={notification.title}
+        className="notification-image"
+      />
+      <div className="notification-details">
+        <span className="notification-event">{notification.title}</span>
+        <p className="notification-message">{notification.message}</p>
+      </div>
+    </li>
+  );
+
+  const renderNotificationGroup = (date, notifications) => (
+    <div key={date}>
+      <h3 className="notification-date">
+        {isToday(date) ? "Today" : date}
+      </h3>
+      <ul className="notifications-list">
+        {notifications.map(renderNotificationItem)}
+      </ul>
+    </div>
+  );
+
   return (
     <div className="notifications-container">
-      <h2 style={{ color: "#003B5C" }}>Notifications</h2>
-      <br />
-      {isLoading ? ( // Display this while loading
+      <h2 style={{ color: "#003B5C", marginBottom: "20px" }}>Notifications</h2>
+      {isLoading ? (
         <div className="loading-message">Loading notifications...</div>
+      ) : Object.keys(notificationsByDate).length === 0 ? (
+        <div className="loading-message">No notifications found.</div>
       ) : (
-        Object.keys(notificationsByDate).map((date) => (
-          <div key={date}>
-            <h3 style={{ color: "#003B5C" }} className="notification-date">
-              {isToday(date) ? "Today" : date}{" "}
-              {/* Show 'Today' if the notification is from today */}
-            </h3>
-            <ul className="notifications-list">
-              {notificationsByDate[date].map((notification) => (
-                <li
-                  key={notification.id}
-                  className={`notification-item ${
-                    viewedNotifications.has(notification.id)
-                      ? "viewed"
-                      : "unviewed"
-                  }`} // Apply class conditionally
-                  onClick={() => handleViewNotification(notification.id)} // Pass the uid here
-                >
-                  <img
-                    src={notification.imageUrl}
-                    alt={notification.title}
-                    className="notification-image"
-                  />
-                  <div className="notification-details">
-                    <span className="notification-event">
-                      {notification.title}
-                    </span>
-                    <p className="notification-message">
-                      {notification.message}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
+        Object.entries(notificationsByDate).map(([date, notifications]) =>
+          renderNotificationGroup(date, notifications)
+        )
       )}
     </div>
   );
