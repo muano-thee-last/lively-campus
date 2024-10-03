@@ -54,8 +54,9 @@
     background-color: #fff;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
-    border: 2px solid transparent; /* Changed from 1px to 2px and made transparent */
+    border: 2px solid transparent;
     cursor: pointer;
+    position: relative; /* Added for absolute positioning of the left border */
 }
 
 .notification-item:hover {
@@ -98,12 +99,25 @@
 }
 
 .unviewed {
-    border-color: #007bff; /* Blue border for unviewed notifications */
-    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.1); /* Slightly blue shadow for emphasis */
+    border-color: #007bff;
+    background-color: #f0f8ff; /* Light blue background for unviewed notifications */
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.1);
+}
+
+.unviewed::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: #007bff;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
 }
 
 .viewed {
-    border-color: #e9ecef; /* Light grey border for viewed notifications */
+    border-color: #e9ecef;
 }
 
 .loading-message {
