@@ -672,7 +672,7 @@ const handleSubmitReply = async (eventId, commentIndex) => {
   onChange={(e) => handleReplyChange(idx,e.target.value)}
 />
                   <button className="submit-reply-button" onClick={() => handleSubmitReply(currentEventId,idx)}>
-                    Submit Reply
+                    Reply
                   </button>
                 </div>
               )}
