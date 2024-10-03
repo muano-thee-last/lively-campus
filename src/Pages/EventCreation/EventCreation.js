@@ -1097,6 +1097,7 @@ export default function EventCreation() {
           <Button
             variant="contained"
             color="primary"
+            backgroundcolor="#003B5C"
             style={{ marginTop: "20px" }}
             type="submit"
           >
