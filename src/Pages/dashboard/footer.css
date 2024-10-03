@@ -121,17 +121,22 @@ height: 3vh;
    
     font-size: 0.3rem;
     background-color: rgb(255, 255, 255);
-    padding-top: 10%;
-    padding-bottom: 18%;
+
     border: none;
     border-radius: 4%;
     color: #003B5C;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    padding-right: 5px;
+    white-space: nowrap;
 }
 #footer{
   
     background-color:  #003B5C;
     display: flex;
     padding-top: 3%;
+    display: none;
 
 
 }

@@ -183,10 +183,9 @@ export default function EventDetails() {
         <div className="info-item">
           <FaCalendarAlt className="icon" />{" "}
           {new Date(event.date).toLocaleDateString()}{" "}
-          {new Date(event.date).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {event.time}
+          {" - "}
+          {event.endTime}
         </div>
         <div className="info-item">
           <FaUsers className="icon" /> Capacity: {event.capacity}

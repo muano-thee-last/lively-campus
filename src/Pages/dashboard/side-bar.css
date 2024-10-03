@@ -3,12 +3,11 @@
     width: 80px; 
     background-color: #fff; 
     color: var(--primary-color); 
-    height: 100vh !important;
-    padding: 0 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: width 0.3s ease;
+   
   }
   
   #side-bar.expanded {
@@ -86,7 +85,7 @@
 
 @media (max-width: 1254px) {
     #side-bar {
-        height: 60vh;
+      
         display: flex;
         flex-direction: column;
     }
@@ -129,7 +128,18 @@
         margin-left: -0.2%;
         
     }
- 
+    #side-bar.expanded {
+  background-color:rgba(7, 65, 119, 0.8);
+  margin-top: 65.4px;
+  position: fixed;
+  z-index: 1000000;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  backdrop-filter: blur(40px); 
+    }
+
+    
     
    
 }
@@ -138,7 +148,7 @@
 
 @media (max-width: 1024px) {
     #side-bar {
-        height: 60vh;
+      
         display: flex;
         flex-direction: column;
       

@@ -2,9 +2,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 10px 0px;
     background-color: #fff; 
     color: var(--primary-color); 
+
+  
   }
   
   .header-right-section {
@@ -13,13 +15,14 @@
   }
   
   .header-right-section .hamburger-logo{
-    height: 40px;
-    width: 40px;
+    height: 28px;
+    width: 28px;
     margin-right: 10px;
     justify-self: center;
+    margin-left: 10px;
   }
   .lively-campus-logo {
-    height: 40px; 
+    height: 35px; 
     margin-right: 10px;
   }
   
@@ -36,10 +39,13 @@
   
   .search-bar {
     display: flex;
-    background-color: #ecf0f1; /* Light background for search bar */
+    background-color:rgba(5, 27, 48, 0.2); /* Light background for search bar */
     border-radius: 20px;
-    padding: 5px 10px;
+    padding: 3px 14px;
     align-items: center;
+  }
+  .search-bar::placeholder {
+    color: #ffffff;
   }
   
   .search-input {
@@ -53,7 +59,7 @@
   }
   
   .search-button {
-    color: #2c3e50; /* Icon color */
+    color: #0080ff; /* Icon color */
   }
   
   .search-button:hover {
@@ -86,5 +92,18 @@
   .header-title{
     display: none !important;
     color: red;
+  }
+  @media (max-width: 600px) {
+    #header {
+ 
+      background-color:rgba(7, 65, 119, 0.8);
+      position: fixed;
+      z-index: 1000000;
+      top: 0;
+      left: 0;
+      right: 0;
+      backdrop-filter: blur(40px); 
+      
+    }
   }
 }

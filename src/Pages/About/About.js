@@ -54,10 +54,10 @@ function About() {
         >
           <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="#ticket">Ticket</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="/">Ticket</a></li>
+            <li><a href="/">Contact</a></li>
             <li><a href="/about">About Us</a></li>
-            <li><button className="btn-secondary">Login</button></li>
+            <li><button className="btn-secondary" onClick={() => window.location.href = "/"}>Login</button></li>
           </ul>
         </nav>
         <label className="burger" htmlFor="burger" aria-label="burger">

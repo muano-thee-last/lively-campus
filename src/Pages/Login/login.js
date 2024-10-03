@@ -5,11 +5,11 @@ import {
   signInWithPopup,
   isSignInWithEmailLink,
   signInWithEmailLink,
-  sendSignInLinkToEmail
+  sendSignInLinkToEmail,
 } from "firebase/auth";
 import createNewUser from "./createNewUser";
-import Lgoogle from '../../asserts/google.jpeg';
-import Lx from '../../asserts/twitter.png';
+import Lgoogle from "../../asserts/google.jpeg";
+import Lx from "../../asserts/twitter.png";
 import "./styles.css";
 
 const Authenticate = (platform, email = null, navigate) => {
@@ -50,7 +50,7 @@ const handleSignIn = async (result, platform, navigate) => {
   const userID = result.user.uid;
 
   sessionStorage.setItem("uid", userID);
-  localStorage.setItem("uid", userID)
+  localStorage.setItem("uid", userID);
   sessionStorage.setItem("user", JSON.stringify(result.user));
   const url = `https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userID}`;
 
@@ -71,12 +71,12 @@ const handleSignIn = async (result, platform, navigate) => {
 
       if (userResponse) {
         createNewUser(result);
-        navigate("/Dashboard");
+        navigate("/dashboard");
       } else {
         navigate("/");
       }
     } else {
-      navigate('/Dashboard');
+      navigate("/dashboard");
     }
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error);
@@ -94,9 +94,11 @@ function SignIn() {
   useEffect(() => {
     if (isSignInWithEmailLink(auth, window.location.href)) {
       setIsVerifying(true);
-      let emailForSignIn = window.localStorage.getItem('emailForSignIn');
+      let emailForSignIn = window.localStorage.getItem("emailForSignIn");
       if (!emailForSignIn) {
-        emailForSignIn = window.prompt('Please provide your email for confirmation');
+        emailForSignIn = window.prompt(
+          "Please provide your email for confirmation"
+        );
       }
       if (emailForSignIn) {
         setEmail(emailForSignIn);
@@ -120,7 +122,7 @@ function SignIn() {
 
     sendSignInLinkToEmail(auth, email, actionCodeSettings)
       .then(() => {
-        window.localStorage.setItem('emailForSignIn', email);
+        window.localStorage.setItem("emailForSignIn", email);
         setEmailSent(true);
       })
       .catch((error) => {
@@ -161,10 +163,18 @@ function SignIn() {
           onClick={sendEmailVerificationLink}
           disabled={emailSent || isSendingEmail}
         >
-          {isSendingEmail ? "Sending..." : emailSent ? "Verification Email Sent" : "Send Verification Link"}
+          {isSendingEmail
+            ? "Sending..."
+            : emailSent
+            ? "Verification Email Sent"
+            : "Send Verification Link"}
         </button>
-        <div className="or-divider">OR</div>
-
+        <div className="or-divider">
+          <div className="or-line"></div>
+          OR
+          <div className="or-line"></div>
+          </div>
+        
         <button
           className="sign-in-button google"
           onClick={() => Authenticate("Google", null, navigate)}
@@ -183,7 +193,8 @@ function SignIn() {
         {error && <p className="error-message">{error}</p>}
         {emailSent && (
           <p className="success-message">
-            A verification link has been sent to your email. Please check your inbox and click the link to sign in.
+            A verification link has been sent to your email. Please check your
+            inbox and click the link to sign in.
           </p>
         )}
       </div>

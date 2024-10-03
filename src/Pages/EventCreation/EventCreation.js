@@ -26,6 +26,9 @@ import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
 import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../dashboard/footer";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const EVENTS_API =
   "https://us-central1-witslivelycampus.cloudfunctions.net/app/events";
@@ -34,7 +37,8 @@ const WIMAN_API = "https://wiman.azurewebsites.net/api/";
 
 export default function EventCreation() {
   const location = useLocation();
-  const {editingEvent, isEditing} = location.state || {};
+  const { editingEvent, isEditing } = location.state || {};
+  //console.log(editingEvent, isEditing);
   const navigate = useNavigate();
 
   const [availableVenues, setAvailableVenues] = useState([]);
@@ -43,42 +47,67 @@ export default function EventCreation() {
   const [wimanBearerKey, setWimanBearerKey] = useState("");
   const [startDate, setStartDate] = useState("");
   const endDate = "";
+  const [startTime, setStartTime] = useState(
+    isEditing ? editingEvent.time.split("-")[0] : ""
+  );
+  const [endTime, setEndTime] = useState(
+    isEditing ? editingEvent.endTime.split("-")[0] : ""
+  );
+  const [error, setError] = useState("");
+  const [isValidDateTime, setIsValidDateTime] = useState(
+    isEditing ? true : false
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [renderWithMockData, setRenderWithMockData] = useState(false);
 
   // Function to toggle sidebar
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
   };
 
-  const [eventData,setEventData] = useState(isEditing?{
-    eventName: editingEvent.title,
-    eventDescription: editingEvent.description,
-    ticketPrice: editingEvent.ticketPrice,
-    availableTickets: editingEvent.availableTickets,
-    capacity: editingEvent.capacity,
-    eventDate: editingEvent.date,
-    eventTime: editingEvent.time,
-    eventLocation: editingEvent.location,
-    eventVenue: editingEvent.venue,
-  }: {
-    eventName: "",
-    eventDescription: "",
-    ticketPrice: 0,
-    availableTickets: 0,
-    capacity: 0,
-    eventDate: "",
-    eventTime: "",
-    eventLocation: "",
-    eventVenue: "",
-  });
+  const [eventData, setEventData] = useState(
+    isEditing
+      ? {
+          eventName: editingEvent.title,
+          eventDescription: editingEvent.description,
+          ticketPrice: editingEvent.ticketPrice,
+          availableTickets: editingEvent.availableTickets,
+          capacity: editingEvent.capacity,
+          eventDate: new Date(editingEvent.date).toLocaleDateString(), // Format date
+          eventTime: new Date(
+            "1970-01-01T" + editingEvent.time
+          ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), // Format time
+          eventLocation: editingEvent.venue,
+          eventVenue: editingEvent.venue,
+        }
+      : {
+          eventName: "",
+          eventDescription: "",
+          ticketPrice: 0,
+          availableTickets: 0,
+          capacity: 0,
+          eventDate: "",
+          eventTime: "",
+          eventLocation: "",
+          eventVenue: "",
+        }
+  );
+
+  //console.log(eventData);
+
   const id = useId();
   const fileInputRef = useRef(null);
   const [image, setImage] = useState("");
-  const [imageUrlLocal, setImageUrlLocal] = useState(isEditing ? editingEvent.imageUrl : "");
+  const [imageUrlLocal, setImageUrlLocal] = useState(
+    isEditing ? editingEvent.imageUrl : ""
+  );
   const [isPopupTagOpen, setIsPopupTagOpen] = useState(false);
   const [isPopupLocationOpen, setIsPopupLocationOpen] = useState(false);
   const [isAvailableTimePopup, setIsAvailableTimePopup] = useState(false);
 
-  const [selectedTags, setSelectedTags] = useState(isEditing ? editingEvent.tags : []);
+  const [selectedTags, setSelectedTags] = useState(
+    isEditing ? editingEvent.tags : []
+  );
   const aboutTags = [
     "Music",
     "Dance",
@@ -105,6 +134,189 @@ export default function EventCreation() {
     "Alumni Reunion",
     "Networking Event",
   ];
+  const mockData = [
+    {
+      venueId: "FH-FF",
+      capacity: 400,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/Flower-Hall.jpg",
+      type: "HALL",
+      isUnderMaintenance: false,
+      amenities: ["Air Conditioning", "Wi-Fi"],
+      buildingName: "Flower Hall",
+      campusName: "West Campus",
+      location: {
+        lat: -26.191749231525343,
+        lng: 28.026097082309278,
+      },
+    },
+    {
+      venueId: "FH-GF",
+      capacity: 400,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/Flower-Hall.jpg",
+      type: "HALL",
+      isUnderMaintenance: false,
+      amenities: ["Air Conditioning", "Wi-Fi"],
+      buildingName: "Flower Hall",
+      campusName: "West Campus",
+      location: {
+        lat: -26.191749231525343,
+        lng: 28.026097082309278,
+      },
+    },
+    {
+      venueId: "FNB33",
+      capacity: 100,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/FNB-building.jpg",
+      type: "LECTURE",
+      isUnderMaintenance: false,
+      amenities: ["projector", "Air Conditioning", "Wi-Fi"],
+      buildingName: "First National Bank Building",
+      campusName: "West Campus",
+      location: {
+        lat: -26.18860966118155,
+        lng: 28.026387782014314,
+      },
+    },
+    {
+      venueId: "FNB36",
+      capacity: 100,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/FNB-building.jpg",
+      type: "LECTURE",
+      isUnderMaintenance: false,
+      amenities: ["projector", "Air Conditioning", "Wi-Fi"],
+      buildingName: "First National Bank Building",
+      campusName: "West Campus",
+      location: {
+        lat: -26.18860966118155,
+        lng: 28.026387782014314,
+      },
+    },
+    {
+      venueId: "OMSH",
+      capacity: 1000,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/sports-hall.jpg",
+      type: "HALL",
+      isUnderMaintenance: false,
+      amenities: ["Wi-Fi"],
+      buildingName: "Old Mutual Sports Hall",
+      campusName: "East Campus",
+      location: {
+        lat: -26.189442852140527,
+        lng: 28.029317829500492,
+      },
+    },
+    {
+      venueId: "P115",
+      capacity: 300,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/Physics-Building-Braamfontein-Campus-East.png",
+      type: "LECTURE",
+      isUnderMaintenance: false,
+      amenities: ["Wi-Fi", "whiteboard", "projector"],
+      buildingName: "Physics Building",
+      campusName: "East Campus",
+      location: {
+        lat: -26.19061797755485,
+        lng: 28.030991597387718,
+      },
+    },
+    {
+      venueId: "PHYS-LAB",
+      capacity: 200,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/physics-lab.jpg",
+      type: "LAB",
+      isUnderMaintenance: false,
+      amenities: ["whiteboard", "Air Conditioning", "Wi-Fi"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+    {
+      venueId: "WSS100",
+      capacity: 25,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/wss1.jpg",
+      type: "HALL",
+      isUnderMaintenance: false,
+      amenities: ["projector", "Air Conditioning", "Wi-Fi"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+    {
+      venueId: "WSS102",
+      capacity: 150,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/wss1.jpg",
+      type: "LECTURE",
+      isUnderMaintenance: false,
+      amenities: ["projector", "whiteboard"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+    {
+      venueId: "WSS103",
+      capacity: 150,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/wss1.jpg",
+      type: "LECTURE",
+      isUnderMaintenance: false,
+      amenities: ["projector", "Air Conditioning", "Wi-Fi"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+    {
+      venueId: "WSS201",
+      capacity: 60,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/wss1.jpg",
+      type: "TUTORIAL",
+      isUnderMaintenance: false,
+      amenities: ["whiteboard"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+    {
+      venueId: "WSS300",
+      capacity: 35,
+      imageUrl:
+        "https://sdp2024wiman.blob.core.windows.net/sdp2024wiman-container/wss1.jpg",
+      type: "MEETING",
+      isUnderMaintenance: false,
+      amenities: ["whiteboard", "Air Conditioning"],
+      buildingName: "Wits Science Stadium",
+      campusName: "West Campus",
+      location: {
+        lat: -26.190634268424184,
+        lng: 28.02534818903165,
+      },
+    },
+  ];
+
   const [venueSearchTerm, setVenueSearchTerm] = useState("");
   const [filteredVenues, setFilteredVenues] = useState([]);
   function handleVenueSearch(event) {
@@ -142,6 +354,41 @@ export default function EventCreation() {
       );
     }
   };
+
+  const successMessage = () => {
+    toast.success("Event created successfully", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      onClose: () => navigate("/dashboard"),
+    });
+  };
+  const fillFormMessage = () => {
+    toast.error("Please fill in the form", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    })
+  }
+  const errorMessage = () => {
+    toast.error("Error saving event. Please try again.", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
 
   // Function to handle file input click
   function handleDivClick() {
@@ -241,15 +488,15 @@ export default function EventCreation() {
         console.error("Error fetching Google Maps API key:", error);
       }
     };
-  
+
     getGoogleKey();
   }, []);
-  
+
   useEffect(() => {
     const getWimanBearerKey = async () => {
       const url =
         "https://us-central1-witslivelycampus.cloudfunctions.net/app/getEnvWiman";
-  
+
       try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -261,12 +508,13 @@ export default function EventCreation() {
         console.error("Error fetching Wiman API key:", error);
       }
     };
-  
+
     getWimanBearerKey();
   }, []);
-  
+
   // Function to handle submit button click
   async function handleSubmitButton() {
+    setIsSubmitting(true);
     // Validation: Check if all required fields are filled
     if (!isEditing) {
       if (
@@ -282,40 +530,89 @@ export default function EventCreation() {
         !eventData.availableTickets
       ) {
         console.error("All fields must be filled out before submission.");
-        alert("Please fill out all the fields before submission.");
+        fillFormMessage();
+        setIsSubmitting(false);
         return; // Stop execution if any field is empty
       }
     }
-  
+
     try {
       // Upload the image if present
       const imageRef = ref(storage, `images/${image.name}`);
-      await uploadBytes(imageRef, image); 
+      await uploadBytes(imageRef, image);
       let imageUrl = await getDownloadURL(imageRef);
-      console.log("Uploaded image:", imageUrl); 
-  
+      //console.log("Uploaded image:", imageUrl);
+
       // Book with Wiman API
-      const responseWiman = await fetch(`${WIMAN_API}/bookings`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${wimanBearerKey}`,
-        },
-        body: JSON.stringify({
-          date: startDate,
+      if (isEditing) {
+        if (
+          isEditing &&
+        !(editingEvent.title === eventData.eventName &&
+        new Date(editingEvent.date).toLocaleDateString() ===
+          new Date(eventData.eventDate).toLocaleDateString() &&
+        editingEvent.time === startTime &&
+        editingEvent.endTime === endTime &&
+        editingEvent.venue === eventData.eventLocation)
+        ) {
+          const cancelWiman = await fetch(
+            `${WIMAN_API}/bookings/cancel/${editingEvent.bookingId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${wimanBearerKey}`,
+              },
+            }
+          );
+          const cancelData = await cancelWiman.json();
+          console.log("Cancel data:", cancelData);
+          console.log("Cancelling Wiman booking...");
+          if (cancelWiman.ok) {
+            console.log("Wiman booking cancelled successfully.");
+          } else {
+            toast.warning("Error cancelling Wiman booking. Please try again.");
+            setIsSubmitting(false);
+            return;
+          }
+        }
+      }
+      let skipWiman = false;
+      if (
+        isEditing &&
+        editingEvent.title === eventData.eventName &&
+        new Date(editingEvent.date).toLocaleDateString() ===
+          new Date(eventData.eventDate).toLocaleDateString() &&
+        editingEvent.time === startTime &&
+        editingEvent.endTime === endTime &&
+        editingEvent.venue === eventData.eventLocation
+      ) {
+        skipWiman = true
+        console.log("No changes detected. Skipping Wiman booking."); 
+      } else {
+        const wimanBody = {
+          date: isEditing ? eventData.eventDate : startDate,
           startTime: startTime,
           endTime: endTime,
-          venueId: venueId,
+          venueId: isEditing ? eventData.eventVenue.split(" ").pop() : venueId,
           eventName: eventData.eventName,
           repeatFrequency: "none",
-          repeatUntil: startDate,
-        }),
-      });
-  
-      const dataWiman = await responseWiman.json();
-  
-      if (responseWiman.ok) {
-        
+          repeatUntil: isEditing ? eventData.eventDate : startDate,
+        };
+        //console.log("Wiman body:", wimanBody);
+        var responseWiman = await fetch(`${WIMAN_API}/bookings`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${wimanBearerKey}`,
+          },
+          body: JSON.stringify(wimanBody),
+        });
+
+        var dataWiman = await responseWiman.json();
+        console.log("Wiman booking data:", dataWiman);
+      }
+      console.log(skipWiman);
+      if (skipWiman || responseWiman.ok) {
         // Prepare the event data to send to EVENTS API
         const bodyContent = JSON.stringify({
           organizerName: user.displayName,
@@ -327,16 +624,21 @@ export default function EventCreation() {
           availableTickets: Number(eventData.availableTickets),
           date: eventData.eventDate,
           time: eventData.eventTime,
-          imageUrl: imageUrl,
+          endTime: endTime,
+          imageUrl: isEditing
+            ? editingEvent.imageUrl === imageUrlLocal
+              ? editingEvent.imageUrl
+              : imageUrl
+            : imageUrl,
           tags: selectedTags,
           venue: eventData.eventLocation,
           likes: isEditing ? eventData.likes : 0,
           comments: isEditing ? eventData.comments : [],
           createdAt: isEditing ? eventData.createdAt : new Date().toISOString(),
           organizerImg: user.photoURL,
-          bookingId: dataWiman.bookingId,
+          bookingId: isEditing ? editingEvent.bookingId : dataWiman.bookingId,
         });
-  
+
         // Send the POST/PUT request to the EVENTS API
         const response = await fetch(
           isEditing ? `${EVENTS_API}/${editingEvent.id}` : EVENTS_API,
@@ -350,22 +652,32 @@ export default function EventCreation() {
             body: bodyContent,
           }
         );
-  
+
         if (response.ok) {
           console.log("Event successfully saved!");
-          navigate("/dashboard");
+          successMessage();
+          setIsSubmitting(false);
         } else {
-          console.log(bodyContent);
-          console.error("Error saving event:", response.status);
+          errorMessage();
+          setIsSubmitting(false);
+          return;
         }
       } else {
-        console.error("Error booking venue with Wiman API:", responseWiman.status);
+        console.error(
+          "Error booking venue with Wiman API:",
+          responseWiman.status
+        );
+        errorMessage();
+        setIsSubmitting(false);
+        return;
       }
     } catch (error) {
       console.error("Error during submission:", error);
+      errorMessage();
+      setIsSubmitting(false);
+      return;
     }
   }
-  
 
   useEffect(() => {
     const getVenues = async () => {
@@ -383,6 +695,7 @@ export default function EventCreation() {
         console.log(json);
       } catch (error) {
         console.error("Error fetching venues:", error);
+        setRenderWithMockData(true);
       }
     };
     getVenues();
@@ -535,69 +848,96 @@ export default function EventCreation() {
           <label htmlFor="search-bar"></label>
         </div>
 
-        {filteredVenues.length > 0 ? (filteredVenues.map((venue) => (
-          <div className="venue-card" key={venue.venueId}>
-            <div className="venue-details">
-              <iframe
-                title={`Map showing location of ${venue.buildingName} ${venue.venueId}`}
-                src={`https://www.google.com/maps/embed/v1/place?key=${MAP_API_KEY}&q=${encodeURIComponent(
-                  `${venue.campusName} ${venue.buildingName} ${venue.venueId}`
-                )}`}
-                allowFullScreen
-                height="115"
-                width="220"
-              ></iframe>
-              <div className="venue-info">
-                <div className="logo-name">
-                  <img src={locationSVG} alt="Location icon" height="25" width="25" />
-                  <span>{`${venue.campusName} ${venue.buildingName} ${venue.venueId}`}</span>
-                </div>
-                <div className="logo-name">
-                  <img src={person} alt="logo" height="25" width="25" />
-                  <span>Max Capacity {venue.capacity}</span>
-                </div>
-                <div className="logo-name">
-                  Type: <span>{venue.type}</span>
+        {filteredVenues.length > 0 ? (
+          filteredVenues.map((venue) => (
+            <div className="venue-card" key={venue.venueId}>
+              <div className="venue-details">
+                <iframe
+                  title={`Map showing location of ${venue.buildingName} ${venue.venueId}`}
+                  src={`https://www.google.com/maps/embed/v1/place?key=${MAP_API_KEY}&q=${encodeURIComponent(
+                    `${venue.campusName} ${venue.buildingName} ${venue.venueId}`
+                  )}`}
+                  allowFullScreen
+                  height="115"
+                  width="220"
+                ></iframe>
+                <div className="venue-info">
+                  <div className="logo-name">
+                    <img
+                      src={locationSVG}
+                      alt="Location icon"
+                      height="25"
+                      width="25"
+                    />
+                    <span>{`${venue.campusName} ${venue.buildingName} ${venue.venueId}`}</span>
+                  </div>
+                  <div className="logo-name">
+                    <img src={person} alt="logo" height="25" width="25" />
+                    <span>Max Capacity {venue.capacity}</span>
+                  </div>
+                  <div className="logo-name">
+                    Type: <span>{venue.type}</span>
+                  </div>
                 </div>
               </div>
+              <button
+                className="create-button centered"
+                onClick={() => {
+                  setVenueId(venue.venueId);
+                  handleChange({
+                    target: {
+                      name: "eventLocation",
+                      value: `${venue.campusName} ${venue.buildingName} ${venue.venueId}`,
+                    },
+                  });
+                  handleChange({
+                    target: {
+                      name: "capacity",
+                      value: `${venue.capacity}`,
+                    },
+                  });
+                  closeLocationPopup();
+                  openAvailableTimePopup();
+                }}
+                name="eventLocation"
+                value={venue.name}
+              >
+                Check Venue Availability
+              </button>
             </div>
-            <button
-              className="create-button centered"
-              onClick={() => {
-                setVenueId(venue.venueId);
-                handleChange({
-                  target: {
-                    name: "eventLocation",
-                    value: `${venue.campusName} ${venue.buildingName} ${venue.venueId}`,
-                  },
-                });
-                handleChange({
-                  target: {
-                    name: "capacity",
-                    value: `${venue.capacity}`,
-                  },
-                });
-                closeLocationPopup();
-                openAvailableTimePopup();
-              }}
-              name="eventLocation"
-              value={venue.name}
-            >
-              Check Venue Availability
-            </button>
-          </div>
-        ))
+          ))
         ) : (
-          <h2 style={{ textAlign: "center" , margin: "0 auto", color: "var(--primary-color)"}}>No venues found.</h2>
+          <div>
+            {renderWithMockData && (
+              <div>
+                <h2
+                  style={{
+                    textAlign: "center",
+                    margin: "0 auto",
+                    color: "red",
+                    fontSize: "1rem",
+                  }}
+                >
+                  Error Fetching Venues From Classroom and Infrastructure
+                  Management, Please refresh the page
+                </h2>
+
+                <button
+                  className="create-button centered"
+                  onClick={() => {
+                    setAvailableVenues(mockData);
+                    setFilteredVenues(mockData);
+                  }}
+                >
+                  Load mock data
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
     );
   }
-
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [error, setError] = useState("");
-  const [isValidDateTime, setIsValidDateTime] = useState(false);
 
   function AddVenueTimeContent() {
     const validateTimeSelection = () => {
@@ -636,12 +976,13 @@ export default function EventCreation() {
 
       // Check if the time is valid before proceeding
       if (validateTimeSelection()) {
-        closeAvailableTimePopup(); 
+        closeAvailableTimePopup();
         setEventData((prevFormData) => {
           return {
             ...prevFormData,
             eventDate: startDate,
             eventTime: startTime,
+            endTime: endTime,
             eventVenue: venueId,
           };
         });
@@ -756,6 +1097,7 @@ export default function EventCreation() {
           <Button
             variant="contained"
             color="primary"
+            backgroundcolor="#003B5C"
             style={{ marginTop: "20px" }}
             type="submit"
           >
@@ -943,7 +1285,9 @@ export default function EventCreation() {
                       <img src={calendar} alt="calendar" />
                     </label>
                     <h4 className="selected-el">
-                      {startDate === endDate ? (
+                      {isEditing ? (
+                        eventData.eventDate
+                      ) : startDate === endDate ? (
                         <span>{startDate}</span>
                       ) : (
                         <span>{startDate}</span>
@@ -999,14 +1343,19 @@ export default function EventCreation() {
               )}
 
               <div className="center-button">
-                <button className="create-button" onClick={handleSubmitButton}>
-                  {isEditing?"Update Event" : "Create Event"}
+                <button
+                  className="create-button"
+                  onClick={handleSubmitButton}
+                  disabled={isSubmitting}
+                >
+                  {isEditing ? "Update Event" : "Create Event"}
                 </button>
               </div>
             </div>
           </form>
         </div>
       </div>
+      <ToastContainer />
       <Footer />
     </div>
   );

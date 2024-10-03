@@ -12,23 +12,12 @@ function Notifications() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        let notificationsData;
-        const storedNotifications = sessionStorage.getItem("notifications");
-
-        if (storedNotifications) {
-          notificationsData = JSON.parse(storedNotifications);
-          setIsLoading(true);
-        } else {
-          console.log("Fetching notifications from the server...");
-          const response = await fetch(
-            "https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications"
-          );
-          notificationsData = await response.json();
-          sessionStorage.setItem(
-            "notifications",
-            JSON.stringify(notificationsData)
-          );
-        }
+        // Remove the session storage logic
+        console.log("Fetching notifications from the server...");
+        const response = await fetch(
+          "https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications"
+        );
+        const notificationsData = await response.json();
 
         const detailedNotifications = await Promise.all(
           notificationsData.map(async (notification) => {
@@ -134,7 +123,6 @@ function Notifications() {
         throw new Error("Failed to update viewed notification");
       }
 
-
       navigate(`/view-more-details/${notificationId}`);
     } catch (error) {
       console.error("Error updating viewed notification:", error);
@@ -152,16 +140,16 @@ function Notifications() {
 
   return (
     <div className="notifications-container">
-      <h2 style={{"color" : "#003B5C"}}>Notifications</h2>
-      <br/>      
+      <h2 style={{ color: "#003B5C" }}>Notifications</h2>
+      <br />
       {isLoading ? ( // Display this while loading
         <div className="loading-message">Loading notifications...</div>
       ) : (
         Object.keys(notificationsByDate).map((date) => (
           <div key={date}>
-            <h3 style={{"color" : "#003B5C"}}className="notification-date">
-              {isToday(date) ? 'Today' : date} {/* Show 'Today' if the notification is from today */}
-
+            <h3 style={{ color: "#003B5C" }} className="notification-date">
+              {isToday(date) ? "Today" : date}{" "}
+              {/* Show 'Today' if the notification is from today */}
             </h3>
             <ul className="notifications-list">
               {notificationsByDate[date].map((notification) => (
