@@ -70,12 +70,12 @@ function LandingPage() {
 
   return (
     <div className="LandingPage">
-      <div className="header-card">
+      <div className="landing-header-landing-card">
         <Header handleButtonClick={handleButtonClick} />
         <HeroSection />
       </div>
 
-      {loading && <p>Loading events...</p>}
+      {loading && <p></p>}
       {error && <p>{error}</p>}
 
       {!loading && !error && (
@@ -111,9 +111,9 @@ function Header({ handleButtonClick }) {
   const toggleMenu = () => setIsMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen);
 
   return (
-    <header className="landing-page-header">
-      <div className="logo-container">
-        <img src={logo} alt="LivelyCampus Logo" className="logo-image" />
+    <header className="landing-page-landing-header">
+      <div className="landing-logo-container">
+        <img src={logo} alt="LivelyCampus Logo" className="landing-logo-image" />
         <div className="logo-text">LivelyCampus</div>
       </div>
       <nav className={`landing-page-nav-menu ${isMenuOpen ? 'open' : ''}`}>
@@ -136,7 +136,7 @@ function Header({ handleButtonClick }) {
 
 function HeroSection() {
   return (
-    <div className="hero-card">
+    <div className="hero-landing-card">
       <section className="hero">
         <h1>Ignite Your Campus</h1>
         <h1>Experience!</h1>
@@ -196,25 +196,25 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
 
   return (
     <section ref={sectionRef} className="landing-page-events-section">
-      <h2 className="events-title">{title}</h2>
+      <h2 className="landing-events-title">{title}</h2>
 
       {currentEvent ? (
         <div
-          className="card"
+          className="landing-card"
           style={{
             backgroundImage: `url(${currentEvent.imageUrl})`,
           }}
         >
-          <div className="event-content">
-            <div className="event-card-description">
-              <h2 className="event-title" key={animationKey}>
-                <span className="event-title-text">
+          <div className="landing-event-content">
+            <div className="landing-event-card-description">
+              <h2 className="landing-event-title" key={animationKey}>
+                <span className="landing-event-title-text">
                   {currentEvent.title.split(' ').map((word, wordIndex) => (
-                    <span key={wordIndex} className="event-title-word">
+                    <span key={wordIndex} className="landing-event-title-word">
                       {word.split('').map((char, charIndex) => (
                         <span
                           key={charIndex}
-                          className="event-title-letter"
+                          className="landing-event-title-letter"
                           style={{ animationDelay: `${(wordIndex * word.length + charIndex) * 0.05}s` }}
                         >
                           {char}

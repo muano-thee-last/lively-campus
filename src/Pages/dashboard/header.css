@@ -5,6 +5,7 @@
     padding: 10px 0px;
     background-color: #fff; 
     color: var(--primary-color); 
+
   
   }
   
@@ -21,7 +22,7 @@
     margin-left: 10px;
   }
   .lively-campus-logo {
-    height: 40px; 
+    height: 35px; 
     margin-right: 10px;
   }
   
@@ -40,7 +41,7 @@
     display: flex;
     background-color: #ecf0f1; /* Light background for search bar */
     border-radius: 20px;
-    padding: 5px 10px;
+    padding: 3px 14px;
     align-items: center;
   }
   
@@ -55,7 +56,7 @@
   }
   
   .search-button {
-    color: #2c3e50; /* Icon color */
+    color: #0080ff; /* Icon color */
   }
   
   .search-button:hover {
@@ -88,5 +89,15 @@
   .header-title{
     display: none !important;
     color: red;
+  }
+  @media (max-width: 600px) {
+    #header {
+      border-bottom-style: solid;
+      border-bottom-width: thin;
+      background-color: #f1fcd3b9;
+      border-bottom-color: grey;
+
+      
+    }
   }
 }

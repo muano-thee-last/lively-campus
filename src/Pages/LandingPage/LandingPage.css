@@ -6,7 +6,7 @@ body {
 
 
 /* Header Styles */
-/* Positions the header at the top of the page and styles it */
+/* Positions the landing-header at the top of the page and styles it */
 /* position: absolute;
 width: 100%;
 display: flex;
@@ -14,7 +14,7 @@ justify-content: space-between;
 align-items: center;
 background-color: transparent;
 padding: 12%; */
-.header-card {
+.landing-header-landing-card {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -23,7 +23,7 @@ padding: 12%; */
 }
 
 /* Adds a semi-transparent overlay to the hero section */
-.header-card::before {
+.landing-header-landing-card::before {
   /* Background image and color overlay */
   content: '';
   background: 
@@ -38,7 +38,7 @@ padding: 12%; */
   z-index: -1; 
   /* Put this layer below the content */
 }
-.landing-page-header {
+.landing-page-landing-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -48,18 +48,18 @@ padding: 12%; */
   flex: 1;
 
 }
-.landing-page-header > * {
+.landing-page-landing-header > * {
   margin: 0 6% !important;  /* Adjust this value to control spacing */
   padding-top: 1%;
 }
-/* Styles the logo container */
-.logo-container {
+/* Styles the landing-logo container */
+.landing-logo-container {
   display: flex;
   align-items: center;
 }
 
 /* Sets dimensions for the logo image */
-.logo-image {
+.landing-logo-image {
   width: 50px;
   height: auto;
   margin-right: 10px;
@@ -172,8 +172,8 @@ padding: 12%; */
 }
 
 
-/* Styles the hero card */
-.hero-card {
+/* Styles the hero landing-card */
+.hero-landing-card {
   position: absolute;
   top: 25%;
   z-index: 2;
@@ -181,7 +181,7 @@ padding: 12%; */
 
 
 }
-.hero-card > * {
+.hero-landing-card > * {
   margin: 0 12% !important;  /* Adjust this value to control spacing */
   padding-top: 1%;
 }
@@ -200,7 +200,7 @@ padding: 12%; */
   margin-bottom: 20px;
 }
 
-/* Styles the container for hero buttons */
+/* Styleslanding- the container for hero buttons */
 .hero-buttons {
   display: flex;
   
@@ -254,11 +254,10 @@ padding: 12%; */
 .landing-page-events-section {
   position: relative;
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
   opacity: 0;
   transform: translateY(50px);
   transition: transform 0.8s ease, opacity 0.8s ease;
-  padding: 0 5%;
 }
 
 .landing-page-events-section.visible {
@@ -266,10 +265,10 @@ padding: 12%; */
   transform: translateY(0);
 }
 
-.events-title {
+.landing-events-title {
   font-size: 3rem;
   color: #003B5C;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -278,9 +277,11 @@ padding: 12%; */
   left: 50%;
   transform: translateX(-50%);
   width: 100%; /* Add this line to ensure full width */
+  margin-top: 10px;
+
 }
 
-.events-title::after {
+.landing-events-title::after {
   content: '';
   position: absolute;
   bottom: -10px;
@@ -291,11 +292,10 @@ padding: 12%; */
   background: linear-gradient(to right, transparent, #003B5C, transparent);
 }
 
-.card {
+.landing-card {
   width: 100%;
-  height: 400px;
+  height: 450px;
   border: none;
-  border-radius: 20px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -307,12 +307,12 @@ padding: 12%; */
   transition: all 0.3s ease;
 }
 
-.card:hover {
+.landing-card:hover {
   transform: translateY(-10px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-.card::before {
+.landing-card::before {
   content: '';
   position: absolute;
   top: 0;
@@ -324,11 +324,11 @@ padding: 12%; */
   transition: opacity 0.3s ease;
 }
 
-.card:hover::before {
+.landing-card:hover::before {
   opacity: 1;
 }
 
-.event-content {
+.landing-event-content {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -340,15 +340,15 @@ padding: 12%; */
   transition: all 0.3s ease;
 }
 
-.card:hover .event-content {
+.landing-card:hover .landing-event-content {
   transform: translateY(0);
 }
 
-.event-card-description {
-  margin-bottom: 20px;
+.landing-event-card-description {
+  margin-bottom: 40px;
 }
 
-.event-card-description h2 {
+.landing-event-card-description h2 {
   font-size: 2.5rem;
   color: #ffffff;
   margin-bottom: 15px;
@@ -356,7 +356,7 @@ padding: 12%; */
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-.event-card-description p {
+.landing-event-card-description p {
   font-size: 1.1rem;
   color: #f0f0f0;
   line-height: 1.6;
@@ -365,7 +365,7 @@ padding: 12%; */
   transition: opacity 0.3s ease;
 }
 
-.card:hover .event-card-description p {
+.landing-card:hover .landing-event-card-description p {
   opacity: 1;
 }
 
@@ -383,7 +383,7 @@ padding: 12%; */
   opacity: 0;
 }
 
-.card:hover .btn-primary {
+.landing-card:hover .btn-primary {
   opacity: 1;
 }
 
@@ -419,28 +419,28 @@ padding: 12%; */
 }
 
 @media (max-width: 768px) {
-  .events-title {
+  .landing-events-title {
     font-size: 2.5rem;
   }
 
-  .card {
+  .landing-card {
     height: 300px;
   }
 
-  .card .event-content h2 {
+  .landing-card .landing-event-content h2 {
     font-size: x-large;
   }
 
-  .event-card-description {
+  .landing-event-card-description {
     width: 80%;
     padding: 15px;
   }
 
-  .event-card-description h2 {
+  .landing-event-card-description h2 {
     font-size: 2rem;
   }
 
-  .event-card-description p {
+  .landing-event-card-description p {
     font-size: 1rem;
   }
 
@@ -451,19 +451,19 @@ padding: 12%; */
 }
 
 @media (max-width: 480px) {
-  .events-title {
+  .landing-events-title {
     font-size: 2rem;
   }
 
-  .card {
+  .landing-card {
     height: 250px;
   }
 
-  .card .event-content h2 {
+  .landing-card .landing-event-content h2 {
     font-size: large;
   }
 
-  .event-card-description p {
+  .landing-event-card-description p {
     font-size: small;
   }
 
@@ -566,7 +566,7 @@ padding: 12%; */
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 28%;
+  left:26%;
   transform: translate(-50%, -50%);
   width:100%;
   height: 1px;
@@ -614,9 +614,7 @@ padding: 12%; */
     margin: 5px 0;
   }
 
-  .landing-page-events-section {
-    padding: 0 10px;
-  }
+
 
   .login-modal {
     width: 95%;
@@ -692,7 +690,7 @@ padding: 12%; */
   
   .burger input:checked ~ span:nth-of-type(1) {
     transform: rotate(45deg);
-    top: 0px;
+    top: 2px;
     left: 5px;
   }
   
@@ -751,7 +749,7 @@ padding: 12%; */
   .landing-page-nav-menu ul a:hover {
     color: #007bff; /* Change color smoothly when hovered */
   }
-  .header-card {
+  .landing-header-landing-card {
     height: 44vh;
   }
   .hero h1 {
@@ -760,46 +758,35 @@ padding: 12%; */
   .hero p{
     font-size: small;
   }
-  .card .event-content h2{
+  .landing-card .landing-event-content h2{
     font-size: large;
   }
-  .event-card-description p{
+  .landing-event-card-description p{
    text-align: left;
    font-size: small;
   } 
-  .hero-card{
+  .hero-landing-card{
      left: 20%;
       top: 34%;
   }
-  .header-card::before {
+  .landing-header-landing-card::before {
   
     background: 
       url('../../asserts/blackout.jpg') no-repeat bottom ;
    
     /* Put this layer below the content */
   }
-  .landing-page-header .btn-secondary{
+  .landing-page-landing-header .btn-secondary{
     font-size: 1.1rem;
     padding: 0;
   }
- .card{
+ .landing-card{
   height: 44vh;
  }
 
 }
 
 
-/* Adjusts layout for screens up to 614px tall */
-@media (max-width: 614px) {
- 
-
-  .landing-page-events-section {
-    padding: 0 10px;
-  }
-
-
-
-}
 
 /* Adjusts layout for screens up to 480px wide */
 @media (max-width: 480px) {
@@ -817,7 +804,7 @@ padding: 12%; */
   }
 }
 
-.event-title {
+.landing-event-title {
   position: relative;
   font-size: 2.5rem;
   color: #ffffff;
@@ -826,16 +813,16 @@ padding: 12%; */
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-.event-title-text {
+.landing-event-title-text {
   display: inline-block;
 }
 
-.event-title-word {
+.landing-event-title-word {
   display: inline-block;
   margin-right: 0.3em; /* Add space between words */
 }
 
-.event-title-letter {
+.landing-event-title-letter {
   display: inline-block;
   opacity: 0;
   transform: translateY(1em);
@@ -850,7 +837,7 @@ padding: 12%; */
 }
 
 /* Add a sliding underline effect */
-.event-title::after {
+.landing-event-title::after {
   content: '';
   position: absolute;
   left: 0;
