@@ -63,9 +63,14 @@ const MainContent = () => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log('Current date changed:', currentDate);
+  }, [currentDate]);
+
   const handleMonthChange = (e) => {
     const newMonth = parseInt(e.target.value, 10);
     const newDate = new Date(currentYear, newMonth, 1);
+    console.log('Changing month to:', newDate);
     setCurrentDate(newDate);
   };
 
@@ -318,11 +323,11 @@ const MainContent = () => {
 
       <div className="calendar" ref={calendarRef}>
         <div className="calendar-header">
-          <h2 className='viewing-month'>{months[currentMonth]} {currentYear}</h2>
+          <h2 className='viewing-month' data-testid="viewing-month">{months[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
           <select 
             className='select-month' 
             onChange={handleMonthChange} 
-            value={currentMonth}
+            value={currentDate.getMonth()}
             aria-label="Select month"
           >
             {months.map((month, index) => (

@@ -1,10 +1,12 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Calendar from './Calendar';
 
 // Mock the components used in Calendar
-jest.mock('../dashboard/header', () => () => <div data-testid="mock-header">Header</div>);
+jest.mock('../dashboard/header', () => ({ toggleSidebar }) => (
+  <button data-testid="mock-header" onClick={toggleSidebar}>Toggle Sidebar</button>
+));
 jest.mock('../dashboard/side-bar', () => ({ isSidebarOpen }) => (
   <div data-testid="mock-sidebar">Sidebar {isSidebarOpen ? 'Open' : 'Closed'}</div>
 ));
@@ -28,6 +30,19 @@ describe('Calendar Component', () => {
         <Calendar />
       </Router>
     );
+    expect(screen.getByTestId('mock-sidebar')).toHaveTextContent('Sidebar Closed');
+  });
+
+  test('toggles sidebar when header button is clicked', () => {
+    render(
+      <Router>
+        <Calendar />
+      </Router>
+    );
+    const toggleButton = screen.getByTestId('mock-header');
+    fireEvent.click(toggleButton);
+    expect(screen.getByTestId('mock-sidebar')).toHaveTextContent('Sidebar Open');
+    fireEvent.click(toggleButton);
     expect(screen.getByTestId('mock-sidebar')).toHaveTextContent('Sidebar Closed');
   });
 
