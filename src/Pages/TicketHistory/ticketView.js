@@ -13,6 +13,7 @@ export default function TicketView({
   time,
   date,
   imageUrl,
+  eventID
 }) {
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -66,7 +67,9 @@ export default function TicketView({
         ticketDate={date}
         ticketTime={time}
         qrCode={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticketCode}`}
+        eventId={eventID}
       />
     </div>
   );
+
 }

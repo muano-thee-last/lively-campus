@@ -5,6 +5,7 @@
    padding: 20px;
    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.1);
    border-radius: 12px;
+   z-index: 999;
   }
  
   .detailsContainer div{
@@ -43,14 +44,7 @@
     width: 100%;
     border-radius: 10px;
   }
-  
-  .button {
-    background: blue;
-    color: white;
-    min-width: 70px;
-    border-radius: 5px;
-    min-height: 35px;
-  }
+
   
 .line {
   display: flex;

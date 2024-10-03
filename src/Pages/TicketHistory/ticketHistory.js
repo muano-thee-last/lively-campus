@@ -71,6 +71,7 @@ function TicketHistory() {
                       time={ticket.time}
                       date={ticket.date}
                       imageUrl={ticket.imageUrl}
+                      eventID={ticket.eventId}
                     />
                   </div>
                 ))
