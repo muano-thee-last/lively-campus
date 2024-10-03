@@ -51,7 +51,8 @@
   display: flex;
 
   transition: background 0.3s ease, box-shadow 0.3s ease;
-;
+  box-shadow: 0px 0px 0px 1px rgba(121, 121, 121, 0.6);
+
   overflow: hidden;
   position: relative;
   flex-direction: column;
@@ -618,8 +619,15 @@ body.modal-open {
 @media (max-width: 600px) {
   #dashboard-main-content {
     background-color:rgba(7, 65, 119, 0.1);
+   
+
   }
-  
+  .dashboard-card {
+    box-shadow:none;
+  }
+  .dashboard-card:hover {
+    box-shadow: none;
+  }
   .dashboard-card-container {
     width: 100%; /* Show only one card at a time */
     gap: 7%; /* Remove gap to fit one card properly */
