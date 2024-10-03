@@ -129,7 +129,7 @@ function MainContent({ searchQuery }) {
         return response.json();
       })
       .then((data) => {
-        setEvents(data);
+        setEvents(data.filter((event) => event.isApproved === true && event.date >= new Date().toISOString()));  
       })
       .catch((error) => {
         console.error("Error fetching events:", error);
@@ -418,7 +418,8 @@ function MainContent({ searchQuery }) {
                                   <FavoriteIcon  className="like-icon" />
                                 </Badge>
                               </IconButton>
-                              <IconButton alt="comments" onClick={() => handleCommentsClick(event.id)} >
+                              <IconButton alt="comments" 
+                              data-testid="comments-button" onClick={() => handleCommentsClick(event.id)} >
                                <Badge badgeContent={event.comments.length} color="secondary">
                               <CommentIcon />
                               </Badge>
@@ -492,7 +493,12 @@ function MainContent({ searchQuery }) {
       </div>
     </div>
   </div>
-)}
+)}  
+  {filteredEvents.length === 0 && (
+    <div className="no-events-message">
+      <p>No events found.</p>
+    </div>
+  )}
 
       {showFeedback && (
         <div className="feedback-box">
@@ -501,6 +507,7 @@ function MainContent({ searchQuery }) {
       )}
        
     </div>
+
     
   );
 }

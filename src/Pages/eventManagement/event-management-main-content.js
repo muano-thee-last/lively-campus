@@ -206,6 +206,24 @@ function EventManagementMainContent() {
                         />
                       </div>
                     </div>
+                    {event.isApproved === true ? (
+                    <div className="status-bar">
+                      <div className="green-circle"></div>{" "}
+                      <p className="status">Approved</p>
+                    </div>
+                  ) : event.isApproved === false ? (
+                    <div className="status-bar">
+                      {" "}
+                      <div className="red-circle"></div>{" "}
+                      <p className="status">Rejected</p>{" "}
+                    </div>
+                  ) : (
+                    <div className="status-bar">
+                      {" "}
+                      <div className="grey-circle"></div>
+                      <p className="status">Pending Approval</p>
+                    </div>
+                  )}
                   </div>
                 ))
               ) : (
