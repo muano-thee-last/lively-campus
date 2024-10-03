@@ -9,6 +9,8 @@ function Notifications() {
   const navigate = useNavigate();
   const uid = sessionStorage.getItem("uid");
 
+  const [unviewedCount, setUnviewedCount] = useState(0);
+
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -104,6 +106,17 @@ function Notifications() {
 
     fetchNotifications();
     fetchViewedNotifications(); // Fetch viewed notifications
+
+    // Calculate unviewed notifications count
+    const calculateUnviewedCount = () => {
+      let count = 0;
+      Object.values(notificationsByDate).forEach(notifications => {
+        count += notifications.filter(n => !viewedNotifications.has(n.id)).length;
+      });
+      setUnviewedCount(count);
+    };
+
+    calculateUnviewedCount();
   }, [uid]);
 
   const handleViewNotification = async (notificationId) => {
@@ -138,6 +151,11 @@ function Notifications() {
     return dateString === today;
   };
 
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp._seconds * 1000);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
   const renderNotificationItem = (notification) => (
     <li
       key={notification.id}
@@ -154,6 +172,7 @@ function Notifications() {
       <div className="notification-details">
         <span className="notification-event">{notification.title}</span>
         <p className="notification-message">{notification.message}</p>
+        <span className="notification-time">{formatTimestamp(notification.timestamp)}</span>
       </div>
     </li>
   );
@@ -171,7 +190,12 @@ function Notifications() {
 
   return (
     <div className="notifications-container">
-      <h2 style={{ color: "#003B5C", marginBottom: "20px" }}>Notifications</h2>
+      <div className="notifications-header">
+        <h2 className="notifications-title">Notifications</h2>
+        {unviewedCount > 0 && (
+          <span className="notifications-count">{unviewedCount} new</span>
+        )}
+      </div>
       {isLoading ? (
         <div className="loading-message">Loading notifications...</div>
       ) : Object.keys(notificationsByDate).length === 0 ? (

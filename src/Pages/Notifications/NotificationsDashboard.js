@@ -11,17 +11,21 @@ function NotificationsDashboard(){
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
   };
-    return(
-      <div id='main-footer-separator'>
-        <div id='dashboard'>
-          <Header toggleSidebar={toggleSidebar}/>
-          <div id='content'>
-            <SideBar isSidebarOpen={isSidebarOpen}/>
+
+  return(
+    <div id='main-footer-separator'>
+      <div id='dashboard'>
+        <Header toggleSidebar={toggleSidebar} />
+        <div id='content'>
+          <SideBar isSidebarOpen={isSidebarOpen} />
+          <div className="dashboard-main-content">
             <Notifications />
           </div>
         </div>
-        <Footer/>
       </div>
-    )
+      <Footer />
+    </div>
+  );
 }
+
 export default NotificationsDashboard;

@@ -29,7 +29,7 @@ body {
   }
   #content{
     display: flex;
-    flex: 0.9;
+    flex: 1;
     width: 100%;
     flex-direction: row;
  
@@ -57,3 +57,8 @@ margin-top: 65px;
 }
 
  }
+.dashboard-main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
