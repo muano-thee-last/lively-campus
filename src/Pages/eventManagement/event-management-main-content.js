@@ -1,16 +1,15 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './event-management-main-content.css';
-import profile from './images-logos/profile-logo.jpg';
-import { FaEdit, FaTrash, FaCamera, FaUsers } from 'react-icons/fa';
-import useImageUpload from './useImageUpload';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import React, { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./event-management-main-content.css";
+import profile from "./images-logos/profile-logo.jpg";
+import { FaSearch, FaEdit, FaTrash, FaCamera, FaUsers } from "react-icons/fa";
+import useImageUpload from "./useImageUpload";
 
 function EventManagementMainContent() {
   const [events, setEvents] = useState([]);
-  const [currentUserName, setCurrentUserName] = useState('');
+  const [currentUserName, setCurrentUserName] = useState("");
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [selectedEventId, setSelectedEventId] = useState(null); 
+  const [selectedEventId, setSelectedEventId] = useState(null);
   const upcomingSlider = useRef(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -28,18 +27,17 @@ function EventManagementMainContent() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const auth = getAuth();
+        // Retrieve the current username from sessionStorage
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        if (user) {
+          setCurrentUserName(user.displayName);
+        }
 
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            setCurrentUserName(user.displayName);
-          } else {
-            setCurrentUserName('');
-          }
-        });
-
+        // Fetch the events
         try {
-          const response = await fetch('https://us-central1-witslivelycampus.cloudfunctions.net/app/events/');
+          const response = await fetch(
+            "https://us-central1-witslivelycampus.cloudfunctions.net/app/events/"
+          );
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
@@ -62,14 +60,17 @@ function EventManagementMainContent() {
   }
 
   const validEvents = events.filter(
-    (event) => event.title !== 'Title not found' && event.organizerName === currentUserName
+    (event) =>
+      event.title !== "Title not found" &&
+      event.organizerName === currentUserName
   );
 
   const handleScroll = (slider, direction) => {
     if (slider.current) {
-      const cardWidth = slider.current.querySelector('.management-card').offsetWidth + 20;
-      const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
-      slider.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      const cardWidth =
+        slider.current.querySelector(".management-card").offsetWidth + 20;
+      const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
+      slider.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
 
@@ -78,26 +79,26 @@ function EventManagementMainContent() {
       const response = await fetch(
         `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${eventId}`,
         {
-          method: 'DELETE',
+          method: "DELETE",
         }
       );
 
       if (response.ok) {
         setEvents(events.filter((event) => event.id !== eventId));
       } else {
-        console.error('Failed to delete event');
+        console.error("Failed to delete event");
       }
     } catch (error) {
-      console.error('Error deleting event:', error);
+      console.error("Error deleting event:", error);
     }
   };
 
   const handleEdit = (event) => {
-    navigate(`/post-event/`, { 
-      state: { 
+    navigate(`/post-event/`, {
+      state: {
         editingEvent: event,
-        isEditing: true 
-      } 
+        isEditing: true,
+      },
     });
   };
 
@@ -109,12 +110,12 @@ function EventManagementMainContent() {
           const response = await fetch(
             `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${selectedEventId}`,
             {
-              method: 'PUT',
+              method: "PUT",
               headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                imageUrl, 
+                imageUrl,
               }),
             }
           );
@@ -125,12 +126,12 @@ function EventManagementMainContent() {
                 event.id === selectedEventId ? { ...event, imageUrl } : event
               )
             );
-            handleUploadModalClose(); 
+            handleUploadModalClose();
           } else {
-            console.error('Failed to update event image');
+            console.error("Failed to update event image");
           }
         } catch (error) {
-          console.error('Error updating event image:', error);
+          console.error("Error updating event image:", error);
         }
       }
     }
@@ -145,10 +146,21 @@ function EventManagementMainContent() {
   return (
     <div id="management-main-content">
       <div className="management-events-section">
+        <header className="management-event-management-header">
+          <p className="management-eventManagement2">EVENT MANAGEMENT</p>
+          <input
+            type="text"
+            placeholder="search your events"
+            className="management-search-bar"
+          />
+          <span className="management-search-icon">
+            <FaSearch />
+          </span>
+        </header>
         <div className="management-slider-container">
           <button
             className="management-arrow-button left"
-            onClick={() => handleScroll(upcomingSlider, 'left')}
+            onClick={() => handleScroll(upcomingSlider, "left")}
           >
             ‹
           </button>
@@ -166,7 +178,9 @@ function EventManagementMainContent() {
                         alt="Profile"
                         className="management-profile-image"
                       />
-                      <p className="management-event-organizer">{event.organizerName}</p>
+                      <p className="management-event-organizer">
+                        {event.organizerName}
+                      </p>
                     </div>
                     <div className="management-card-third-row">
                       <img
@@ -182,7 +196,9 @@ function EventManagementMainContent() {
                           size={24}
                           title="Attendance"
                         />
-                        <p className="management-Capacity">{event.availableTickets}</p>
+                        <p className="management-Capacity">
+                          {event.availableTickets}
+                        </p>
                       </div>
 
                       <div className="management-event-actions">
@@ -215,7 +231,7 @@ function EventManagementMainContent() {
           </div>
           <button
             className="management-arrow-button right"
-            onClick={() => handleScroll(upcomingSlider, 'right')}
+            onClick={() => handleScroll(upcomingSlider, "right")}
           >
             ›
           </button>
@@ -230,15 +246,21 @@ function EventManagementMainContent() {
               type="file"
               ref={fileInputRef}
               onChange={handleFileChange}
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
               accept="image/*"
             />
             <div className="management-image-upload" onClick={handleDivClick}>
-              <span className="management-upload-placeholder">Select Image</span>
+              <span className="management-upload-placeholder">
+                Select Image
+              </span>
             </div>
             {imagePreview && (
               <div className="management-image-previews">
-                <img src={imagePreview} alt="preview" className="management-image-preview" />
+                <img
+                  src={imagePreview}
+                  alt="preview"
+                  className="management-image-preview"
+                />
               </div>
             )}
             {uploading && <p>Uploading...</p>}

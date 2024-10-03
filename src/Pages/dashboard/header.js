@@ -72,7 +72,6 @@ function Header({ toggleSidebar, onSearch }) {
           }
         })
       );
-      console.log(validNotifications);
       const filteredNotifications = validNotifications.filter(
         (notification) => notification !== null
       );
@@ -156,24 +155,27 @@ function Header({ toggleSidebar, onSearch }) {
       </section>
 
       <section className="header-middle-section">
-        <div className="search-bar">
-          <InputBase
-            type="text"
-            className="search-input"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            disabled={!isDashboardOrDashboard}
-            inputProps={{ "aria-label": "search" }}
-          />
-          <IconButton
-            type="submit"
-            className="search-button"
-            style={{ scale: "2.5" }}
-          >
-            {/* <SearchIcon /> */}
-          </IconButton>
-        </div>
+        {/* Conditionally render the search bar only on /dashboard */}
+        {isDashboardOrDashboard && (
+          <div className="search-bar">
+            <InputBase
+              type="text"
+              className="search-input"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              disabled={!isDashboardOrDashboard}
+              inputProps={{ "aria-label": "search" }}
+            />
+            <IconButton
+              type="submit"
+              className="search-button"
+              style={{ scale: "2.5" }}
+            >
+              {/* <SearchIcon /> */}
+            </IconButton>
+          </div>
+        )}
         {showFilters && (
           <div className="filter-options">
             <h4>Filter by:</h4>

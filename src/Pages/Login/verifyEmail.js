@@ -57,7 +57,6 @@ function VerifyEmail() {
 
             sessionStorage.setItem("uid", myUID);
 
-
             const userExists = await checkUserExistsAlready(email);
             if (!userExists) {
               const userResponse = window.confirm(
@@ -66,7 +65,7 @@ function VerifyEmail() {
 
               if (userResponse) {
                 createNewUser(result);
-                navigate("/Dashboard");
+                navigate("/dashboard");
               } else {
                 // Go back to the landing page
                 navigate("/");
@@ -78,7 +77,7 @@ function VerifyEmail() {
               "Email verified successfully! Redirecting..."
             );
 
-            setTimeout(() => navigate("/Dashboard"), 2000);
+            setTimeout(() => navigate("/dashboard"), 2000);
           } catch (error) {
             console.error("Error signing in with email link:", error);
             setVerificationStatus("Verification failed. Please try again.");
