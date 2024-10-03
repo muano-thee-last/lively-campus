@@ -4,17 +4,14 @@ import "./Notifications.css";
 
 function Notifications() {
   const [notificationsByDate, setNotificationsByDate] = useState({});
-  const [viewedNotifications, setViewedNotifications] = useState(new Set()); // Track viewed notifications
+  const [viewedNotifications, setViewedNotifications] = useState(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const uid = sessionStorage.getItem("uid");
 
-  const [unviewedCount, setUnviewedCount] = useState(0);
-
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        // Remove the session storage logic
         console.log("Fetching notifications from the server...");
         const response = await fetch(
           "https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications"
@@ -92,9 +89,8 @@ function Notifications() {
           `https://us-central1-witslivelycampus.cloudfunctions.net/app/notifications/viewed/${uid}`
         );
         if (response.ok) {
-          const viewedIds = await response.json(); // Assuming the response is an array of IDs
+          const viewedIds = await response.json();
           console.log("Viewed notification IDs:", viewedIds);
-          // Create a Set from the array of IDs
           setViewedNotifications(new Set(viewedIds));
         } else {
           console.error("Failed to fetch viewed notifications");
@@ -105,18 +101,7 @@ function Notifications() {
     };
 
     fetchNotifications();
-    fetchViewedNotifications(); // Fetch viewed notifications
-
-    // Calculate unviewed notifications count
-    const calculateUnviewedCount = () => {
-      let count = 0;
-      Object.values(notificationsByDate).forEach(notifications => {
-        count += notifications.filter(n => !viewedNotifications.has(n.id)).length;
-      });
-      setUnviewedCount(count);
-    };
-
-    calculateUnviewedCount();
+    fetchViewedNotifications();
   }, [uid]);
 
   const handleViewNotification = async (notificationId) => {
@@ -173,6 +158,9 @@ function Notifications() {
         viewedNotifications.has(notification.id) ? "viewed" : "unviewed"
       }`}
       onClick={() => handleViewNotification(notification.id)}
+      style={{
+        animation: viewedNotifications.has(notification.id) ? 'none' : 'fadeIn 0.5s ease-out'
+      }}
     >
       <img
         src={notification.imageUrl || 'https://via.placeholder.com/60'}
@@ -204,9 +192,6 @@ function Notifications() {
     <div className="notifications-container">
       <div className="notifications-header">
         <h2 className="notifications-title">Notifications</h2>
-        {unviewedCount > 0 && (
-          <span className="notifications-count">{unviewedCount} new</span>
-        )}
       </div>
       {isLoading ? (
         <div className="loading-message">Loading notifications...</div>
