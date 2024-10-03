@@ -63,9 +63,14 @@ const MainContent = () => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log('Current date changed:', currentDate);
+  }, [currentDate]);
+
   const handleMonthChange = (e) => {
     const newMonth = parseInt(e.target.value, 10);
     const newDate = new Date(currentYear, newMonth, 1);
+    console.log('Changing month to:', newDate);
     setCurrentDate(newDate);
   };
 
@@ -215,13 +220,22 @@ const MainContent = () => {
     };
 
     const handleSwipe = () => {
+      console.log('Swipe detected. Start:', touchStartX, 'End:', touchEndX);
       if (touchStartX - touchEndX > 50) {
         // Swipe left, go to next month
-        setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
+        setCurrentDate(prevDate => {
+          const nextMonth = new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 1);
+          console.log('Swiping to next month:', nextMonth);
+          return nextMonth;
+        });
       }
       if (touchEndX - touchStartX > 50) {
         // Swipe right, go to previous month
-        setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
+        setCurrentDate(prevDate => {
+          const prevMonth = new Date(prevDate.getFullYear(), prevDate.getMonth() - 1, 1);
+          console.log('Swiping to previous month:', prevMonth);
+          return prevMonth;
+        });
       }
     };
 
@@ -316,13 +330,13 @@ const MainContent = () => {
         </div>
       </div>
 
-      <div className="calendar" ref={calendarRef}>
+      <div className="calendar" ref={calendarRef} data-testid="calendar-container">
         <div className="calendar-header">
-          <h2 className='viewing-month'>{months[currentMonth]} {currentYear}</h2>
+          <h2 className='viewing-month' data-testid="viewing-month">{months[currentDate.getMonth()]} {currentDate.getFullYear()}</h2>
           <select 
             className='select-month' 
             onChange={handleMonthChange} 
-            value={currentMonth}
+            value={currentDate.getMonth()}
             aria-label="Select month"
           >
             {months.map((month, index) => (

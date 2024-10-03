@@ -51,4 +51,9 @@ body {
     flex-direction: column;
     flex: 0.8;
 }
+#content{
+margin-top: 65px;
+
+}
+
  }
