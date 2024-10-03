@@ -136,6 +136,7 @@ height: 3vh;
     background-color:  #003B5C;
     display: flex;
     padding-top: 3%;
+    display: none;
 
 
 }

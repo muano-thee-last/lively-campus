@@ -674,6 +674,10 @@ body.modal-open {
   .comment {
     max-width: 250px;
   }
+  .feedback-box {
+    bottom: 1.2%;
+   
+  }
 }
 .dashboard-events-section {
   color: #003b5c;
