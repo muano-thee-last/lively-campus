@@ -159,7 +159,8 @@ h2 {
   }
   @media (max-width: 600px) {
     .container {
-        background-color:rgba(5, 27, 48, 0.3);
+        background-color:rgba(7, 65, 119, 0.1);
+        padding-top: 0;
       }
       
 }

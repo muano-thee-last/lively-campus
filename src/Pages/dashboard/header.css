@@ -95,10 +95,9 @@
   }
   @media (max-width: 600px) {
     #header {
-      border-bottom-style: solid;
-      border-bottom-width: thin;
+ 
       background-color:rgba(7, 65, 119, 0.6);
-      border-bottom-color: grey;
+   
 
       
     }

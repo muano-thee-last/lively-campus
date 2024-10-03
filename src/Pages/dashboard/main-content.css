@@ -618,7 +618,7 @@ body.modal-open {
 /* Responsive adjustments */
 @media (max-width: 600px) {
   #dashboard-main-content {
-    background-color:rgba(5, 27, 48, 0.3);
+    background-color:rgba(7, 65, 119, 0.1);
   }
   
   .dashboard-card-container {
