@@ -32,6 +32,9 @@ function MainContent({ searchQuery }) {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [currentEventId, setCurrentEventId] = useState(null);
   const [contentVisible, setContentVisible] = useState(false);
+  const [replyVisible, setReplyVisible] = useState({}); // 
+  const [replyInputVisible, setReplyInputVisible] = useState({}); 
+  const [replyText, setReplyText] = useState({});
   const [user, setUser] = useState({});
   const [comment, setComment] = useState(""); 
   const [error, setError] = useState(""); 
@@ -237,8 +240,7 @@ function MainContent({ searchQuery }) {
       const currentTime = new Date();
       const commentTime = new Date(timestamp); // This timestamp should be fixed from submission time
       const timeDifference = currentTime - commentTime; // Difference in milliseconds
-      console.log("current time",currentTime)
-      console.log("comment time",commentTime)
+
       const minutesAgo = Math.floor(timeDifference / (1000 * 60)); // Convert to minutes
       const hoursAgo = Math.floor(minutesAgo / 60);
       const daysAgo = Math.floor(hoursAgo / 24);
@@ -317,6 +319,62 @@ function MainContent({ searchQuery }) {
       });
     }
   };
+  const handleCommentLike = async (eventId, commentIndex) => {
+    console.log("Comment Index for Like:", commentIndex);
+  
+    try {
+      // Fetch the current event details, including comments
+      const response = await fetch(
+        `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${eventId}`
+      );
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch event details.");
+      }
+  
+      const eventData = await response.json();
+  
+      // Access the specific comment based on the provided index
+      const comment = eventData.comments[commentIndex];
+  
+      // Check if the likes field exists; if not, initialize it
+      const updatedComment = { 
+        ...comment, 
+        likes: (comment.likes || 0) + 1 // Increment likes or initialize to 1
+      };
+  
+      // Update the specific comment in the event's comments array
+      const updatedComments = [...eventData.comments];
+      updatedComments[commentIndex] = updatedComment; // Update the comment with the new likes count
+  
+      // Update the event's comments with the new likes count on the server
+      const updateResponse = await fetch(
+        `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${eventId}/comments`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            comments: updatedComments, // Send the updated comments array with likes
+          }),
+        }
+      );
+  
+      if (updateResponse.ok) {
+        // Immediately update local state to reflect the new likes count
+        const updatedEvents = events.map(event => 
+          event.id === eventId ? { ...event, comments: updatedComments } : event
+        );
+        setEvents(updatedEvents); // Update the events state locally
+      } else {
+        console.error("Failed to update likes.");
+      }
+    } catch (error) {
+      console.error("Error liking comment:", error);
+    }
+  };
+  
   
 
   const handleViewDetails = (id) => {
@@ -330,6 +388,108 @@ function MainContent({ searchQuery }) {
     
     window.location.href = mailtoLink;
   };
+
+// Toggle reply input visibility for a specific comment based on index
+const toggleReplyInputVisibility = (commentIndex) => {
+  setReplyInputVisible(prevState => ({
+    ...prevState,
+    [commentIndex]: !prevState[commentIndex] // Toggle visibility for only the clicked comment by index
+  }));
+};
+
+// Toggle reply visibility for a specific comment based on index
+const toggleReplyVisibility = (commentIndex) => {
+  setReplyVisible(prevState => ({
+    ...prevState,
+    [commentIndex]: !prevState[commentIndex] // Toggle visibility for replies of the clicked comment by index
+  }));
+};
+
+// Handle reply input change for a specific comment based on index
+const handleReplyChange = (commentIndex, text) => {
+  setReplyText(prevState => ({
+    ...prevState,
+    [commentIndex]: text // Store reply text for the specific comment by index
+  }));
+};
+
+const handleSubmitReply = async (eventId, commentIndex) => {
+  console.log("Comment Index:", commentIndex);
+  if (!replyText[commentIndex]?.trim()) {
+    setError("Reply cannot be empty!"); // Set error if reply is empty
+    return;
+  }
+
+  setError(""); // Clear error if the reply is valid
+
+  try {
+    // Fetch the current event details, including comments
+    const response = await fetch(
+      `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${eventId}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch event details.");
+    }
+
+    const eventData = await response.json();
+
+    // Access the specific comment based on the provided index
+    const comment = eventData.comments[commentIndex];
+
+    // Create a new reply with timestamp, user name, and profile picture
+    const newReply = {
+      text: replyText[commentIndex],
+      timestamp: new Date().toLocaleString(), // Get the current date and time
+      userName: name, // Replace with actual user name
+      userProfilePic: myImg, // Replace with actual profile picture URL
+    };
+
+    // If the comment doesn't have a replies field, initialize it as an empty array
+    if (!comment.replies) {
+      comment.replies = [];
+    }
+
+    // Append the new reply to the existing replies
+    comment.replies = [...comment.replies, newReply];
+
+    // Update the specific comment's replies in the event's comments array
+    const updatedComments = [...eventData.comments];
+    updatedComments[commentIndex] = { ...comment, replies: comment.replies };
+
+    // Update the event's comments with the new replies on the server
+    const updateResponse = await fetch(
+      `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${eventId}/comments`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          comments: updatedComments, // Send the updated comments array with replies
+        }),
+      }
+    );
+
+    if (updateResponse.ok) {
+      // Immediately update local state to reflect the new reply
+      const updatedEvents = events.map(event => 
+        event.id === eventId ? { ...event, comments: updatedComments } : event
+      );
+      setEvents(updatedEvents); // Update the events state locally
+
+      // Clear the reply input after submission
+      setReplyText(prevState => ({
+        ...prevState,
+        [commentIndex]: ''
+      }));
+    } else {
+      console.error("Failed to update replies.");
+    }
+  } catch (error) {
+    console.error("Error submitting reply:", error);
+  }
+};
 
   useEffect(() => {
     const filtered = events.filter((event) => {
@@ -454,8 +614,7 @@ function MainContent({ searchQuery }) {
           </div>
         );
       })}
-  {/* Overlay for comments */}
-  {overlayVisible && (
+{overlayVisible && (
   <div className={`overlay ${overlayVisible ? 'overlay-visible' : ''}`}>
     <div className={`overlay-content ${contentVisible ? 'content-visible' : ''}`}>
       <h2>Comments</h2>
@@ -463,32 +622,83 @@ function MainContent({ searchQuery }) {
         Close
       </button>
       <div className="comments-list scrollable-element">
-  {currentEventId && events.find(e => e.id === currentEventId)?.comments.map((com, idx) => (
-    <div className="comment-img-comment">
-      <img src={com.userProfilePic} alt={`${com.userName}'s profile`} className="profile-pic" />
-          <div key={idx} className="comment">
-      <div className="comment-content">
-        <h5 className="commentor">{com.userName}</h5> {/* Display the user's name */}
-        <p>{com.text}</p> {/* Display the comment text */}
-        <small>{timeAgo(com.timestamp)}</small> {/* Display the relative time */}
-      </div>
-    </div>
-    </div>
+        {currentEventId && events.find(e => e.id === currentEventId)?.comments.map((com, idx) => (
+          <div key={idx} className="comment-img-comment">
+            <img src={com.userProfilePic} alt={`${com.userName}'s profile`} className="profile-pic" />
+            
+            <div className="comment">
+              <div className="comment-content">
+                <h5 className="commentor">{com.userName}</h5> {/* Display the user's name */}
+                <p>{com.text}</p> {/* Display the comment text */}
+                <small>{timeAgo(com.timestamp)}</small> {/* Display the relative time */}
+              </div>
 
-  ))}
-</div>
+              {/* Replies Section */}
+              {com.replies && com.replies.length > 0 && (
+                <div className="replies-section">
+                {/* Like button */}
+
+                  <button className="toggle-replies-button" onClick={() => toggleReplyVisibility(idx)}>
+                    {replyVisible[idx] ? 'Hide replies' : `View replies (${com.replies.length})`}
+                  </button>
+                  {replyVisible[idx] && (
+                    <div className="replies-list">
+                      {com.replies.map((reply, rIdx) => (
+                        <div key={rIdx} className="reply">
+                          <img src={reply.userProfilePic} alt={`${reply.userName}'s profile`} className="profile-pic-reply" />
+                          <div className="reply-content">
+                            <h6 className="reply-author">{reply.userName}</h6>
+                            <p className="actual-reply">{reply.text}</p>
+                            <small>{timeAgo(reply.timestamp)}</small>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Reply Input Section */}
+              <button className="reply-button" onClick={() => toggleReplyInputVisibility(idx)}>
+                {replyInputVisible[idx] ? 'Cancel' : 'Reply'}
+              </button>
+              {replyInputVisible[idx] && (
+                <div className="reply-input">
+            <textarea
+  aria-label="reply-comment-input"
+  className="reply-input3"
+  placeholder="Write a reply..."
+  value={replyText[idx] || ''} // Make sure it's tied to the correct comment
+  onChange={(e) => handleReplyChange(idx,e.target.value)}
+/>
+                  <button className="submit-reply-button" onClick={() => handleSubmitReply(currentEventId,idx)}>
+                    Reply
+                  </button>
+                </div>
+              )}
+            </div>
+            <IconButton className="likecomment-icon"
+                                onClick={() => handleCommentLike(currentEventId,idx)}>
+                                <Badge badgeContent={com.likes} color="primary">
+                                  <FavoriteIcon   />
+                                </Badge>
+                              </IconButton>
+          </div>
+        ))}
+      </div>
+
       <div className="post-comments">
-      <textarea
-        aria-label="overlay-comment-input"
-        className="comment-input"
-        placeholder="Write a comment..."
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-      />
-      {error && <p className="comment-error-message">{error}</p>} {/* Show error message */}
-      <button aria-label="submit-comment-button" className="submit-button" onClick={() => handleSubmit(currentEventId)}>
-        Submit
-      </button>
+        <textarea
+          aria-label="overlay-comment-input"
+          className="comment-input"
+          placeholder="Write a comment..."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        {error && <p className="comment-error-message">{error}</p>} {/* Show error message */}
+        <button aria-label="submit-comment-button" className="submit-button" onClick={() => handleSubmit(currentEventId)}>
+          Submit
+        </button>
       </div>
     </div>
   </div>
