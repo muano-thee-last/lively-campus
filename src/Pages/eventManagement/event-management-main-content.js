@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./event-management-main-content.css";
@@ -146,17 +147,6 @@ function EventManagementMainContent() {
   return (
     <div id="management-main-content">
       <div className="management-events-section">
-        <header className="management-event-management-header">
-          <p className="management-eventManagement2">EVENT MANAGEMENT</p>
-          <input
-            type="text"
-            placeholder="search your events"
-            className="management-search-bar"
-          />
-          <span className="management-search-icon">
-            <FaSearch />
-          </span>
-        </header>
         <div className="management-slider-container">
           <button
             className="management-arrow-button left"
