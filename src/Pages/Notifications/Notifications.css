@@ -16,23 +16,23 @@
 
 .notifications-title {
     font-size: 28px;
-    color: #343a40;
+    color: #003B5C;
     font-weight: 600;
 }
 
 .notifications-count {
-    background-color: #007bff;
+    background-color: #28a745;
     color: white;
     padding: 6px 12px;
     border-radius: 20px;
     font-size: 14px;
     font-weight: 600;
-    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
 }
 
 .notification-date {
     font-size: 18px;
-    color: #495057;
+    color: #003B5C;
     margin-top: 25px;
     margin-bottom: 15px;
     padding-bottom: 8px;
@@ -56,7 +56,7 @@
     transition: all 0.3s ease;
     border: 2px solid transparent;
     cursor: pointer;
-    position: relative; /* Added for absolute positioning of the left border */
+    position: relative;
 }
 
 .notification-item:hover {
@@ -64,17 +64,23 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.notification-image {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    margin-right: 25px;
-    object-fit: cover;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
 .notification-details {
     flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-time {
+    font-size: 13px;
+    color: #6c757d;
+    white-space: nowrap;
+    margin-left: 15px;
+    align-self: flex-start;
 }
 
 .notification-event {
@@ -87,21 +93,40 @@
 
 .notification-message {
     font-size: 15px;
-    color: #6c757d;
+    color: #4a4a4a;
     margin-bottom: 8px;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
-.notification-time {
+.notification-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin-right: 25px;
+    object-fit: cover;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.notification-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 13px;
-    color: #adb5bd;
-    display: block;
+    color: #6c757d;
+}
+
+.notification-category {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 500;
 }
 
 .unviewed {
-    border-color: #007bff;
-    background-color: #f0f8ff; /* Light blue background for unviewed notifications */
-    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.1);
+    border-color: #07e2ff;
+    background-color: #f0f8ff;
+    box-shadow: 0 3px 10px rgba(255, 193, 7, 0.1);
 }
 
 .unviewed::before {
@@ -111,7 +136,7 @@
     top: 0;
     bottom: 0;
     width: 4px;
-    background-color: #007bff;
+    background-color: #07e2ff;
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
 }
@@ -158,9 +183,17 @@
     .notification-message {
         font-size: 14px;
     }
+
+    .notification-details {
+        flex-direction: column;
+    }
+
+    .notification-time {
+        margin-left: 0;
+        margin-top: 5px;
+    }
 }
 
-/* Add smooth animation for new notifications */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }

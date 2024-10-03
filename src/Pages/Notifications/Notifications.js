@@ -9,6 +9,8 @@ function Notifications() {
   const navigate = useNavigate();
   const uid = sessionStorage.getItem("uid");
 
+  const [unviewedCount, setUnviewedCount] = useState(0);
+
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -104,6 +106,17 @@ function Notifications() {
 
     fetchNotifications();
     fetchViewedNotifications(); // Fetch viewed notifications
+
+    // Calculate unviewed notifications count
+    const calculateUnviewedCount = () => {
+      let count = 0;
+      Object.values(notificationsByDate).forEach(notifications => {
+        count += notifications.filter(n => !viewedNotifications.has(n.id)).length;
+      });
+      setUnviewedCount(count);
+    };
+
+    calculateUnviewedCount();
   }, [uid]);
 
   const handleViewNotification = async (notificationId) => {
@@ -138,48 +151,71 @@ function Notifications() {
     return dateString === today;
   };
 
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp._seconds * 1000);
+    const now = new Date();
+    const diffInHours = (now - date) / (1000 * 60 * 60);
+
+    if (diffInHours < 24) {
+      if (diffInHours < 1) {
+        const minutes = Math.floor((now - date) / (1000 * 60));
+        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+      }
+      return `${Math.floor(diffInHours)} hour${diffInHours >= 2 ? 's' : ''} ago`;
+    }
+    return date.toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
+  };
+
+  const renderNotificationItem = (notification) => (
+    <li
+      key={notification.id}
+      className={`notification-item ${
+        viewedNotifications.has(notification.id) ? "viewed" : "unviewed"
+      }`}
+      onClick={() => handleViewNotification(notification.id)}
+    >
+      <img
+        src={notification.imageUrl || 'https://via.placeholder.com/60'}
+        alt={notification.title}
+        className="notification-image"
+      />
+      <div className="notification-details">
+        <div className="notification-content">
+          <span className="notification-event">{notification.title}</span>
+          <p className="notification-message">{notification.message}</p>
+        </div>
+        <span className="notification-time">{formatTimestamp(notification.timestamp)}</span>
+      </div>
+    </li>
+  );
+
+  const renderNotificationGroup = (date, notifications) => (
+    <div key={date}>
+      <h3 className="notification-date">
+        {isToday(date) ? "Today" : date}
+      </h3>
+      <ul className="notifications-list">
+        {notifications.map(renderNotificationItem)}
+      </ul>
+    </div>
+  );
+
   return (
     <div className="notifications-container">
-      <h2 style={{ color: "#003B5C" }}>Notifications</h2>
-      <br />
-      {isLoading ? ( // Display this while loading
+      <div className="notifications-header">
+        <h2 className="notifications-title">Notifications</h2>
+        {unviewedCount > 0 && (
+          <span className="notifications-count">{unviewedCount} new</span>
+        )}
+      </div>
+      {isLoading ? (
         <div className="loading-message">Loading notifications...</div>
+      ) : Object.keys(notificationsByDate).length === 0 ? (
+        <div className="loading-message">No notifications found.</div>
       ) : (
-        Object.keys(notificationsByDate).map((date) => (
-          <div key={date}>
-            <h3 style={{ color: "#003B5C" }} className="notification-date">
-              {isToday(date) ? "Today" : date}{" "}
-              {/* Show 'Today' if the notification is from today */}
-            </h3>
-            <ul className="notifications-list">
-              {notificationsByDate[date].map((notification) => (
-                <li
-                  key={notification.id}
-                  className={`notification-item ${
-                    viewedNotifications.has(notification.id)
-                      ? "viewed"
-                      : "unviewed"
-                  }`} // Apply class conditionally
-                  onClick={() => handleViewNotification(notification.id)} // Pass the uid here
-                >
-                  <img
-                    src={notification.imageUrl}
-                    alt={notification.title}
-                    className="notification-image"
-                  />
-                  <div className="notification-details">
-                    <span className="notification-event">
-                      {notification.title}
-                    </span>
-                    <p className="notification-message">
-                      {notification.message}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
+        Object.entries(notificationsByDate).map(([date, notifications]) =>
+          renderNotificationGroup(date, notifications)
+        )
       )}
     </div>
   );
