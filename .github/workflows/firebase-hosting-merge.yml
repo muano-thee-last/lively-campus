@@ -17,5 +17,6 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_WITSLIVELYCAMPUS }}
           projectId: witslivelycampus  # Your Firebase project ID
+          channelId: live  # Ensures direct deployment to the live environment
         env:
           FIREBASE_DEPLOY_TARGET: hosting  # Specify to deploy to hosting
