@@ -71,5 +71,4 @@ export default function TicketView({
       />
     </div>
   );
-
 }

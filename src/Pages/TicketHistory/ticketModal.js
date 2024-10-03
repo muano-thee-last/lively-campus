@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "react-modal";
 import styles from "./ticketModel.module.css"; // Import CSS module
-Modal.setAppElement("#root");
+//Modal.setAppElement("#root");
 
 const TicketModal = ({
   isOpen,
@@ -15,7 +15,6 @@ const TicketModal = ({
   ticketDate,
   ticketTime,
   qrCode,
-  eventId,
 }) => {
   return (
     <Modal
