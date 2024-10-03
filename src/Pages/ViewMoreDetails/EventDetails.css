@@ -14,7 +14,8 @@
   z-index: 2;
   display: flex;
   flex-wrap: wrap;
-  margin-top: -74px;
+  margin-top: -78px;
+  margin-left: 3px;
   text-align: center;
   align-items: center;
 }
@@ -29,8 +30,8 @@
   background-color: white;
   width: fit-content;
   padding: 25px 6px;
-  border-radius: 5px;
-  margin-left: -3px;
+  border-radius: 0 5px 0 0;
+  margin: 15px -3px ;
   object-fit: fit-content;
   font-size: 1.3rem;
   padding-right: 20px;
@@ -141,8 +142,10 @@
 .response-wiman-section {
   margin: 10px 0;
 }
-@media screen and (max-width: 500px) {
-  .eventTags {
-    margin-left: 0;
+
+@media (max-width: 600px) {
+  .event-name-view{
+    background-color: #e6ecf1;
+    margin: 15px -3px ;
   }
 }
