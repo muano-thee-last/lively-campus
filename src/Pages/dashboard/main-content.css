@@ -51,13 +51,12 @@
   display: flex;
 
   transition: background 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0px 0px 6px 1px rgba(121, 121, 121, 0.6);
-
+;
   overflow: hidden;
   position: relative;
   flex-direction: column;
   padding-top: 1%;
-  padding-bottom: 3%;
+  padding-bottom: 25px;
   perspective: 1000px;
 }
 .card-inner {
@@ -376,6 +375,7 @@ body.modal-open {
   align-items: center;
   flex: 0.2;
   padding-bottom: 2%;
+  white-space: nowrap;
 }
 .card-third-row {
   display: flex;
@@ -388,6 +388,7 @@ body.modal-open {
   justify-content: space-between;
   align-items: center;
   flex: 0.2;
+  padding-top: 5px;
 }
 .profile-image {
   margin-left: 2%;
@@ -490,8 +491,6 @@ body.modal-open {
   padding-top: 15px;
 }
 .like-icon {
-  fill: rgb(134, 134, 134);
-
   transition: fill 0.3s ease;
 }
 
@@ -512,6 +511,7 @@ body.modal-open {
   font-weight: bold;
   color: #003b5c;
   white-space: nowrap;
+  display: none;
 }
 .comment-count {
   position: absolute;
@@ -521,6 +521,7 @@ body.modal-open {
   font-weight: bold;
   color: #003b5c;
   white-space: nowrap;
+  display: none;
 }
 .feedback-box {
   position: fixed;
@@ -574,7 +575,7 @@ body.modal-open {
 
 @media (max-width: 950px) {
   .dashboard-card-container {
-    width: 100%; /* Show only one card at a time */
+    width: 95%; /* Show only one card at a time */
     gap: 7%; /* Remove gap to fit one card properly */
 
     /* Space between cards */
@@ -597,8 +598,9 @@ body.modal-open {
     padding: 2%;
   }
   .dashboard-card {
-    flex: 0 0 80%; /* Make each card take up the full width */
-    height: 42vh; /* Adjust height to fit the screen better */
+    flex: 0 0 50%; /* Make each card take up the full width */
+    height: 42vh;
+    padding-bottom: 2px; /* Adjust height to fit the screen better */
   }
   .dashboard-card:hover {
     box-shadow: 0px 0px 6px 1px rgba(0, 47, 92, 0.3);
@@ -614,6 +616,10 @@ body.modal-open {
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
+  #dashboard-main-content {
+    background-color:rgba(7, 65, 119, 0.1);
+  }
+  
   .dashboard-card-container {
     width: 100%; /* Show only one card at a time */
     gap: 7%; /* Remove gap to fit one card properly */
@@ -633,6 +639,10 @@ body.modal-open {
     position: relative;
     overflow: hidden; /* Ensure the container hides overflow */
     width: 100%;
+  }
+  .dashboard-card {
+    flex: 0 0 80%; /* Make each card take up the full width */
+  
   }
   .arrow-button {
     padding: 2%;

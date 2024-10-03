@@ -1,0 +1,35 @@
+[debug] [2024-10-03T07:46:57.140Z] ----------------------------------------------------------------------
+[debug] [2024-10-03T07:46:57.145Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\mukos\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js hosting:channel:list --project witslivelycampus
+[debug] [2024-10-03T07:46:57.146Z] CLI Version:   13.7.3
+[debug] [2024-10-03T07:46:57.146Z] Platform:      win32
+[debug] [2024-10-03T07:46:57.146Z] Node Version:  v20.12.1
+[debug] [2024-10-03T07:46:57.147Z] Time:          Thu Oct 03 2024 09:46:57 GMT+0200 (South Africa Standard Time)
+[debug] [2024-10-03T07:46:57.147Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-10-03T07:46:57.263Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-10-03T07:46:57.264Z] > authorizing via signed-in user (2437757@students.wits.ac.za)
+[debug] [2024-10-03T07:46:57.264Z] [iam] checking project witslivelycampus for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2024-10-03T07:46:57.267Z] > refreshing access token with scopes: []
+[debug] [2024-10-03T07:46:57.270Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-10-03T07:46:57.271Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-10-03T07:46:57.736Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-10-03T07:46:57.736Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-10-03T07:46:57.759Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/witslivelycampus:testIamPermissions [none]
+[debug] [2024-10-03T07:46:57.759Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/witslivelycampus:testIamPermissions x-goog-quota-user=projects/witslivelycampus
+[debug] [2024-10-03T07:46:57.759Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/witslivelycampus:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-10-03T07:46:59.478Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/witslivelycampus:testIamPermissions 200
+[debug] [2024-10-03T07:46:59.478Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/witslivelycampus:testIamPermissions {}
+[debug] [2024-10-03T07:46:59.478Z] [iam] error while checking permissions, command may fail: FirebaseError: Authorization failed. This account is missing the following required permissions on project witslivelycampus:
+
+  firebase.projects.get
+  firebasehosting.sites.update
+[debug] [2024-10-03T07:46:59.479Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/witslivelycampus [none]
+[debug] [2024-10-03T07:47:00.089Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/witslivelycampus 403
+[debug] [2024-10-03T07:47:00.089Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/witslivelycampus {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2024-10-03T07:47:00.091Z] HTTP Error: 403, The caller does not have permission
+[debug] [2024-10-03T07:47:00.437Z] FirebaseError: HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\mukos\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:49:12)
+    at RetryOperation._fn (C:\Users\mukos\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:299:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[error] 
+[error] Error: Failed to get Firebase project witslivelycampus. Please make sure the project exists and your account has permission to access it.

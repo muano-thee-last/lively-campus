@@ -211,7 +211,7 @@ function Header({ toggleSidebar, onSearch }) {
               className="lively-campus-profile pointer"
               src={pictureUrl}
               alt="Profile"
-              style={{ borderRadius: "50%", width: 40, height: 40 }}
+              style={{ borderRadius: "50%", width: 30, height: 30 }}
             />
           ) : (
             <AccountCircleIcon className="pointer" style={{ fontSize: 40 }} />

@@ -6,7 +6,7 @@ body {
 
 
 /* Header Styles */
-/* Positions the header at the top of the page and styles it */
+/* Positions the landing-header at the top of the page and styles it */
 /* position: absolute;
 width: 100%;
 display: flex;
@@ -14,7 +14,7 @@ justify-content: space-between;
 align-items: center;
 background-color: transparent;
 padding: 12%; */
-.header-card {
+.landing-header-landing-card {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -23,7 +23,7 @@ padding: 12%; */
 }
 
 /* Adds a semi-transparent overlay to the hero section */
-.header-card::before {
+.landing-header-landing-card::before {
   /* Background image and color overlay */
   content: '';
   background: 
@@ -38,7 +38,7 @@ padding: 12%; */
   z-index: -1; 
   /* Put this layer below the content */
 }
-.landing-page-header {
+.landing-page-landing-header {
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -48,18 +48,18 @@ padding: 12%; */
   flex: 1;
 
 }
-.landing-page-header > * {
+.landing-page-landing-header > * {
   margin: 0 6% !important;  /* Adjust this value to control spacing */
   padding-top: 1%;
 }
-/* Styles the logo container */
-.logo-container {
+/* Styles the landing-logo container */
+.landing-logo-container {
   display: flex;
   align-items: center;
 }
 
 /* Sets dimensions for the logo image */
-.logo-image {
+.landing-logo-image {
   width: 50px;
   height: auto;
   margin-right: 10px;
@@ -172,8 +172,8 @@ padding: 12%; */
 }
 
 
-/* Styles the hero card */
-.hero-card {
+/* Styles the hero landing-card */
+.hero-landing-card {
   position: absolute;
   top: 25%;
   z-index: 2;
@@ -181,7 +181,7 @@ padding: 12%; */
 
 
 }
-.hero-card > * {
+.hero-landing-card > * {
   margin: 0 12% !important;  /* Adjust this value to control spacing */
   padding-top: 1%;
 }
@@ -200,7 +200,7 @@ padding: 12%; */
   margin-bottom: 20px;
 }
 
-/* Styles the container for hero buttons */
+/* Styleslanding- the container for hero buttons */
 .hero-buttons {
   display: flex;
   
@@ -251,155 +251,226 @@ padding: 12%; */
 }
 
 /* Events Section */
-/* Styles the events section */
 .landing-page-events-section {
   position: relative;
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   opacity: 0;
-  transform: translateX(-90%);
-  transition: transfrom 0.8s ease, opacity 0.8s ease;
-
+  transform: translateY(50px);
+  transition: transform 0.8s ease, opacity 0.8s ease;
 }
+
 .landing-page-events-section.visible {
   opacity: 1;
-  transform: translateX(0);
-}
-.landing-page-events-section h1 {
-  opacity: 0;
-  transform: translateY(-20px); /* Moves title from slightly above */
-  transition: transform 0.5s ease, opacity 0.5s ease;
-  transition-delay: 0.2s; /* Delay for a more sequential effect */
-}
-
-.landing-page-events-section.visible h1 {
-  opacity: 1;
-  transform: translateY(0);
-}
-.landing-page-events-section .card {
-  opacity: 0;
-  transform: translateY(20px); /* Moves card slightly from below */
-  transition: transform 0.8s ease, opacity 0.8s ease;
-  transition-delay: 0.4s; /* Delay after title */
-}
-.landing-page-events-section.visible .card {
-  opacity: 1;
   transform: translateY(0);
 }
 
-
-.landing-page-events-section .event-content {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: transform 0.5s ease, opacity 0.5s ease;
-  transition-delay: 0.6s; /* Delay after the card appears */
- 
-}
-.landing-page-events-section.visible .event-content {
-  opacity: 1;
-  transform: translateY(0);
-}
-.landing-page-events-section .dots {
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  transition-delay: 0.8s; /* Delay after the event content */
-}
-
-.landing-page-events-section.visible .dots {
-  opacity: 1;
-  
-}
-
-/* Styles the events section heading */
-.landing-page-events-section h1 {
-  text-align: left;
-  margin-left: 2%;
-  margin-top: 2%;
+.landing-events-title {
+  font-size: 3rem;
   color: #003B5C;
-  font-size: xx-large;
+  margin-bottom: 30px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%; /* Add this line to ensure full width */
+  margin-top: 10px;
+
 }
 
-/* Styles the events section subheading */
-.landing-page-events-section h2 {
-  color: white;
+.landing-events-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%; /* Change this from 0 to 50% */
+  transform: translateX(-50%); /* Add this line */
+  width: 60%; /* Adjust this value to control the length of the underline */
+  height: 3px;
+  background: linear-gradient(to right, transparent, #003B5C, transparent);
 }
 
-/* Styles individual event cards */
-.card {
+.landing-card {
   width: 100%;
-  height: 70vh;
+  height: 450px;
   border: none;
-  border-radius: 8px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 20px auto;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  margin: 30px auto;
   display: flex;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  flex-direction: column;
+  transition: all 0.3s ease;
 }
 
-
-
-
-/* Styles the content within event cards */
-.card .event-content {
-  display: flex;
-  flex: 1;
-  padding-left: 7%;
-  flex-direction: column;
-  align-items: start;
-  justify-content:space-around;
-  transition: opacity 0.5s ease-in-out;
-  
+.landing-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
-.card .event-content h2{
-  font-size: xxx-large;
-}
-.event-card-description{
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  width: 43%;
-  background-color: rgba(0, 0, 0, 0.2); /* Black with transparency */
-  backdrop-filter: blur(10px); /* Blur effect */
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-.event-card-description p{
- font-weight: bold;
- text-align: left;
- color: white;
-} 
 
-/* Positions the button in upcoming events */
+.landing-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
 
-/* Styles the dots for event navigation */
+.landing-card:hover::before {
+  opacity: 1;
+}
+
+.landing-event-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30px;
+  color: white;
+  text-align: left;
+  transform: translateY(100px);
+  transition: all 0.3s ease;
+}
+
+.landing-card:hover .landing-event-content {
+  transform: translateY(0);
+}
+
+.landing-event-card-description {
+  margin-bottom: 40px;
+}
+
+.landing-event-card-description h2 {
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 15px;
+  line-height: 1.2;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.landing-event-card-description p {
+  font-size: 1.1rem;
+  color: #f0f0f0;
+  line-height: 1.6;
+  margin-bottom: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.landing-card:hover .landing-event-card-description p {
+  opacity: 1;
+}
+
+.btn-primary {
+  padding: 12px 25px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #003B5C;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.landing-card:hover .btn-primary {
+  opacity: 1;
+}
+
+.btn-primary:hover {
+  background-color: #005580;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 59, 92, 0.3);
+}
+
 .dots {
   position: absolute;
-  bottom: 10px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 10px;
+  z-index: 10;
 }
 
-/* Styles individual dots */
 .dot {
   height: 10px;
   width: 10px;
-  background-color: black;
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   display: inline-block;
-  transition: background-color 0.6s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
-/* Styles the active dot */
-.dot.active {
-  background-color: #717171;
+.dot.active, .dot:hover {
+  background-color: #ffffff;
+  transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+  .landing-events-title {
+    font-size: 2.5rem;
+  }
+
+  .landing-card {
+    height: 300px;
+  }
+
+  .landing-card .landing-event-content h2 {
+    font-size: x-large;
+  }
+
+  .landing-event-card-description {
+    width: 80%;
+    padding: 15px;
+  }
+
+  .landing-event-card-description h2 {
+    font-size: 2rem;
+  }
+
+  .landing-event-card-description p {
+    font-size: 1rem;
+  }
+
+  .btn-primary {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-events-title {
+    font-size: 2rem;
+  }
+
+  .landing-card {
+    height: 250px;
+  }
+
+  .landing-card .landing-event-content h2 {
+    font-size: large;
+  }
+
+  .landing-event-card-description p {
+    font-size: small;
+  }
+
+  .btn-primary {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
 }
 
 /* Footer Styles */
@@ -495,7 +566,7 @@ padding: 12%; */
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 28%;
+  left:26%;
   transform: translate(-50%, -50%);
   width:100%;
   height: 1px;
@@ -543,9 +614,7 @@ padding: 12%; */
     margin: 5px 0;
   }
 
-  .landing-page-events-section {
-    padding: 0 10px;
-  }
+
 
   .login-modal {
     width: 95%;
@@ -621,7 +690,7 @@ padding: 12%; */
   
   .burger input:checked ~ span:nth-of-type(1) {
     transform: rotate(45deg);
-    top: 0px;
+    top: 2px;
     left: 5px;
   }
   
@@ -680,7 +749,7 @@ padding: 12%; */
   .landing-page-nav-menu ul a:hover {
     color: #007bff; /* Change color smoothly when hovered */
   }
-  .header-card {
+  .landing-header-landing-card {
     height: 44vh;
   }
   .hero h1 {
@@ -689,46 +758,35 @@ padding: 12%; */
   .hero p{
     font-size: small;
   }
-  .card .event-content h2{
+  .landing-card .landing-event-content h2{
     font-size: large;
   }
-  .event-card-description p{
+  .landing-event-card-description p{
    text-align: left;
    font-size: small;
   } 
-  .hero-card{
+  .hero-landing-card{
      left: 20%;
       top: 34%;
   }
-  .header-card::before {
+  .landing-header-landing-card::before {
   
     background: 
       url('../../asserts/blackout.jpg') no-repeat bottom ;
    
     /* Put this layer below the content */
   }
-  .landing-page-header .btn-secondary{
+  .landing-page-landing-header .btn-secondary{
     font-size: 1.1rem;
     padding: 0;
   }
- .card{
+ .landing-card{
   height: 44vh;
  }
 
 }
 
 
-/* Adjusts layout for screens up to 614px tall */
-@media (max-height: 614px) {
- 
-
-  .landing-page-events-section {
-    padding: 0 10px;
-  }
-
-
-
-}
 
 /* Adjusts layout for screens up to 480px wide */
 @media (max-width: 480px) {
@@ -737,12 +795,62 @@ padding: 12%; */
   }
 
 
- 
 
   .btn-primary{
     width: auto;
     max-width: 100%;
     font-size: 10px;
     padding: 8px 16px;
+  }
+}
+
+.landing-event-title {
+  position: relative;
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 15px;
+  line-height: 1.2;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.landing-event-title-text {
+  display: inline-block;
+}
+
+.landing-event-title-word {
+  display: inline-block;
+  margin-right: 0.3em; /* Add space between words */
+}
+
+.landing-event-title-letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(1em);
+  animation: typeLetterIn 0.3s ease-out forwards;
+}
+
+@keyframes typeLetterIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Add a sliding underline effect */
+.landing-event-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0;
+  height: 3px;
+  background-color: #ffffff;
+  animation: slideUnderline 0.5s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes slideUnderline {
+  to {
+    width: 100%;
   }
 }

@@ -129,7 +129,11 @@
         margin-left: -0.2%;
         
     }
- 
+    #side-bar.expanded {
+  background-color:rgba(7, 65, 119, 0.6);
+    }
+
+    
     
    
 }

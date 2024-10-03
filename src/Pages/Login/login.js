@@ -169,8 +169,12 @@ function SignIn() {
             ? "Verification Email Sent"
             : "Send Verification Link"}
         </button>
-        <div className="or-divider">OR</div>
-
+        <div className="or-divider">
+          <div className="or-line"></div>
+          OR
+          <div className="or-line"></div>
+          </div>
+        
         <button
           className="sign-in-button google"
           onClick={() => Authenticate("Google", null, navigate)}

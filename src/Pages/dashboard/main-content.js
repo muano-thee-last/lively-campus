@@ -2,7 +2,9 @@ import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./main-content.css";
 import profile from "./images-logos/profile-logo.jpg";
-import comments from "./images-logos/comments.jpeg";
+import { IconButton,Badge } from '@mui/material';
+import CommentIcon from '@mui/icons-material/Comment';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useCallback } from "react";
 const tagGroups = {
   "Music & Dance": ["Music", "Dance"],
@@ -408,29 +410,19 @@ function MainContent({ searchQuery }) {
                           </div>
                           <div className="card-fourth-row">
                             <div className="like-comment">
-                              <button
-                                aria-label={`like-button-${event.id}`}
-                                className={`like-button ${
+                                <IconButton aria-label={`like-button-${event.id}`}  className={`like-button ${
                                   liked[event.id] ? "active" : ""
                                 }`}
-                                onClick={() => handleLike(event.id)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 24 24"
-                                  width="24"
-                                  height="24"
-                                  className="like-icon"
-                                >
-                                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                </svg>
-                              </button>
-                              <img
-                                src={comments}
-                                alt="Comments"
-                                className="comments-image"
-                                onClick={() => handleCommentsClick(event.id)}
-                              />
+                                onClick={() => handleLike(event.id)}>
+                                <Badge badgeContent={event.likes} color="secondary">
+                                  <FavoriteIcon  className="like-icon" />
+                                </Badge>
+                              </IconButton>
+                              <IconButton alt="comments" onClick={() => handleCommentsClick(event.id)} >
+                               <Badge badgeContent={event.comments.length} color="secondary">
+                              <CommentIcon />
+                              </Badge>
+                            </IconButton>
                               <p className="like-count">
                                 likes {event.likes}
                               </p>
