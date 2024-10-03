@@ -54,8 +54,8 @@
     background-color: #fff;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
-    border: 1px solid #e9ecef;
-    cursor: pointer; /* Add this line to show the hand cursor on hover */
+    border: 2px solid transparent; /* Changed from 1px to 2px and made transparent */
+    cursor: pointer;
 }
 
 .notification-item:hover {
@@ -98,12 +98,12 @@
 }
 
 .unviewed {
-    border-left: 4px solid #007bff;
-    background-color: #f0f8ff;
+    border-color: #007bff; /* Blue border for unviewed notifications */
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.1); /* Slightly blue shadow for emphasis */
 }
 
 .viewed {
-    opacity: 0.8;
+    border-color: #e9ecef; /* Light grey border for viewed notifications */
 }
 
 .loading-message {
