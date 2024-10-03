@@ -155,4 +155,9 @@ h2 {
     border-style: solid;
     border-width: thin;
     border-color: #003B5C;
-  }
+  }@media (max-width: 600px) {
+    .container {
+        background-color: #fbfff0;
+      }
+      
+}
