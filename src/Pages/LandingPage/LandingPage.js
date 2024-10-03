@@ -70,12 +70,12 @@ function LandingPage() {
 
   return (
     <div className="LandingPage">
-      <div className="header-card">
+      <div className="landing-header-landing-card">
         <Header handleButtonClick={handleButtonClick} />
         <HeroSection />
       </div>
 
-      {loading && <p>Loading events...</p>}
+      {loading && <p></p>}
       {error && <p>{error}</p>}
 
       {!loading && !error && (
@@ -111,9 +111,9 @@ function Header({ handleButtonClick }) {
   const toggleMenu = () => setIsMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen);
 
   return (
-    <header className="landing-page-header">
-      <div className="logo-container">
-        <img src={logo} alt="LivelyCampus Logo" className="logo-image" />
+    <header className="landing-page-landing-header">
+      <div className="landing-logo-container">
+        <img src={logo} alt="LivelyCampus Logo" className="landing-logo-image" />
         <div className="logo-text">LivelyCampus</div>
       </div>
       <nav className={`landing-page-nav-menu ${isMenuOpen ? 'open' : ''}`}>
@@ -136,7 +136,7 @@ function Header({ handleButtonClick }) {
 
 function HeroSection() {
   return (
-    <div className="hero-card">
+    <div className="hero-landing-card">
       <section className="hero">
         <h1>Ignite Your Campus</h1>
         <h1>Experience!</h1>
@@ -157,6 +157,7 @@ function AboutSec() {
 
 function EventsSection({ title, events, currentIndex, handleDotClick, showBookNow, handleButtonClick }) {
   const sectionRef = useRef(null);
+  const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
     const sectionElement = sectionRef.current;
@@ -181,42 +182,67 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
     };
   }, []);
 
-  const currentEvent = events[currentIndex];
+  useEffect(() => {
+    setAnimationKey(prevKey => prevKey + 1);
+  }, [currentIndex]);
+
+  const filteredEvents = events.filter(event => 
+    title === "Upcoming Events" 
+      ? ["Tech Innovators Conference", "Wits 100 Celebration"].includes(event.title)
+      : ["Jaiv'ujuluke", "Mountain Biking Challenge"].includes(event.title)
+  );
+
+  const currentEvent = filteredEvents[currentIndex % filteredEvents.length];
 
   return (
     <section ref={sectionRef} className="landing-page-events-section">
-      <h1>{title}</h1>
+      <h2 className="landing-events-title">{title}</h2>
 
       {currentEvent ? (
         <div
-          className="card"
+          className="landing-card"
           style={{
             backgroundImage: `url(${currentEvent.imageUrl})`,
           }}
         >
-          <div className="event-content">
-            <div className="event-card-description">
-              <h2>{currentEvent.title}</h2>
+          <div className="landing-event-content">
+            <div className="landing-event-card-description">
+              <h2 className="landing-event-title" key={animationKey}>
+                <span className="landing-event-title-text">
+                  {currentEvent.title.split(' ').map((word, wordIndex) => (
+                    <span key={wordIndex} className="landing-event-title-word">
+                      {word.split('').map((char, charIndex) => (
+                        <span
+                          key={charIndex}
+                          className="landing-event-title-letter"
+                          style={{ animationDelay: `${(wordIndex * word.length + charIndex) * 0.05}s` }}
+                        >
+                          {char}
+                        </span>
+                      ))}
+                    </span>
+                  ))}
+                </span>
+              </h2>
               <p>{currentEvent.description}</p>
             </div>
             {showBookNow && (
               <button className="btn-primary" onClick={handleButtonClick} aria-label='Login'>Get Ticket</button>
-
             )}
           </div>
           <div className="dots">
-            {events.map((_, index) => (
+            {filteredEvents.map((_, index) => (
               <span
                 key={index}
-                className={`dot ${currentIndex === index ? 'active' : ''}`}
+                className={`dot ${currentIndex % filteredEvents.length === index ? 'active' : ''}`}
                 onClick={() => handleDotClick(index)}
-                aria-label = {`Slide ${index + 1 }` }
+                aria-label={`Slide ${index + 1}`}
               />
             ))}
           </div>
         </div>
       ) : (
-        <p>No events available yet</p>
+        <p>No events available</p>
       )}
     </section>
   );
