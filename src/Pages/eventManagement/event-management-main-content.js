@@ -1,9 +1,19 @@
+<<<<<<< HEAD
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./event-management-main-content.css";
 import profile from "./images-logos/profile-logo.jpg";
 import { FaSearch, FaEdit, FaTrash, FaCamera, FaUsers } from "react-icons/fa";
 import useImageUpload from "./useImageUpload";
+=======
+import React, { useRef, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './event-management-main-content.css';
+import profile from './images-logos/profile-logo.jpg';
+import { FaEdit, FaTrash, FaCamera, FaUsers } from 'react-icons/fa';
+import useImageUpload from './useImageUpload';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+>>>>>>> 1f9049a8916a677f388224f05f53795a2ff43a56
 
 function EventManagementMainContent() {
   const [events, setEvents] = useState([]);
@@ -146,17 +156,6 @@ function EventManagementMainContent() {
   return (
     <div id="management-main-content">
       <div className="management-events-section">
-        <header className="management-event-management-header">
-          <p className="management-eventManagement2">EVENT MANAGEMENT</p>
-          <input
-            type="text"
-            placeholder="search your events"
-            className="management-search-bar"
-          />
-          <span className="management-search-icon">
-            <FaSearch />
-          </span>
-        </header>
         <div className="management-slider-container">
           <button
             className="management-arrow-button left"
