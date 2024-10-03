@@ -1,19 +1,16 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import EventDetails from './EventDetails';
 import '@testing-library/jest-dom';
 
 // Mock TextEncoder and TextDecoder
-class MockTextEncoder {
+global.TextEncoder = class {
   encode() { return new Uint8Array(); }
-}
-class MockTextDecoder {
+};
+global.TextDecoder = class {
   decode() { return ''; }
-}
-
-global.TextEncoder = MockTextEncoder;
-global.TextDecoder = MockTextDecoder;
+};
 
 // Mock the react-icons
 jest.mock('react-icons/fa', () => ({
@@ -23,7 +20,7 @@ jest.mock('react-icons/fa', () => ({
   FaTicketAlt: () => <span>TicketIcon</span>,
 }));
 
-// Mock the fetch function
+// Mock fetch
 global.fetch = jest.fn();
 
 // Mock Firebase
@@ -38,7 +35,7 @@ jest.mock('firebase/database', () => ({
   update: jest.fn(),
 }));
 
-// Update the BuyTicket mock
+// Mock BuyTicket component
 jest.mock('../BuyTickets/purchase', () => () => <div data-testid="mock-buy-tickets">Mock BuyTickets</div>);
 
 const mockEvent = {
@@ -46,6 +43,8 @@ const mockEvent = {
   title: 'Test Event',
   venue: 'Test Venue',
   date: '2023-07-01T10:00:00',
+  time: '10:00',
+  endTime: '12:00',
   capacity: 100,
   availableTickets: 50,
   description: 'Test Description',
@@ -85,13 +84,15 @@ describe('EventDetails', () => {
   });
 
   it('renders event details correctly', async () => {
-    render(
-      <MemoryRouter initialEntries={['/events/1']}>
-        <Routes>
-          <Route path="/events/:id" element={<EventDetails />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={['/events/1']}>
+          <Routes>
+            <Route path="/events/:id" element={<EventDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
 
     await waitFor(() => {
       expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
@@ -104,21 +105,21 @@ describe('EventDetails', () => {
     expect(screen.getByText('Test Description')).toBeInTheDocument();
     expect(screen.getByText(/Ticket Price:/)).toBeInTheDocument();
     expect(screen.getByText('R')).toBeInTheDocument();
-    
-    // Change this line
     expect(screen.getByText((content, element) => {
       return element.tagName.toLowerCase() === 'strong' && content.includes('10');
     })).toBeInTheDocument();
   });
 
   it('opens buy ticket modal when button is clicked', async () => {
-    render(
-      <MemoryRouter initialEntries={['/events/1']}>
-        <Routes>
-          <Route path="/events/:id" element={<EventDetails />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={['/events/1']}>
+          <Routes>
+            <Route path="/events/:id" element={<EventDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
 
     await waitFor(() => {
       expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
@@ -129,6 +130,65 @@ describe('EventDetails', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('mock-buy-tickets')).toBeInTheDocument();
-    }, { timeout: 3000 });
+    });
+  });
+
+  it('displays event tags correctly', async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={['/events/1']}>
+          <Routes>
+            <Route path="/events/:id" element={<EventDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText('tag1')).toBeInTheDocument();
+    expect(screen.getByText('tag2')).toBeInTheDocument();
+  });
+
+  it('displays event time correctly', async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={['/events/1']}>
+          <Routes>
+            <Route path="/events/:id" element={<EventDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText(/10:00 - 12:00/)).toBeInTheDocument();
+  });
+
+  it('renders Google Maps iframe', async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={['/events/1']}>
+          <Routes>
+            <Route path="/events/:id" element={<EventDetails />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+    });
+
+    const iframe = screen.getByTitle('Map showing location of Test Venue');
+    expect(iframe).toBeInTheDocument();
+    expect(iframe.src).toContain('https://www.google.com/maps/embed/v1/place');
+    expect(iframe.src).toContain('mock-google-api-key');
+    expect(iframe.src).toContain('Test%20Venue');
   });
 });
