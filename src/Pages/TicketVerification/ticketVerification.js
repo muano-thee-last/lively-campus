@@ -1,23 +1,33 @@
-
+/* eslint-disable */
 import React, { useState, useEffect } from "react";
 import { QrReader } from "react-qr-reader";
+import { useLocation } from "react-router-dom";
 import "./ticketVerification.css";
 
 export default function TicketVerification() {
-  const [ticket, setTicket] = useState(null);
+  const [ticket, setTicket] = useState(null); 
   const [ticketNum, setTicketNum] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [result, setResult] = useState(""); 
   const [isCameraActive, setIsCameraActive] = useState(false);
 
+  const location = useLocation();
+
+  const getQueryParams = () => {
+    const searchParams = new URLSearchParams(location.search);
+    return {
+      ticketCode: searchParams.get("ticketCode") || "",
+    };
+  };
+
   useEffect(() => {
-    let timer;
-    if (success) {
-      timer = setTimeout(() => setSuccess(""), 5000);
+    const { ticketCode } = getQueryParams();
+    if (ticketCode) {
+      setTicketNum(ticketCode);
+      verifyTicket(ticketCode);
     }
-    return () => clearTimeout(timer);
-  }, [success]);
+  }, [location.search]);
 
   const handleInputChange = (event) => {
     setTicketNum(event.target.value);
@@ -26,7 +36,8 @@ export default function TicketVerification() {
   const verifyTicket = async (code) => {
     setIsLoading(true);
     setError("");
-    setSuccess("");
+    setResult("");
+    setTicket(null); 
 
     try {
       const response = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/verifyTicket?ticketCode=${code}`);
@@ -34,17 +45,22 @@ export default function TicketVerification() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      const ticketData = {
-        price: `R${data.price}`,
-        purchaseDate: new Date(data.purchaseDate).toLocaleString(),
-        code: data.ticketCode,
-      };
-      setTicket(ticketData);
-      setSuccess("Ticket verified successfully!");
+
+      if (data && data.ticketCode === code) {
+        const ticketData = {
+          price: `R${data.price}`,
+          purchaseDate: new Date(data.purchaseDate).toLocaleString(),
+          code: data.ticketCode,
+        };
+        setTicket(ticketData); 
+        setResult("Valid"); 
+      } else {
+        setResult("Not valid");
+      }
     } catch (error) {
       console.error("Error fetching ticket:", error);
       setError("Unable to verify ticket. Please try again.");
-      setTicket(null);
+      setResult("Not valid"); 
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +82,7 @@ export default function TicketVerification() {
   return (
     <div className="ticket-verification-container">
       <h2 className="title">Ticket Verification</h2>
-      
+
       <div className="input-group">
         <input
           type="text"
@@ -108,13 +124,13 @@ export default function TicketVerification() {
         </div>
       )}
 
-      {success && (
-        <div className="alert success">
-          <strong>Success:</strong> {success}
+      {result && (
+        <div className={`alert ${result === "Valid" ? "success" : "error"}`}>
+          <strong>{result === "Valid" ? "Success:" : "Error:"}</strong> {result}
         </div>
       )}
 
-      {ticket && (
+      {ticket && result === "Valid" && (
         <div className="ticket-info">
           <h3>Ticket Information</h3>
           <p><strong>Price:</strong> {ticket.price}</p>
