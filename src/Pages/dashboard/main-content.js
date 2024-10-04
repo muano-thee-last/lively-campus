@@ -53,7 +53,7 @@ function MainContent({ searchQuery }) {
   useEffect(() => {
     setUser(JSON.parse(sessionStorage.getItem("user")));
   }, []);
-  
+   
   const fetchUserLikedEvents = useCallback(async () => {
     if (!userId) return;
   
@@ -132,7 +132,7 @@ function MainContent({ searchQuery }) {
         return response.json();
       })
       .then((data) => {
-        setEvents(data);
+        setEvents(data.filter((event) => event.isApproved === true && event.date >= new Date().toISOString()));  
       })
       .catch((error) => {
         console.error("Error fetching events:", error);
@@ -578,7 +578,8 @@ const handleSubmitReply = async (eventId, commentIndex) => {
                                   <FavoriteIcon  className="like-icon" />
                                 </Badge>
                               </IconButton>
-                              <IconButton alt="comments" onClick={() => handleCommentsClick(event.id)} >
+                              <IconButton alt="comments" 
+                              data-testid="comments-button" onClick={() => handleCommentsClick(event.id)} >
                                <Badge badgeContent={event.comments.length} color="secondary">
                               <CommentIcon />
                               </Badge>
@@ -638,7 +639,8 @@ const handleSubmitReply = async (eventId, commentIndex) => {
                 <div className="replies-section">
                 {/* Like button */}
 
-                  <button className="toggle-replies-button" onClick={() => toggleReplyVisibility(idx)}>
+                  <button className="toggle-replies-button" data-testid={`toggle-replies-button-${idx}`} 
+                  onClick={() => toggleReplyVisibility(idx)}>
                     {replyVisible[idx] ? 'Hide replies' : `View replies (${com.replies.length})`}
                   </button>
                   {replyVisible[idx] && (
@@ -659,7 +661,7 @@ const handleSubmitReply = async (eventId, commentIndex) => {
               )}
 
               {/* Reply Input Section */}
-              <button className="reply-button" onClick={() => toggleReplyInputVisibility(idx)}>
+              <button className="reply-button" data-testid={`reply-button-${idx}`} onClick={() => toggleReplyInputVisibility(idx)}>
                 {replyInputVisible[idx] ? 'Cancel' : 'Reply'}
               </button>
               {replyInputVisible[idx] && (
@@ -671,7 +673,7 @@ const handleSubmitReply = async (eventId, commentIndex) => {
   value={replyText[idx] || ''} // Make sure it's tied to the correct comment
   onChange={(e) => handleReplyChange(idx,e.target.value)}
 />
-                  <button className="submit-reply-button" onClick={() => handleSubmitReply(currentEventId,idx)}>
+                  <button data-testid="submit-reply-button" className="submit-reply-button" onClick={() => handleSubmitReply(currentEventId,idx)}>
                     Reply
                   </button>
                 </div>
@@ -702,7 +704,12 @@ const handleSubmitReply = async (eventId, commentIndex) => {
       </div>
     </div>
   </div>
-)}
+)}  
+  {filteredEvents.length === 0 && (
+    <div className="no-events-message">
+      <p>No events found.</p>
+    </div>
+  )}
 
       {showFeedback && (
         <div className="feedback-box">
@@ -711,6 +718,7 @@ const handleSubmitReply = async (eventId, commentIndex) => {
       )}
        
     </div>
+
     
   );
 }

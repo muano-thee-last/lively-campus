@@ -12,3 +12,4 @@ describe('Footer component', () => {
     expect(container.firstChild).toHaveAttribute('id', 'footer');
   });
 });
+ 

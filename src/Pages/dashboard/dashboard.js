@@ -12,7 +12,7 @@ function Dashboard() {
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
   };
-
+ 
   const handleSearch = (query) => {
     setSearchQuery(query);
   };

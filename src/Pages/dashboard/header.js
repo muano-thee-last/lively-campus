@@ -5,6 +5,7 @@ import {
   Notifications as NotificationsIcon,
   AccountCircle as AccountCircleIcon,
 } from "@mui/icons-material"; // MUI icons
+import SearchIcon from '@mui/icons-material/Search';
 import { IconButton, InputBase, Badge } from "@mui/material";
 import logo from "./images-logos/logo.png";
 import "./header.css";
@@ -170,9 +171,9 @@ function Header({ toggleSidebar, onSearch }) {
             <IconButton
               type="submit"
               className="search-button"
-              style={{ scale: "2.5" }}
+              style={{ scale: "1.1" }}
             >
-              {/* <SearchIcon /> */}
+             <SearchIcon /> 
             </IconButton>
           </div>
         )}
