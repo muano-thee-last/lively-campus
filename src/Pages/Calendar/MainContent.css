@@ -51,18 +51,23 @@
 }
 
 .mini-date.highlight {
-  background-color: #90EE90; /* Light green */
+  background-color: #90EE90; /* Light green for today */
   color: #003B5C;
   border-radius: 50%;
 }
 
 .mini-date.has-events {
-  background-color: rgb(209, 209, 209); /* Gold color for days with events */
+  background-color: #e0e0e0; /* Light grey for days with any events */
   border-radius: 50%;
 }
 
 .mini-date.has-user-events {
   background-color: #FFD700; /* Gold color for days with user events */
+  border-radius: 50%;
+}
+
+.mini-date.has-ticketed-events {
+  background-color: #4CAF50; /* Green color for days with ticketed events */
   border-radius: 50%;
 }
 
@@ -177,10 +182,12 @@
 /* Each day block */
 .day {
   background-color: #fff;
-  padding: 10px;
-  min-height: 100px;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  padding: 5px;
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* Hide overflow */
 }
 
 .day:hover {
@@ -191,33 +198,27 @@
 
 .day-number {
   font-weight: 600;
-  margin-bottom: 5px;
   color: #333;
-}
-
-/* Highlight for current day */
-.highlight-day {
-  background-color: #e8f0fe;
-  border: 2px solid #003B5C;
+  margin-bottom: 5px;
 }
 
 .events-container {
   flex-grow: 1;
   overflow-y: auto;
-  max-height: 80px; /* Limit the height to prevent overflow */
+  font-size: 0.8em;
+  max-height: calc(100% - 25px); /* Adjust based on your day-number height */
 }
 
 .event-details {
   background-color: #003B5C;
   color: #ffffff;
-  padding: 4px 6px;
-  margin-bottom: 3px;
-  font-size: 0.75em;
+  padding: 2px 4px;
+  margin-bottom: 2px;
   border-radius: 3px;
-  transition: all 0.3s ease;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  word-wrap: break-word;
+  white-space: normal;
+  font-size: 0.9em;
 }
 
 .event-details:hover {
@@ -230,11 +231,41 @@
 .event-title {
   font-weight: bold;
   display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .event-time {
   font-size: 0.9em;
   opacity: 0.8;
+}
+
+/* Highlight for current day */
+.highlight-day {
+  background-color: #e8f0fe;
+  border: 2px solid #003B5C;
+}
+
+.has-ticketed-events {
+  background-color: #E6F3FF;
+}
+
+.has-user-events {
+  background-color: #FFF3E0;
+}
+
+.event-details.ticketed-event {
+  background-color: #4CAF50;
+}
+
+.event-details.user-event {
+  background-color: #FFD700;
+  color: #003B5C;
+}
+
+.event-details.user-event:hover {
+  background-color: #FFC700;
 }
 
 /* Add this new style for days with events */
@@ -600,6 +631,14 @@
   .today-event-time {
     font-size: 8px;
   }
+}
+
+.mini-date.highlight-today {
+  background-color: #90EE90; /* Light green for today */
+  color: #003B5C;
+  border-radius: 50%;
+  font-weight: bold;
+  box-shadow: 0 0 0 2px #003B5C;
 }
 
 /* ... keep any remaining styles ... */

@@ -23,8 +23,9 @@ const MainContent = () => {
   const [filterType, setFilterType] = useState('');
   const [filterLocation, setFilterLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [userTicketedEvents, setUserTicketedEvents] = useState([]);
   const calendarRef = useRef(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
@@ -41,15 +42,28 @@ const MainContent = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        // Log any events with missing properties
-        data.forEach((event, index) => {
-          if (!event.venue) console.warn(`Event at index ${index} is missing venue property`);
-          if (!event.tags) console.warn(`Event at index ${index} is missing tags property`);
-        });
         setEvents(data);
+        
+        // Fetch user's ticketed events
+        const userID = sessionStorage.getItem("uid");
+        const ticketResponse = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/getTicketsx/${userID}`);
+        if (!ticketResponse.ok) {
+          throw new Error(`HTTP error! Status: ${ticketResponse.status}`);
+        }
+        const ticketData = await ticketResponse.json();
+        
+        // Filter out tickets with "Title not found" and map to event IDs
+        const validTicketEventIds = ticketData
+          .filter(ticket => ticket.eventTitle !== "Title not found")
+          .map(ticket => ticket.eventId);
+
+        // Filter events to only include those the user has tickets for
+        const ticketedEvents = data.filter(event => validTicketEventIds.includes(event.id));
+        setUserTicketedEvents(ticketedEvents);
       } catch (error) {
         console.error('Error fetching events:', error);
-        setEvents([]); // Set events to an empty array in case of error
+        setEvents([]);
+        setUserTicketedEvents([]);
       }
     };
 
@@ -114,7 +128,15 @@ const MainContent = () => {
     return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  // New function to check if a day has events
+  const isUserEvent = (event) => {
+    return currentUser && event.organizerName === currentUser.displayName;
+  };
+
+  const isTicketedEvent = (event) => {
+    return userTicketedEvents.some(te => te.id === event.id);
+  };
+
+  // Update dayHasEvents to check for both user events and ticketed events
   const dayHasEvents = (day, month, year) => {
     return filteredEvents.some(event => {
       const eventDate = new Date(event.date);
@@ -124,8 +146,23 @@ const MainContent = () => {
     });
   };
 
-  const isUserEvent = (event) => {
-    return currentUser && event.organizerName === currentUser.displayName;
+  const dayHasUserEvents = (day, month, year) => {
+    return filteredEvents.some(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.getDate() === day && 
+             eventDate.getMonth() === month && 
+             eventDate.getFullYear() === year &&
+             isUserEvent(event);
+    });
+  };
+
+  const dayHasTicketedEvents = (day, month, year) => {
+    return userTicketedEvents.some(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.getDate() === day && 
+             eventDate.getMonth() === month && 
+             eventDate.getFullYear() === year;
+    });
   };
 
   // Update the renderMiniCalendar function
@@ -147,34 +184,30 @@ const MainContent = () => {
           ))}
         </div>
         <div className="mini-calendar-dates">
-          {paddedDays.map((day, index) => (
-            <div 
-              key={`mini-${index}`} 
-              className={`mini-date ${
-                day === today.getDate() && miniCalendarMonth === today.getMonth() && miniCalendarYear === today.getFullYear() 
-                  ? 'highlight' 
-                  : day && dayHasEvents(day, miniCalendarMonth, miniCalendarYear) 
-                    ? dayHasUserEvents(day, miniCalendarMonth, miniCalendarYear) ? 'has-user-events' : 'has-events'
-                    : ''
-              } ${filterDate && day === new Date(filterDate).getDate() ? 'selected-date' : ''}`}
-            >
-              {day}
-            </div>
-          ))}
+          {paddedDays.map((day, index) => {
+            const isToday = day === today.getDate() && miniCalendarMonth === today.getMonth() && miniCalendarYear === today.getFullYear();
+            const hasEvents = day && dayHasEvents(day, miniCalendarMonth, miniCalendarYear);
+            const hasUserEvents = day && dayHasUserEvents(day, miniCalendarMonth, miniCalendarYear);
+            const hasTicketedEvents = day && dayHasTicketedEvents(day, miniCalendarMonth, miniCalendarYear);
+            const isSelectedDate = filterDate && day === new Date(filterDate).getDate();
+
+            return (
+              <div 
+                key={`mini-${index}`} 
+                className={`mini-date 
+                  ${isToday ? 'highlight-today' : ''}
+                  ${hasEvents ? 'has-events' : ''}
+                  ${hasUserEvents ? 'has-user-events' : ''}
+                  ${hasTicketedEvents ? 'has-ticketed-events' : ''}
+                  ${isSelectedDate ? 'selected-date' : ''}`}
+              >
+                {day}
+              </div>
+            );
+          })}
         </div>
       </div>
     );
-  };
-
-  // New function to check if a day has events created by the current user
-  const dayHasUserEvents = (day, month, year) => {
-    return filteredEvents.some(event => {
-      const eventDate = new Date(event.date);
-      return eventDate.getDate() === day && 
-             eventDate.getMonth() === month && 
-             eventDate.getFullYear() === year &&
-             isUserEvent(event);
-    });
   };
 
   // New function to get today's events
@@ -198,7 +231,11 @@ const MainContent = () => {
     return filteredEvents.filter(event => {
       const eventDate = new Date(event.date);
       return eventDate.toDateString() === date.toDateString();
-    });
+    }).map(event => ({
+      ...event,
+      isTicketed: isTicketedEvent(event),
+      isUserEvent: isUserEvent(event)
+    }));
   };
 
   const isPastEvent = (eventDate) => {
@@ -355,32 +392,31 @@ const MainContent = () => {
           ))}
 
           {[...Array(daysInMonth).keys()].map(day => {
-            const dayEvents = filteredEvents.filter(event => {
-              const eventDate = new Date(event.date);
-              return eventDate.getDate() === day + 1 && 
-                     eventDate.getMonth() === currentMonth && 
-                     eventDate.getFullYear() === currentYear;
-            });
-
-            const isToday = day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
-            const isPastDay = new Date(currentYear, currentMonth, day + 1) < new Date().setHours(0, 0, 0, 0);
-            const hasUserEvents = dayEvents.some(event => isUserEvent(event));
+            const currentDayEvents = getEventsForDate(new Date(currentYear, currentMonth, day + 1));
+            const isTodayDate = day + 1 === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
+            const isPastDayDate = new Date(currentYear, currentMonth, day + 1) < new Date().setHours(0, 0, 0, 0);
+            const hasTicketedEventsForDay = currentDayEvents.some(event => isTicketedEvent(event));
+            const hasUserEventsForDay = currentDayEvents.some(event => isUserEvent(event));
 
             return (
               <div 
                 key={day} 
-                className={`day ${isToday ? 'highlight-day' : ''} 
-                  ${dayEvents.length > 0 ? hasUserEvents ? 'has-user-events' : 'has-events' : ''} 
-                  ${isPastDay ? 'past-day' : ''}`}
+                className={`day ${isTodayDate ? 'highlight-day' : ''} 
+                  ${hasTicketedEventsForDay ? 'has-ticketed-events' : ''}
+                  ${hasUserEventsForDay ? 'has-user-events' : ''}
+                  ${isPastDayDate ? 'past-day' : ''}`}
                 onClick={() => handleDateClick(day + 1)}
               >
                 <span className="day-number">{day + 1}</span>
-                {dayEvents.length > 0 && (
+                {currentDayEvents.length > 0 && (
                   <div className="events-container">
-                    {dayEvents.map(event => (
+                    {currentDayEvents.map(event => (
                       <div 
                         key={event.id} 
-                        className={`event-details ${isPastEvent(event.date) ? 'past-event' : ''} ${isUserEvent(event) ? 'user-event' : ''}`} 
+                        className={`event-details 
+                          ${isPastEvent(event.date) ? 'past-event' : ''} 
+                          ${isTicketedEvent(event) ? 'ticketed-event' : ''}
+                          ${isUserEvent(event) ? 'user-event' : ''}`} 
                         title={`${event.title} - ${formatEventDateTime(event.date)}`}
                       >
                         <span className="event-title">{event.title}</span>
@@ -400,6 +436,7 @@ const MainContent = () => {
           date={selectedDate.toDateString()}
           events={getEventsForDate(selectedDate)}
           onClose={handleClosePopup}
+          currentUser={currentUser}
         />
       )}
     </div>
