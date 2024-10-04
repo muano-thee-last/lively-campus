@@ -142,8 +142,26 @@ const MainContent = () => {
       const eventDate = new Date(event.date);
       return eventDate.getDate() === day && 
              eventDate.getMonth() === month && 
+             eventDate.getFullYear() === year;
+    });
+  };
+
+  const dayHasUserEvents = (day, month, year) => {
+    return filteredEvents.some(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.getDate() === day && 
+             eventDate.getMonth() === month && 
              eventDate.getFullYear() === year &&
-             (isUserEvent(event) || isTicketedEvent(event));
+             isUserEvent(event);
+    });
+  };
+
+  const dayHasTicketedEvents = (day, month, year) => {
+    return userTicketedEvents.some(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.getDate() === day && 
+             eventDate.getMonth() === month && 
+             eventDate.getFullYear() === year;
     });
   };
 
@@ -166,20 +184,27 @@ const MainContent = () => {
           ))}
         </div>
         <div className="mini-calendar-dates">
-          {paddedDays.map((day, index) => (
-            <div 
-              key={`mini-${index}`} 
-              className={`mini-date ${
-                day === today.getDate() && miniCalendarMonth === today.getMonth() && miniCalendarYear === today.getFullYear() 
-                  ? 'highlight' 
-                  : day && dayHasEvents(day, miniCalendarMonth, miniCalendarYear) 
-                    ? 'has-user-events'
-                    : ''
-              } ${filterDate && day === new Date(filterDate).getDate() ? 'selected-date' : ''}`}
-            >
-              {day}
-            </div>
-          ))}
+          {paddedDays.map((day, index) => {
+            const isToday = day === today.getDate() && miniCalendarMonth === today.getMonth() && miniCalendarYear === today.getFullYear();
+            const hasEvents = day && dayHasEvents(day, miniCalendarMonth, miniCalendarYear);
+            const hasUserEvents = day && dayHasUserEvents(day, miniCalendarMonth, miniCalendarYear);
+            const hasTicketedEvents = day && dayHasTicketedEvents(day, miniCalendarMonth, miniCalendarYear);
+            const isSelectedDate = filterDate && day === new Date(filterDate).getDate();
+
+            return (
+              <div 
+                key={`mini-${index}`} 
+                className={`mini-date 
+                  ${isToday ? 'highlight-today' : ''}
+                  ${hasEvents ? 'has-events' : ''}
+                  ${hasUserEvents ? 'has-user-events' : ''}
+                  ${hasTicketedEvents ? 'has-ticketed-events' : ''}
+                  ${isSelectedDate ? 'selected-date' : ''}`}
+              >
+                {day}
+              </div>
+            );
+          })}
         </div>
       </div>
     );
