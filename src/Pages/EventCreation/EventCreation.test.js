@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import EventCreation from './EventCreation';
 import { BrowserRouter } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
+import { ToastContainer } from 'react-toastify';
 
 // Mock the necessary modules and functions
 jest.mock('react-router-dom', () => ({
@@ -32,21 +33,22 @@ global.fetch = jest.fn(() =>
   })
 );
 
-// Add this mock at the top of the file, after other imports
-global.URL.createObjectURL = jest.fn();
+// Mock the ToastContainer
+jest.mock('react-toastify', () => ({
+  ToastContainer: jest.fn(() => null),
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+    warning: jest.fn(),
+  },
+}));
+
+// Add this before the describe block
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('EventCreation Component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    Object.defineProperty(window, 'sessionStorage', {
-      value: {
-        getItem: jest.fn(() => JSON.stringify({ displayName: 'Test User', uid: '123' })),
-        setItem: jest.fn(),
-      },
-      writable: true
-    });
-  });
-
   test('renders EventCreation component', async () => {
     await act(async () => {
       render(
@@ -171,6 +173,7 @@ describe('EventCreation Component', () => {
       render(
         <BrowserRouter>
           <EventCreation />
+          <ToastContainer />
         </BrowserRouter>
       );
     });
@@ -185,8 +188,174 @@ describe('EventCreation Component', () => {
     });
 
     // Check if the error toast is displayed
-    expect(await screen.findByText('Please fill in the form')).toBeInTheDocument();
+    expect(require('react-toastify').toast.error).toHaveBeenCalledWith('Please fill in the form', expect.anything());
     expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  test('handles available tickets input', async () => {
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+        </BrowserRouter>
+      );
+    });
+
+    const availableTicketsInput = screen.getByLabelText('Available Tickets');
+    fireEvent.change(availableTicketsInput, { target: { value: '100' } });
+    expect(availableTicketsInput.value).toBe('100');
+  });
+
+  test('displays error for available tickets exceeding capacity', async () => {
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+        </BrowserRouter>
+      );
+    });
+
+    const capacityInput = screen.getByLabelText('Capacity');
+    const availableTicketsInput = screen.getByLabelText('Available Tickets');
+
+    fireEvent.change(capacityInput, { target: { value: '50' } });
+    fireEvent.change(availableTicketsInput, { target: { value: '100' } });
+
+    expect(availableTicketsInput).toHaveClass('input-error');
+  });
+
+  test('handles date input', async () => {
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+        </BrowserRouter>
+      );
+    });
+
+    // Assuming the date input is part of the venue selection process
+    const availableVenuesButton = screen.getByText('Available Venues');
+    fireEvent.click(availableVenuesButton);
+
+    const dateInput = screen.getByLabelText('Date');
+    fireEvent.change(dateInput, { target: { value: '2023-12-31' } });
+    expect(dateInput.value).toBe('2023-12-31');
+  });
+
+  test('handles time input', async () => {
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+        </BrowserRouter>
+      );
+    });
+
+    // Assuming the time inputs are part of the venue selection process
+    const availableVenuesButton = screen.getByText('Available Venues');
+    fireEvent.click(availableVenuesButton);
+
+    const startTimeInput = screen.getByLabelText('Start Time');
+    const endTimeInput = screen.getByLabelText('End Time');
+
+    fireEvent.change(startTimeInput, { target: { value: '14:00' } });
+    fireEvent.change(endTimeInput, { target: { value: '16:00' } });
+
+    expect(startTimeInput.value).toBe('14:00');
+    expect(endTimeInput.value).toBe('16:00');
+  });
+
+  test('selects and deselects tags', async () => {
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+        </BrowserRouter>
+      );
+    });
+
+    const addTagButton = screen.getByText('Add tag');
+    fireEvent.click(addTagButton);
+
+    const musicTag = screen.getByLabelText('Music');
+    const sportsTag = screen.getByLabelText('Sports');
+
+    fireEvent.click(musicTag);
+    fireEvent.click(sportsTag);
+
+    expect(musicTag).toBeChecked();
+    expect(sportsTag).toBeChecked();
+
+    fireEvent.click(musicTag);
+    expect(musicTag).not.toBeChecked();
+  });
+
+  test('handles successful form submission', async () => {
+    const mockNavigate = jest.fn();
+    jest.spyOn(require('react-router-dom'), 'useNavigate').mockReturnValue(mockNavigate);
+
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+          <ToastContainer />
+        </BrowserRouter>
+      );
+    });
+
+    // Fill in all required fields
+    fireEvent.change(screen.getByPlaceholderText('Event Name'), { target: { value: 'Test Event' } });
+    fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'Test Description' } });
+    fireEvent.change(screen.getByLabelText(/Ticket Price/), { target: { value: '50' } });
+
+    // Assuming these fields are populated after venue selection
+    const availableVenuesButton = screen.getByText('Available Venues');
+    fireEvent.click(availableVenuesButton);
+
+    // Mock successful API calls
+    global.fetch.mockImplementationOnce(() => Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({ bookingId: 'mocked-booking-id' })
+    }));
+
+    // Submit form
+    await act(async () => {
+      fireEvent.click(screen.getByText('Create Event'));
+    });
+
+    // Check if the success toast is displayed
+    expect(require('react-toastify').toast.success).toHaveBeenCalledWith('Event created successfully', expect.anything());
+    expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+  });
+
+  test('handles API error during form submission', async () => {
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+          <ToastContainer />
+        </BrowserRouter>
+      );
+    });
+
+    // Fill in required fields
+    fireEvent.change(screen.getByPlaceholderText('Event Name'), { target: { value: 'Test Event' } });
+    fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'Test Description' } });
+    fireEvent.change(screen.getByLabelText(/Ticket Price/), { target: { value: '50' } });
+
+    // Mock API error
+    global.fetch.mockImplementationOnce(() => Promise.resolve({
+      ok: false,
+      status: 500
+    }));
+
+    // Submit form
+    await act(async () => {
+      fireEvent.click(screen.getByText('Create Event'));
+    });
+
+    // Check if the error toast is displayed
+    expect(require('react-toastify').toast.error).toHaveBeenCalledWith('Please fill in the form', expect.anything());
   });
 
   // Add more tests as needed for other functionalities
