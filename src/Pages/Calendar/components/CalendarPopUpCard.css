@@ -126,3 +126,24 @@
 .calendar-popup-event * {
   text-decoration: none;
 }
+
+.calendar-popup-event.ticketed-event {
+  border-left: 4px solid #4CAF50;
+}
+
+.calendar-popup-event.user-event {
+  border-left: 4px solid #FFD700;
+}
+
+.event-status {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.event-status.ticketed {
+  color: #4CAF50;
+}
+
+.event-status.user-event {
+  color: #FFD700;
+}

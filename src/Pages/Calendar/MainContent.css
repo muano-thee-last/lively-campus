@@ -347,7 +347,7 @@
 }
 
 .has-user-events {
-  background-color: #FFFACD; /* Light yellow background for days with user events */
+  background-color: #E6F3FF; /* Light blue background for days with user events or ticketed events */
 }
 
 .event-details.user-event {
@@ -357,6 +357,16 @@
 
 .event-details.user-event:hover {
   background-color: #FFC700;
+}
+
+/* Add this new style for ticketed events */
+.event-details.ticketed-event {
+  background-color: #4CAF50; /* Green color for ticketed events */
+  color: white;
+}
+
+.event-details.ticketed-event:hover {
+  background-color: #45a049;
 }
 
 /* Responsive styles */
@@ -603,3 +613,21 @@
 }
 
 /* ... keep any remaining styles ... */
+
+.has-ticketed-events {
+  background-color: #E6F3FF; /* Light blue background for days with ticketed events */
+}
+
+.has-user-events {
+  background-color: #FFF3E0; /* Light orange background for days with user-created events */
+}
+
+.event-details.ticketed-event {
+  background-color: #4CAF50; /* Green color for ticketed events */
+  color: white;
+}
+
+.event-details.user-event {
+  background-color: #FFD700; /* Gold color for user-created events */
+  color: #003B5C;
+}
