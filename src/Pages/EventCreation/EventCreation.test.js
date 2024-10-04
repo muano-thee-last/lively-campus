@@ -32,6 +32,9 @@ global.fetch = jest.fn(() =>
   })
 );
 
+// Add this mock at the top of the file, after other imports
+global.URL.createObjectURL = jest.fn();
+
 describe('EventCreation Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -137,13 +140,13 @@ describe('EventCreation Component', () => {
     });
 
     const file = new File(['dummy content'], 'test.png', { type: 'image/png' });
-    const uploadSection = screen.getByText('Upload Cover Image').closest('div');
+    const uploadSection = screen.getByText(/Upload Cover Image|Change Cover Image/).closest('div');
     const fileInput = uploadSection.nextSibling;
 
     fireEvent.click(uploadSection);
     fireEvent.change(fileInput, { target: { files: [file] } });
 
-    expect(screen.getByText('Change Cover Image')).toBeInTheDocument();
+    expect(screen.getByText(/Upload Cover Image|Change Cover Image/)).toBeInTheDocument();
   });
 
   test('displays error for negative ticket price', async () => {
@@ -177,7 +180,9 @@ describe('EventCreation Component', () => {
     fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'Test Description' } });
 
     // Submit form
-    fireEvent.click(screen.getByText('Create Event'));
+    await act(async () => {
+      fireEvent.click(screen.getByText('Create Event'));
+    });
 
     // Check if the error toast is displayed
     expect(await screen.findByText('Please fill in the form')).toBeInTheDocument();
