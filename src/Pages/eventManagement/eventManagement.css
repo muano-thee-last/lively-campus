@@ -13,6 +13,10 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.status-bar{
+  margin-left: 10px;
+}
 #eventManagement p,
 h1,
 h2,
@@ -21,7 +25,6 @@ h4,
 h5 {
   margin: 0;
 }
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

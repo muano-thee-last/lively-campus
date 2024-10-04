@@ -1,73 +1,94 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
-
-// Mock react-modal
-jest.mock('react-modal', () => {
-  const Modal = ({ children, isOpen, onRequestClose }) => (
-    isOpen ? (
-      <div data-testid="modal" onClick={onRequestClose}>
-        {children}
-      </div>
-    ) : null
-  );
-  Modal.setAppElement = jest.fn();
-  return Modal;
-});
-
-// Import TicketModal after mocking react-modal
 import TicketModal from './ticketModal';
 
-describe('TicketModal', () => {
+jest.mock('react-modal', () => {
+  return function MockModal({ isOpen, onRequestClose, children }) {
+    if (!isOpen) return null;
+    return (
+      <div data-testid="modal">
+        {children}
+        <button onClick={onRequestClose}>Close Modal</button>
+      </div>
+    );
+  };
+});
+
+jest.mock('./ticketModal.module.css', () => ({
+  ticketModal: 'mockTicketModal',
+  overlay: 'mockOverlay',
+  contents: 'mockContents',
+  modalContent: 'mockModalContent',
+  eventImage: 'mockEventImage',
+  ticketDetails: 'mockTicketDetails',
+  ticketHeader: 'mockTicketHeader',
+  infoRow: 'mockInfoRow',
+  titleInput: 'mockTitleInput',
+  qrCodeContainer: 'mockQrCodeContainer',
+  qrCode: 'mockQrCode',
+  closeBtn: 'mockCloseBtn',
+}));
+
+describe('TicketModal Component', () => {
   const mockProps = {
     isOpen: true,
     onClose: jest.fn(),
-    eventImage: 'event-image.jpg',
+    eventImage: 'test-image.jpg',
     eventName: 'Test Event',
-    eventDate: '2023-07-01',
-    eventLocation: 'Test Location',
+    eventDate: '2023-07-15',
+    eventLocation: 'Test Venue',
     studentNo: '12345',
     ticketNo: 'TICKET123',
-    ticketDate: '2023-07-01',
+    ticketDate: '2023-07-15',
     ticketTime: '19:00',
-    qrCode: 'qr-code.jpg'
+    qrCode: 'qr-code.png',
+    eventId: '1',
   };
 
-  it('renders correctly when open', () => {
+  it('renders modal content when isOpen is true', () => {
     render(<TicketModal {...mockProps} />);
 
     expect(screen.getByTestId('modal')).toBeInTheDocument();
-    expect(screen.getByText('Test Event')).toBeInTheDocument();
-    expect(screen.getByText('2023-07-01 ~ Test Location')).toBeInTheDocument();
-    expect(screen.getByText('Student no:')).toBeInTheDocument();
-    expect(screen.getByText('12345')).toBeInTheDocument();
-    expect(screen.getByText('Ticket Number:')).toBeInTheDocument();
-    expect(screen.getByText('TICKET123')).toBeInTheDocument();
-    expect(screen.getByText('Date:')).toBeInTheDocument();
-    expect(screen.getByText('2023-07-01')).toBeInTheDocument();
-    expect(screen.getByText('Time:')).toBeInTheDocument();
-    expect(screen.getByText('19:00')).toBeInTheDocument();
-    expect(screen.getByText('Scan QR code at the entrance')).toBeInTheDocument();
-    expect(screen.getByText('Close')).toBeInTheDocument();
+    expect(screen.getByAltText('Event')).toHaveAttribute('src', mockProps.eventImage);
+    expect(screen.getByText(mockProps.eventName)).toBeInTheDocument();
+    expect(screen.getByText(/15 July 2023 ~ Test Venue/)).toBeInTheDocument();
   });
 
-  it('does not render when closed', () => {
+  it('does not render modal content when isOpen is false', () => {
     render(<TicketModal {...mockProps} isOpen={false} />);
+
     expect(screen.queryByTestId('modal')).not.toBeInTheDocument();
   });
 
-
-  it('renders event image correctly', () => {
+  it('displays correct ticket information', () => {
     render(<TicketModal {...mockProps} />);
-    const image = screen.getByAltText('Event');
-    expect(image).toBeInTheDocument();
-    expect(image).toHaveAttribute('src', 'event-image.jpg');
+
+    expect(screen.getByText('Student No')).toBeInTheDocument();
+    expect(screen.getByText(mockProps.studentNo)).toBeInTheDocument();
+    expect(screen.getByText('Ticket Code')).toBeInTheDocument();
+    expect(screen.getByText(mockProps.ticketNo)).toBeInTheDocument();
+    expect(screen.getByText('Date')).toBeInTheDocument();
+    expect(screen.getByText(mockProps.ticketDate)).toBeInTheDocument();
+    expect(screen.getByText('Time')).toBeInTheDocument();
+    expect(screen.getByText(mockProps.ticketTime)).toBeInTheDocument();
   });
 
-  it('renders QR code image correctly', () => {
+  it('renders QR code image', () => {
     render(<TicketModal {...mockProps} />);
-    const qrCode = screen.getByAltText('QR Code');
-    expect(qrCode).toBeInTheDocument();
-    expect(qrCode).toHaveAttribute('src', 'qr-code.jpg');
+
+    expect(screen.getByAltText('QR Code')).toHaveAttribute('src', mockProps.qrCode);
+  });
+
+  it('calls onClose when close button is clicked', () => {
+    render(<TicketModal {...mockProps} />);
+
+    fireEvent.click(screen.getByText('Close'));
+    expect(mockProps.onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('formats event date correctly', () => {
+    render(<TicketModal {...mockProps} eventDate="2023-12-31" />);
+
+    expect(screen.getByText(/31 December 2023 ~ Test Venue/)).toBeInTheDocument();
   });
 });

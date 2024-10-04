@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState, useCallback } from "react";
 
-import "../EventCreation/styles/Profile.css";
+import "./Profile.css";
 import emailLogo from "../EventCreation/images-logos/email.svg";
 
 import witsBackground from "../EventCreation/images-logos/wits-background.png";
@@ -25,15 +25,14 @@ export default function Profile() {
     myImg: user.photoURL,
     title: "Student",
     email: user.email,
-
   };
 
-  const { myImg, name, title, email} = userData;
+  const { myImg, name, title, email } = userData;
 
   useEffect(() => {
     setUser(JSON.parse(sessionStorage.getItem("user")));
   }, []);
-  console.log(user);
+
   const fetchUserLikedEvents = useCallback(() => {
     fetch(
       `https://us-central1-witslivelycampus.cloudfunctions.net/app/users/${userId}`
@@ -84,7 +83,6 @@ export default function Profile() {
   };
 
   const handleUnlike = (eventId) => {
-    //Optimistic UI updates
     const updatedLikedEvents = likedEvents.filter(
       (event) => event.id !== eventId
     );
@@ -93,7 +91,6 @@ export default function Profile() {
     decrementLike(eventId).then((response) => {
       if (!response.ok) {
         console.error("Failed to decrement like:", response.json());
-        //add back the event we failed to unlike
         setLikedEvents([eventId, ...updatedLikedEvents]);
       } else {
         console.log("Successfully decremented like", response.json());
@@ -103,6 +100,15 @@ export default function Profile() {
 
   const handleEventManagement = () => {
     navigate(`/eventManagement`);
+  };
+  const handleCreateEvent = () => {
+    navigate(`/post-event`);
+  };
+
+  // Logout Function
+  const handleLogout = () => {
+    sessionStorage.clear(); // Clear user data from session storage
+    navigate("/"); // Redirect to login page
   };
 
   return (
@@ -134,19 +140,29 @@ export default function Profile() {
               </div>
             </div>
           </div>
-          <div className="additional-features-container">
-            <div className="additional-features">
-              <h2 className="add-features-bold-title">Additional Functions</h2>
-              <button 
-                className="additional-features-buttons"
-                onClick={() => handleEventManagement()}
-              >
-                Manage your Events
-              </button>
-              <button  className="additional-features-buttons">
-                Create an Event
-              </button>
-            </div>
+
+          {/* Logout Button */}
+          <div className="additional-features">
+            <h2 className="add-features-bold-title">Additional Functions</h2>
+
+            <button
+              className="additional-features-buttons"
+              onClick={handleEventManagement}
+            >
+              Manage your Events
+            </button>
+            <button
+              className="additional-features-buttons"
+              onClick={handleCreateEvent}
+            >
+              Create an Event
+            </button>
+            <button
+              className="additional-features-buttons logout-button"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
           </div>
 
           {/* Liked Events Section */}
@@ -176,7 +192,6 @@ export default function Profile() {
                     </div>
                     <div className="card-fourth-row">
                       <div className="like-comment">
-                        {/* Red heart icon for already liked events */}
                         <button
                           className="like-button active"
                           onClick={() => handleUnlike(event.id)}

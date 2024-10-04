@@ -182,10 +182,10 @@ body.modal-open {
 .overlay-content {
   background-color: white; /* White background for content */
   padding: 20px;
-  border-radius: 40px;
+  padding-top: 30px;
+  border-radius: 10px;
   width: 100%;
   height: 100%;
-  margin-top: 5%;
   max-width: 500px; /* Limit the width */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow */
   position: relative;
@@ -199,13 +199,14 @@ body.modal-open {
 }
 .overlay-content h2 {
   color: #003b5c;
+  text-align: center;
 }
 .close-overlay-button {
   background: transparent;
   border: none;
   color: #003b5c; /* Red for close button */
   cursor: pointer;
-  font-size: 16px;
+  font-size: 17px;
   float: right; /* Position to the right */
   margin-top: -7%;
 }
@@ -239,7 +240,9 @@ body.modal-open {
 /* Individual comment styles */
 .comment {
   width: 330px;
-  padding: 11px;
+  padding-right: 11px;
+  padding-top: 11px;
+  padding-bottom: 11px;
   margin-bottom: 10px; /* Space between comments */
   background-color: transparent; /* Light background for comments */
   /* Rounded corners */
@@ -267,12 +270,47 @@ body.modal-open {
   height: 40px;
   border-radius: 50%; /* Make it circular */
   margin-right: 10px; /* Space between the picture and comment text */
+ 
 }
+.profile-pic-reply {
+  width: 25px; /* Size of the profile picture */
+  height: 25px;
+  border-radius: 50%; /* Make it circular */
+  margin-right: 10px; /* Space between the picture and comment text */
+ 
+}
+.actual-reply{
+  font-size: 16px;
+}
+.toggle-replies-button {
+  background: transparent;
+  border: none;
+  color: #535353;
+  cursor: pointer;
 
+  float: right; /* Position to the right */
+ 
+}
+.reply-button {
+  background: transparent;
+  border: none;
+  color: #535353;
+  cursor: pointer;
+}
 .comment-content {
   flex-grow: 1; /* Allow content to take up remaining space */
 }
-
+.reply{
+  display: flex;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+.reply h6{
+  margin: 0;
+}
+.reply small{
+  color: #777;
+}
 .comment-content strong {
   color: #333; /* Darker color for the user's name */
 }
@@ -285,6 +323,11 @@ body.modal-open {
 .comment-content small {
   color: #777; /* Lighter color for timestamp */
   font-size: 0.8em; /* Slightly smaller text for timestamp */
+}
+.reply-input{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .comment-timestamp {
   font-size: 12px; /* Smaller font for timestamp */
@@ -318,6 +361,7 @@ body.modal-open {
   color: red;
   font-size: 0.9rem;
   margin-top: 5px;
+  margin-left: 20px !important;
 }
 
 .submit-button {
@@ -495,6 +539,7 @@ body.modal-open {
   transition: fill 0.3s ease;
 }
 
+
 .like-button.active .like-icon {
   fill: rgb(255, 0, 0);
 }
@@ -523,6 +568,16 @@ body.modal-open {
   color: #003b5c;
   white-space: nowrap;
   display: none;
+}
+.reply-input3{
+  width: 180px;
+}
+.submit-reply-button{
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  background-color: #003b5c;
 }
 .feedback-box {
   position: fixed;
@@ -667,9 +722,6 @@ body.modal-open {
   }
   .submit-button {
     margin-left: 75%;
-  }
-  .overlay-content {
-    margin-top: 25%;
   }
   .comment {
     max-width: 250px;

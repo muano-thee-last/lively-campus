@@ -10,6 +10,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow-y: auto;
 }
 
 /* Modal content */
@@ -20,12 +21,16 @@
   max-width: 500px;
   padding: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  outline: none;
   animation: fadeIn 0.3s ease;
+  border: 5px solid #003b5c;
 }
-
-.modalContent {
-  text-align: center;
+.ticketHeader{
+  margin: 5px 0;
+  color: #003b5c;
+}
+.ticketHeader p{
+  margin: 3px 0;
+  font-size: 8px;
 }
 
 /* Event image */
@@ -35,48 +40,57 @@
   max-height: 200px;
   object-fit: cover;
   border-radius: 8px;
-  margin-bottom: 20px;
 }
 
+
+
 /* Ticket details */
-.ticketDetails h2 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 10px;
-}
 
 .ticketDetails p {
   font-size: 16px;
   color: #555;
   margin-bottom: 15px;
+  font-weight: 600;
 }
 
 .infoRow {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   margin-bottom: 10px;
-  font-size: 14px;
-  color: #666;
 }
 
-.infoRow span {
-  display: inline-block;
+.titleInput{
+  display: flex;
+  flex-direction: column;
+  justify-items: left;
+}
+.titleInput p{
+  font-weight: 600;
+}
+.titleInput h3{
+  margin-top: -8px;
+}
+
+
+.qrCodeContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
 }
 
 /* QR Code */
-.qrCode {
-  margin: 20px 0;
-}
+
 
 .qrCode img {
-  width: 50%;
-  height: 50%;
   object-fit: contain;
 }
 
 /* Close button */
 .closeBtn {
-  background-color: #ff4d4d;
+  align-self: end;
+  background-color:#003b5c;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -88,7 +102,9 @@
 }
 
 .closeBtn:hover {
-  background-color: #ff6666;
+  background-color: white;
+  color: #003b5c;
+  border: 1px solid #003b5c;
 }
 
 /* Fade-in animation */
@@ -102,9 +118,8 @@
     transform: scale(1);
   }
 }
-
-.contents {
-  border: 2px solid black;
-  padding: 20px;
-  background-color: #fff; /* Optional: Set background color for the modal's content */
+@media (max-height: 700px) {
+  .ticketModal {
+    margin-top: 50%;
+  }
 }
