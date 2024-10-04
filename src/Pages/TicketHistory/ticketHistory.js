@@ -4,26 +4,34 @@ import './TicketHistory.css'; // Import the CSS file
 import Header from "../dashboard/header";
 import Footer from '../dashboard/footer';
 import SideBar from '../dashboard/side-bar';
-import { Ticket } from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+// If you need an icon, consider using an alternative library or SVG
+// For example, using Heroicons:
+import { TicketIcon } from '@heroicons/react/outline'; // Install @heroicons/react if not already
 
 const NoTicketsMessage = () => (
-  <Card className="w-full max-w-md mx-auto mt-8">
-    <CardHeader>
-      <CardTitle className="text-2xl font-bold text-center">No Tickets Yet</CardTitle>
-      <CardDescription className="text-center">
+  <div className="no-tickets-card w-full max-w-md mx-auto mt-8 p-6 bg-white shadow rounded">
+    <div className="no-tickets-header">
+      <h2 className="text-2xl font-bold text-center">No Tickets Yet</h2>
+      <p className="text-center text-gray-600">
         You haven't purchased any tickets yet. Start exploring events!
-      </CardDescription>
-    </CardHeader>
-    <CardContent className="flex flex-col items-center">
-      <Ticket className="w-24 h-24 text-gray-400 mb-4" />
-      <Button className="w-full max-w-xs">
+      </p>
+    </div>
+    <div className="no-tickets-content flex flex-col items-center mt-4">
+      {/* Replace Ticket icon with Heroicons or another alternative */}
+      <TicketIcon className="w-24 h-24 text-gray-400 mb-4" />
+      <button
+        className="browse-events-button w-full max-w-xs px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+        onClick={() => {
+          // Define what happens when the button is clicked
+          // For example, navigate to the events page
+          window.location.href = '/events'; // Adjust the URL as needed
+        }}
+      >
         Browse Events
-      </Button>
-    </CardContent>
-  </Card>
+      </button>
+    </div>
+  </div>
 );
 
 function TicketHistory() {
@@ -66,7 +74,7 @@ function TicketHistory() {
           <div className="ticket-history">
             {validTickets.length > 0 ? (
               validTickets.map(ticket => (
-                <div key={ticket.id}>
+                <div key={ticket.id} className="ticket-view-wrapper mb-4">
                   <TicketView
                     eventName={ticket.eventTitle || 'N/A'}
                     ticketPrice={ticket.price}
@@ -81,6 +89,11 @@ function TicketHistory() {
               ))
             ) : (
               <NoTicketsMessage />
+            )}
+            {error && (
+              <div className="error-message text-red-500 text-center mt-4">
+                {error}
+              </div>
             )}
           </div>
         </div>
