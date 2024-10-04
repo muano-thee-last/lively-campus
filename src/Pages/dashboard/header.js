@@ -171,9 +171,9 @@ function Header({ toggleSidebar, onSearch }) {
             <IconButton
               type="submit"
               className="search-button"
-              style={{ scale: "2.5" }}
+              style={{ scale: "1.1" }}
             >
-              {/* <SearchIcon /> */}
+             <SearchIcon /> 
             </IconButton>
           </div>
         )}

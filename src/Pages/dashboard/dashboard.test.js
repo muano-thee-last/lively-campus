@@ -12,7 +12,7 @@ jest.mock('./header', () => ({ toggleSidebar, onSearch }) => (
 ));
 
 jest.mock('./side-bar', () => ({ isSidebarOpen }) => (
-  <div>{isSidebarOpen ? 'Sidebar Open' : 'Sidebar Closed'}</div>
+  <div>{isSidebarOpen ? 'Sidebar Open' : 'Sidebar Closed'}</div> 
 ));
 
 jest.mock('./main-content', () => ({ searchQuery }) => (

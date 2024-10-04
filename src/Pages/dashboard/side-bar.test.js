@@ -25,7 +25,7 @@ describe('SideBar', () => {
         </BrowserRouter>
       );
     });
-
+ 
     expect(screen.getByText('Event Calendar')).toBeInTheDocument();
     expect(screen.getByText('Ticket History')).toBeInTheDocument();
     expect(screen.getByText('Post Event')).toBeInTheDocument();
