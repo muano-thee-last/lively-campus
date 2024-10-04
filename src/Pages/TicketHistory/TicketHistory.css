@@ -65,3 +65,21 @@
   
 }
 
+/* Add styles for the no tickets message */
+.no-tickets-message {
+  text-align: center;
+  color: #ff6347; /* Tomato color */
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.ticket-history {
+  padding: 20px;
+}
+
+.heading {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}

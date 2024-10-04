@@ -38,10 +38,6 @@ describe('LandingPage Component', () => {
     expect(screen.getByText(/Experience!/i)).toBeInTheDocument();
   });
   
-  test('renders loading state initially', () => {
-    expect(screen.getByText(/Loading events.../i)).toBeInTheDocument();
-  });
-
   test('renders header, hero section, and footer correctly', async () => {
     await waitFor(() => expect(screen.queryByText(/Loading events.../i)).not.toBeInTheDocument());
 

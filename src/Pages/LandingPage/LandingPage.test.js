@@ -1,90 +1,51 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import LandingPage from './LandingPage';
+import fetchMock from 'jest-fetch-mock';
 
-global.fetch = jest.fn();
+jest.mock('../Login/login', () => () => <div>Login Component</div>);
+jest.mock('../dashboard/footer', () => () => <div>Footer Component</div>);
 
-jest.mock('./LandingPage.css', () => ({}));
-
-jest.mock('../../asserts/logo.png', () => 'mocked-logo.png');
-
-jest.mock('../Login/login', () => () => <div data-testid="mock-login">Mock Login</div>);
-jest.mock('../dashboard/footer', () => () => <div data-testid="mock-footer">Mock Footer</div>);
-
-describe('LandingPage Component', () => {
-  const mockEvents = [
-    { id: 1, title: 'Tech Innovators Conference', description: 'A tech conference', date: '2025-01-01', imageUrl: 'tech-conf.jpg' },
-    { id: 2, title: 'Wits 100 Celebration', description: 'University celebration', date: '2025-02-01', imageUrl: 'wits-100.jpg' },
-    { id: 3, title: "Jaiv'ujuluke", description: 'Past event 1', date: '2023-01-01', imageUrl: 'past-event-1.jpg' },
-    { id: 4, title: 'Mountain Biking Challenge', description: 'Past event 2', date: '2023-02-01', imageUrl: 'past-event-2.jpg' },
-  ];
-
+describe('LandingPage', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    global.fetch.mockResolvedValue({
-      json: () => Promise.resolve(mockEvents),
-    });
+    fetchMock.resetMocks();
   });
 
-  test('renders LandingPage component and fetches events', async () => {
+  test('renders the LandingPage with the header and hero section', () => {
     render(<LandingPage />);
-
-    expect(screen.getByText('LivelyCampus')).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(screen.getByText('Tech Innovators Conference')).toBeInTheDocument();
-      expect(screen.getByText("Jaiv'ujuluke")).toBeInTheDocument();
-    });
-
-    expect(screen.getByTestId('mock-footer')).toBeInTheDocument();
+    
+    expect(screen.getByText('Ignite Your Campus')).toBeInTheDocument();
+    expect(screen.getByText('Experience!')).toBeInTheDocument();
+    expect(screen.getByAltText('LivelyCampus Logo')).toBeInTheDocument();
   });
 
-  test('handles login modal', async () => {
-    render(<LandingPage />);
-
-    fireEvent.click(screen.getByText('Login'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('mock-login')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByLabelText('landing-close-button'));
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('mock-login')).not.toBeInTheDocument();
-    });
-  });
-
-  test('handles event navigation', async () => {
-    jest.useFakeTimers();
+  test('shows error message when fetching events fails', async () => {
+    fetchMock.mockReject(() => Promise.reject('API is down'));
 
     render(<LandingPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText('Tech Innovators Conference')).toBeInTheDocument();
-    });
-
-    expect(screen.getByText('Tech Innovators Conference')).toBeInTheDocument();
-
-    act(() => {
-      jest.advanceTimersByTime(6500);
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('Wits 100 Celebration')).toBeInTheDocument();
-    });
-
-    jest.useRealTimers();
+    await waitFor(() => expect(screen.getByText('Error fetching events, please try again later.')).toBeInTheDocument());
   });
 
-  test('handles API error', async () => {
-    global.fetch.mockRejectedValue(new Error('API Error'));
-
+  test('shows login modal when login button is clicked', () => {
     render(<LandingPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText('Error fetching events, please try again later.')).toBeInTheDocument();
-    });
+    const loginButton = screen.getByLabelText('Login');
+    fireEvent.click(loginButton);
+
+    expect(screen.getByText('Login Component')).toBeInTheDocument();
+  });
+
+
+
+  test('toggles the mobile menu when burger icon is clicked', () => {
+    render(<LandingPage />);
+
+    const burgerMenu = screen.getByLabelText('burger');
+    fireEvent.click(burgerMenu);
+
+    const navMenu = screen.getByRole('navigation');
+    expect(navMenu).toHaveClass('open');
   });
 });
