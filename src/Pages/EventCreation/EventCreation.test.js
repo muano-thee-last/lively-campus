@@ -108,7 +108,7 @@ describe('EventCreation Component', () => {
       );
     });
 
-    const ticketPriceInput = screen.getByLabelText('Ticket Price R');
+    const ticketPriceInput = screen.getByLabelText(/Ticket Price/);
     fireEvent.change(ticketPriceInput, { target: { value: '50' } });
     expect(ticketPriceInput.value).toBe('50');
   });
@@ -125,6 +125,63 @@ describe('EventCreation Component', () => {
     const availableVenuesButton = screen.getByText('Available Venues');
     fireEvent.click(availableVenuesButton);
     expect(screen.getByText('Wits Venues')).toBeInTheDocument();
+  });
+
+  test('handles image upload', async () => {
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+        </BrowserRouter>
+      );
+    });
+
+    const file = new File(['dummy content'], 'test.png', { type: 'image/png' });
+    const uploadSection = screen.getByText('Upload Cover Image').closest('div');
+    const fileInput = uploadSection.nextSibling;
+
+    fireEvent.click(uploadSection);
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    expect(screen.getByText('Change Cover Image')).toBeInTheDocument();
+  });
+
+  test('displays error for negative ticket price', async () => {
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+        </BrowserRouter>
+      );
+    });
+
+    const ticketPriceInput = screen.getByLabelText(/Ticket Price/);
+    fireEvent.change(ticketPriceInput, { target: { value: '-10' } });
+    expect(ticketPriceInput).toHaveClass('input-error');
+  });
+
+  test('handles form submission with incomplete data', async () => {
+    const mockNavigate = jest.fn();
+    jest.spyOn(require('react-router-dom'), 'useNavigate').mockReturnValue(mockNavigate);
+
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+        </BrowserRouter>
+      );
+    });
+
+    // Fill in only some required fields
+    fireEvent.change(screen.getByPlaceholderText('Event Name'), { target: { value: 'Test Event' } });
+    fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'Test Description' } });
+
+    // Submit form
+    fireEvent.click(screen.getByText('Create Event'));
+
+    // Check if the error toast is displayed
+    expect(await screen.findByText('Please fill in the form')).toBeInTheDocument();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   // Add more tests as needed for other functionalities
