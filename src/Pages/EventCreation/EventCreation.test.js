@@ -29,7 +29,10 @@ jest.mock('../../Pages/Login/config', () => ({
 global.fetch = jest.fn(() =>
   Promise.resolve({
     ok: true,
-    json: () => Promise.resolve({ value: 'mocked-api-key' })
+    json: () => Promise.resolve({ 
+      value: 'mocked-api-key',
+      bookingId: 'mocked-booking-id'
+    })
   })
 );
 
@@ -46,6 +49,21 @@ jest.mock('react-toastify', () => ({
 // Add this before the describe block
 beforeEach(() => {
   jest.clearAllMocks();
+});
+
+// Add this mock at the top of the file, after other imports
+global.URL.createObjectURL = jest.fn(() => 'mocked-url');
+
+const originalError = console.error;
+beforeAll(() => {
+  console.error = (...args) => {
+    if (/Warning.*unique.*key/.test(args[0])) return;
+    originalError.call(console, ...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalError;
 });
 
 describe('EventCreation Component', () => {
@@ -287,6 +305,32 @@ describe('EventCreation Component', () => {
     fireEvent.change(screen.getByPlaceholderText('Event Name'), { target: { value: 'Test Event' } });
     fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'Test Description' } });
     fireEvent.change(screen.getByLabelText(/Ticket Price/), { target: { value: '50' } });
+  
+    // Mock venue selection
+    const availableVenuesButton = screen.getByText('Available Venues');
+    fireEvent.click(availableVenuesButton);
+  
+    // Wait for the popup to appear and select a venue
+    await waitFor(() => {
+      expect(screen.getByText('Wits Venues')).toBeInTheDocument();
+    });
+
+    // Select the first venue (adjust this based on your actual component structure)
+    const firstVenueButton = screen.getAllByText('Check Venue Availability')[0];
+    fireEvent.click(firstVenueButton);
+
+    // Wait for the venue availability popup to appear
+    await waitFor(() => {
+      expect(screen.getByText('Venue Availability')).toBeInTheDocument();
+    });
+
+    // Fill in date and time
+    fireEvent.change(screen.getByLabelText('Date'), { target: { value: '2023-12-31' } });
+    fireEvent.change(screen.getByLabelText('Start Time'), { target: { value: '14:00' } });
+    fireEvent.change(screen.getByLabelText('End Time'), { target: { value: '16:00' } });
+
+    // Click the "Done" button to close the venue availability popup
+    fireEvent.click(screen.getByText('Done'));
 
     // Mock successful API calls
     global.fetch.mockImplementationOnce(() => Promise.resolve({
@@ -299,9 +343,9 @@ describe('EventCreation Component', () => {
       fireEvent.click(screen.getByText('Create Event'));
     });
 
-    // Update these expectations
-    expect(require('react-toastify').toast.error).toHaveBeenCalledWith('Please fill in the form', expect.anything());
-    expect(mockNavigate).not.toHaveBeenCalled();
+    // Check if the success toast is displayed
+    expect(require('react-toastify').toast.success).toHaveBeenCalledWith('Event created successfully', expect.anything());
+    expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
   });
 
   test('handles API error during form submission', async () => {
@@ -335,4 +379,128 @@ describe('EventCreation Component', () => {
   });
 
   // Add more tests as needed for other functionalities
+
+  // Add these tests to the existing describe block
+
+  test('handles editing mode', async () => {
+    const mockNavigate = jest.fn();
+    jest.spyOn(require('react-router-dom'), 'useNavigate').mockReturnValue(mockNavigate);
+    jest.spyOn(require('react-router-dom'), 'useLocation').mockReturnValue({
+      state: { 
+        editingEvent: {
+          id: '123',
+          title: 'Edit Event',
+          description: 'Edit Description',
+          ticketPrice: 100,
+          availableTickets: 50,
+          capacity: 100,
+          date: '2023-12-31',
+          time: '14:00-16:00',
+          endTime: '16:00',
+          imageUrl: 'http://example.com/image.jpg',
+          tags: ['Music', 'Dance'],
+          venue: 'Test Venue',
+          likes: 10,
+          comments: [],
+          createdAt: '2023-01-01T00:00:00.000Z',
+          organizerImg: 'http://example.com/organizer.jpg',
+          bookingId: 'booking123'
+        },
+        isEditing: true
+      }
+    });
+
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+        </BrowserRouter>
+      );
+    });
+
+    expect(screen.getByDisplayValue('Edit Event')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Edit Description')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('100')).toBeInTheDocument();
+  });
+
+  test('handles image upload error', async () => {
+    jest.spyOn(require('firebase/storage'), 'uploadBytes').mockRejectedValue(new Error('Upload failed'));
+
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+          <ToastContainer />
+        </BrowserRouter>
+      );
+    });
+
+    const file = new File(['dummy content'], 'test.png', { type: 'image/png' });
+    const uploadSection = screen.getByText(/Upload Cover Image|Change Cover Image/).closest('div');
+    const fileInput = uploadSection.nextSibling;
+
+    fireEvent.click(uploadSection);
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    expect(require('react-toastify').toast.error).toHaveBeenCalledWith('Error saving event. Please try again.', expect.anything());
+  });
+
+  test('handles successful form submission in editing mode', async () => {
+    const mockNavigate = jest.fn();
+    jest.spyOn(require('react-router-dom'), 'useNavigate').mockReturnValue(mockNavigate);
+    jest.spyOn(require('react-router-dom'), 'useLocation').mockReturnValue({
+      state: { 
+        editingEvent: {
+          id: '123',
+          title: 'Edit Event',
+          description: 'Edit Description',
+          ticketPrice: 100,
+          availableTickets: 50,
+          capacity: 100,
+          date: '2023-12-31',
+          time: '14:00-16:00',
+          endTime: '16:00',
+          imageUrl: 'http://example.com/image.jpg',
+          tags: ['Music', 'Dance'],
+          venue: 'Test Venue',
+          likes: 10,
+          comments: [],
+          createdAt: '2023-01-01T00:00:00.000Z',
+          organizerImg: 'http://example.com/organizer.jpg',
+          bookingId: 'booking123'
+        },
+        isEditing: true
+      }
+    });
+
+    await act(async () => {
+      render(
+        <BrowserRouter>
+          <EventCreation />
+          <ToastContainer />
+        </BrowserRouter>
+      );
+    });
+
+    // Change some fields
+    fireEvent.change(screen.getByDisplayValue('Edit Event'), { target: { value: 'Updated Event' } });
+    fireEvent.change(screen.getByDisplayValue('Edit Description'), { target: { value: 'Updated Description' } });
+
+    // Mock successful API calls
+    global.fetch.mockImplementation(() => Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({ bookingId: 'mocked-booking-id' })
+    }));
+
+    // Submit form
+    await act(async () => {
+      fireEvent.click(screen.getByText('Update Event'));
+    });
+
+    // Check if the success toast is displayed
+    expect(require('react-toastify').toast.success).toHaveBeenCalledWith('Event updated successfully', expect.anything());
+    expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+  });
 });
