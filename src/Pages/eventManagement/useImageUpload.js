@@ -1,10 +1,8 @@
 import { useState, useRef } from "react";
-import {  ref, uploadBytes, getDownloadURL} from "firebase/storage";
-import {storage} from "../../Pages/Login/config";
-
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../Pages/Login/config";
 
 // Firebase configuration
-
 
 const useImageUpload = () => {
   const [image, setImage] = useState(null); // State for the selected image file
@@ -27,7 +25,7 @@ const useImageUpload = () => {
 
   const uploadImage = async () => {
     if (!image) return null;
-    
+
     const imageRef = ref(storage, `images/${image.name}`);
     setUploading(true);
     setError(null);
@@ -37,8 +35,8 @@ const useImageUpload = () => {
       const url = await getDownloadURL(imageRef);
       return url;
     } catch (uploadError) {
-      console.error('Error uploading image:', uploadError);
-      setError('Failed to upload image. Please try again.');
+      console.error("Error uploading image:", uploadError);
+      setError("Failed to upload image. Please try again.");
       return null;
     } finally {
       setUploading(false);
@@ -54,8 +52,8 @@ const useImageUpload = () => {
     fileInputRef,
     handleFileChange,
     handleDivClick,
-    uploadImage
+    uploadImage,
   };
 };
-  
-  export default useImageUpload;
+
+export default useImageUpload;
