@@ -32,7 +32,7 @@ export default function TicketHistory() {
         setIsLoading(false); 
       })
       .catch((error) => {
-        setError("No tickets");
+        setError("No tickets bought yet");
         setIsLoading(false); 
       });
   }, []);
@@ -56,7 +56,7 @@ export default function TicketHistory() {
                   <p className="loading-text">Loading tickets...</p>
                 </div>
               ) : error ? (
-                <div className="error-message">Error: {error}</div>
+                <div className="error-message">{error}</div>
               ) : validTickets.length > 0 ? (
                 validTickets.map((ticket) => (
                   <div key={ticket.id}>
