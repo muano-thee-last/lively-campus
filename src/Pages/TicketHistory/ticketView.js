@@ -34,6 +34,8 @@ export default function TicketView({
     setModalOpen(false);
   };
 
+  const url = 'https://witslivelycampus.web.app/ticketVerification?ticketCode'+ticketCode;
+
   return (
     <div className={styles.ticketContainer}>
       <img src={imageUrl} alt="event" className={styles.image} style={{height: "230px"}} />
@@ -66,7 +68,7 @@ export default function TicketView({
         ticketNo={ticketCode}
         ticketDate={date}
         ticketTime={time}
-        qrCode={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${ticketCode}`}
+        qrCode={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${url}`}
         eventId={eventID}
       />
     </div>
