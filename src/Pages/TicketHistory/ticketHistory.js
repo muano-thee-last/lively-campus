@@ -28,12 +28,11 @@ export default function TicketHistory() {
         return response.json();
       })
       .then((data) => {
-        console.log("the data is", data);
         setTicketDetails(data);
         setIsLoading(false); 
       })
       .catch((error) => {
-        setError(error.message);
+        setError("No tickets");
         setIsLoading(false); 
       });
   }, []);
