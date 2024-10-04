@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { QrReader } from "react-qr-reader";
 import "./ticketVerification.css";
 
@@ -7,52 +8,56 @@ export default function TicketVerification() {
   const [ticketNum, setTicketNum] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [isCameraActive, setIsCameraActive] = useState(false);
 
-  // Function to handle changes in the input field
+  useEffect(() => {
+    let timer;
+    if (success) {
+      timer = setTimeout(() => setSuccess(""), 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [success]);
+
   const handleInputChange = (event) => {
     setTicketNum(event.target.value);
   };
 
-  // Function to verify the ticket code
-  const verifyTicket = (code) => {
+  const verifyTicket = async (code) => {
     setIsLoading(true);
     setError("");
+    setSuccess("");
 
-    fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/verifyTicket?ticketCode=${code}`)
-      .then((response) => {
-        setIsLoading(false);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const ticketData = {
-          price: `R${data.price}`,
-          purchaseDate: data.purchaseDate,
-          code: data.ticketCode,
-        };
-        setTicket(ticketData);
-      })
-      .catch((error) => {
-        console.error("Error fetching ticket:", error);
-        setError("Unable to verify ticket. Please try again.");
-        setTicket(null);
-        setIsLoading(false);
-      });
-  };
-
-  // Function to handle scanned QR code data
-  const handleScan = (data) => {
-    if (data) {
-      setTicketNum(data); // Set the scanned ticket number
-      verifyTicket(data); // Verify the ticket code
-      setIsCameraActive(false); // Close the camera after scanning
+    try {
+      const response = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/verifyTicket?ticketCode=${code}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      const ticketData = {
+        price: `R${data.price}`,
+        purchaseDate: new Date(data.purchaseDate).toLocaleString(),
+        code: data.ticketCode,
+      };
+      setTicket(ticketData);
+      setSuccess("Ticket verified successfully!");
+    } catch (error) {
+      console.error("Error fetching ticket:", error);
+      setError("Unable to verify ticket. Please try again.");
+      setTicket(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Function to handle errors from the QR reader
+  const handleScan = (data) => {
+    if (data) {
+      setTicketNum(data);
+      verifyTicket(data);
+      setIsCameraActive(false);
+    }
+  };
+
   const handleError = (error) => {
     console.error(error);
     setError("Error accessing camera. Please try manual input.");
@@ -60,25 +65,26 @@ export default function TicketVerification() {
 
   return (
     <div className="ticket-verification-container">
-      <h2>Ticket Verification</h2>
-      <div className="input-container">
+      <h2 className="title">Ticket Verification</h2>
+      
+      <div className="input-group">
         <input
           type="text"
           placeholder="Enter ticket code"
           value={ticketNum}
           onChange={handleInputChange}
-          className="input"
+          className="input-field"
         />
-        <button
-          onClick={() => verifyTicket(ticketNum)}
+        <button 
+          onClick={() => verifyTicket(ticketNum)} 
           disabled={isLoading}
-          className="button"
+          className="verify-button"
         >
           {isLoading ? "Verifying..." : "Verify"}
         </button>
-        <button
+        <button 
           onClick={() => setIsCameraActive(!isCameraActive)}
-          className="button camera-button"
+          className="camera-button"
         >
           📷
         </button>
@@ -91,19 +97,29 @@ export default function TicketVerification() {
             onError={handleError}
             onScan={handleScan}
             style={{ width: '100%' }}
-            constraints={{ facingMode: "environment" }} // Ensure the back camera is used
+            constraints={{ facingMode: "environment" }}
           />
         </div>
       )}
 
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="alert error">
+          <strong>Error:</strong> {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="alert success">
+          <strong>Success:</strong> {success}
+        </div>
+      )}
 
       {ticket && (
         <div className="ticket-info">
           <h3>Ticket Information</h3>
-          <p>Price: {ticket.price}</p>
-          <p>Purchase Date: {ticket.purchaseDate}</p>
-          <p>Code: {ticket.code}</p>
+          <p><strong>Price:</strong> {ticket.price}</p>
+          <p><strong>Purchase Date:</strong> {ticket.purchaseDate}</p>
+          <p><strong>Code:</strong> {ticket.code}</p>
         </div>
       )}
     </div>

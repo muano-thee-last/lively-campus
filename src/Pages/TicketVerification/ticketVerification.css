@@ -1,26 +1,28 @@
 .ticket-verification-container {
-  max-width: 400px;
+  max-width: 500px;
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.input-container {
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-group {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
 }
 
-.input {
+.input-field {
   flex-grow: 1;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-.button {
+.verify-button, .camera-button {
   padding: 8px 16px;
   background-color: #007bff;
   color: white;
@@ -29,30 +31,33 @@
   cursor: pointer;
 }
 
-.button:disabled {
-  background-color: #cccccc;
+.verify-button:disabled {
+  background-color: #ccc;
   cursor: not-allowed;
-}
-
-.camera-button {
-  background-color: #28a745;
 }
 
 .camera-container {
   margin-bottom: 20px;
 }
 
-.error-message {
-  color: #dc3545;
-  margin-bottom: 10px;
+.alert {
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.success {
+  background-color: #d4edda;
+  color: #155724;
 }
 
 .ticket-info {
   background-color: #f8f9fa;
   padding: 15px;
   border-radius: 4px;
-}
-
-.ticket-info h3 {
-  margin-top: 0;
 }
