@@ -8,7 +8,7 @@ import SideBar from "../dashboard/side-bar";
 function TicketHistory() {
   const [ticketDetails, setTicketDetails] = useState([]);
   const [error, setError] = useState(null);
-  const [isSidebarOpen, setSidebarOpen] = useState(false); // Handle sidebar state
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
@@ -45,15 +45,10 @@ function TicketHistory() {
   );
   console.log(validTickets);
 
-  if (validTickets.length === 0) {
-    return <h1>No tickets bought yet</h1>;
-  }
-
   return (
     <div id="main-footer-separator">
       <div id="dashboard">
-        <Header toggleSidebar={toggleSidebar} />{" "}
-        {/* Header with sidebar toggle */}
+        <Header toggleSidebar={toggleSidebar} /> {/* Header with sidebar toggle */}
         <div id="content">
           <SideBar isSidebarOpen={isSidebarOpen} /> {/* Sidebar */}
           <div id="content-wrapper">
@@ -76,13 +71,13 @@ function TicketHistory() {
                   </div>
                 ))
               ) : (
-                <h1>No tickets</h1>
+                <h1 className="no-tickets-message">No tickets bought yet</h1>
               )}
             </div>
           </div>
         </div>
       </div>
-      <Footer /> {/* Footer at the bottom */}
+      <Footer />
     </div>
   );
 }
