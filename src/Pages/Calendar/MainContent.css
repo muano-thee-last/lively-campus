@@ -453,8 +453,8 @@
   .day {
     aspect-ratio: auto;
     padding: 2px;
-    height: 120px; /* Increased height for more visibility */
-    min-height: 120px;
+    height: 150px; /* Increased height for even more visibility */
+    min-height: 150px;
     display: flex;
     flex-direction: column;
   }
@@ -472,12 +472,20 @@
   }
 
   .event-details {
-    font-size: 9px; /* Slightly increased font size */
+    font-size: 9px;
     padding: 2px 3px;
     margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal; /* Allow text to wrap */
+    overflow: visible; /* Show overflowing content */
+    text-overflow: clip; /* Don't use ellipsis */
+    word-wrap: break-word; /* Break long words if necessary */
+    line-height: 1.2; /* Adjust line height for better readability */
+  }
+
+  .event-title {
+    display: block;
+    font-weight: bold;
+    font-size: 9px;
   }
 
   .event-time {
@@ -559,8 +567,8 @@
   }
 
   .day {
-    height: 100px; /* Slightly reduced height for smaller screens, but still larger than before */
-    min-height: 100px;
+    height: 130px; /* Slightly reduced height for smaller screens, but still larger than before */
+    min-height: 130px;
   }
 }
 
@@ -597,8 +605,8 @@
 
   .day {
     border: 1px solid #e0e0e0;
-    height: 80px; /* Further reduced height for very small screens, but still larger than before */
-    min-height: 80px;
+    height: 110px; /* Further reduced height for very small screens, but still larger than before */
+    min-height: 110px;
   }
 
   .day-number {
