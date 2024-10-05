@@ -2,27 +2,27 @@ import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./event-management-main-content.css";
 import profile from "./images-logos/profile-logo.jpg";
-import { FaSearch, FaEdit, FaTrash, FaCamera, FaUsers } from "react-icons/fa";
-import useImageUpload from "./useImageUpload";
+import { FaSearch, FaEdit, FaTrash, FaUsers } from "react-icons/fa";
+//import useImageUpload from "./useImageUpload";
 
 function EventManagementMainContent() {
   const [events, setEvents] = useState([]);
   const [currentUserName, setCurrentUserName] = useState("");
-  const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [selectedEventId, setSelectedEventId] = useState(null);
+  // const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  // const [selectedEventId, setSelectedEventId] = useState(null);
   const upcomingSlider = useRef(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const {
-    imagePreview,
-    uploading,
-    uploadImage,
-    fileInputRef,
-    handleFileChange,
-    handleDivClick,
-    setImagePreview,
-  } = useImageUpload();
+  // const {
+  //   imagePreview,
+  //   uploading,
+  //   uploadImage,
+  //   fileInputRef,
+  //   handleFileChange,
+  //   handleDivClick,
+  //   setImagePreview,
+  // } = useImageUpload();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -102,46 +102,46 @@ function EventManagementMainContent() {
     });
   };
 
-  const handleUploadImage = async () => {
-    if (selectedEventId) {
-      const imageUrl = await uploadImage();
-      if (imageUrl) {
-        try {
-          const response = await fetch(
-            `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${selectedEventId}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                imageUrl,
-              }),
-            }
-          );
+  // const handleUploadImage = async () => {
+  //   if (selectedEventId) {
+  //     const imageUrl = await uploadImage();
+  //     if (imageUrl) {
+  //       try {
+  //         const response = await fetch(
+  //           `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${selectedEventId}`,
+  //           {
+  //             method: "PUT",
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //             },
+  //             body: JSON.stringify({
+  //               imageUrl,
+  //             }),
+  //           }
+  //         );
 
-          if (response.ok) {
-            setEvents(
-              events.map((event) =>
-                event.id === selectedEventId ? { ...event, imageUrl } : event
-              )
-            );
-            handleUploadModalClose();
-          } else {
-            console.error("Failed to update event image");
-          }
-        } catch (error) {
-          console.error("Error updating event image:", error);
-        }
-      }
-    }
-  };
+  //         if (response.ok) {
+  //           setEvents(
+  //             events.map((event) =>
+  //               event.id === selectedEventId ? { ...event, imageUrl } : event
+  //             )
+  //           );
+  //           handleUploadModalClose();
+  //         } else {
+  //           console.error("Failed to update event image");
+  //         }
+  //       } catch (error) {
+  //         console.error("Error updating event image:", error);
+  //       }
+  //     }
+  //   }
+  // };
 
-  const handleUploadModalClose = () => {
-    setImagePreview(null);
-    setUploadModalOpen(false);
-    setSelectedEventId(null);
-  };
+  // const handleUploadModalClose = () => {
+  //   setImagePreview(null);
+  //   setUploadModalOpen(false);
+  //   setSelectedEventId(null);
+  // };
 
   return (
     <div id="management-main-content">
@@ -206,19 +206,22 @@ function EventManagementMainContent() {
                           className="management-event-edit"
                           size={24}
                           onClick={() => handleEdit(event)}
+                          data-testid="management-event-edit"
                         />
-                        <FaCamera
+                        {/* <FaCamera
                           className="management-event-upload-image"
                           size={24}
                           onClick={() => {
                             setSelectedEventId(event.id);
                             setUploadModalOpen(true);
                           }}
-                        />
+                          data-testid="management-event-upload-image"
+                        /> */}
                         <FaTrash
                           className="management-deleteEvent"
                           size={24}
                           onClick={() => handleDelete(event.id)}
+                          data-testid="management-deleteEvent"
                         />
                       </div>
                     </div>
@@ -256,7 +259,7 @@ function EventManagementMainContent() {
         </div>
       </div>
 
-      {uploadModalOpen && (
+      {/* {uploadModalOpen && (
         <div className="management-upload-modal-overlay">
           <div className="management-upload-modal-content">
             <h2>Upload Image</h2>
@@ -291,7 +294,7 @@ function EventManagementMainContent() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
