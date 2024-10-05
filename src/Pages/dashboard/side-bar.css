@@ -1,16 +1,17 @@
 /* Sidebar layout */
 #side-bar {
-  width: 80px;
+  width: 80px; /* Default collapsed width for larger screens */
   background-color: #fff;
   color: var(--primary-color);
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease; /* Transition for width changes */
 }
 
+/* Sidebar expanded */
 #side-bar.expanded {
-  width: 200px;
+  width: 200px; /* Expanded width for larger screens */
 }
 
 /* Sidebar items (links) */
@@ -50,7 +51,7 @@
 
 /* Adjust link positioning when expanded */
 .expanded .sidebar-item {
-  justify-content: flex-start;
+  justify-content: flex-start; /* Align text to the left when expanded */
 }
 
 /* Custom transition for smooth effect */
@@ -58,94 +59,51 @@
 .sidebar-item {
   transition: all 0.3s ease;
 }
+
 #side-bar.expanded .sidebar-icon {
   margin: 0 6px 0 18px;
 }
 
-#side-bar.expanded .sidebar-icon p {
-  opacity: 1; /* Make text fully visible */
-  transition: opacity 0.3s ease-in-out;
-}
-#side-bar.expanded .history-logos {
-  margin-left: 1.5%;
-}
-#side-bar.expanded .post-history-logos {
-  margin-left: 0;
-}
+/* Mobile-specific styling */
+@media (max-width: 950px) {
+  #side-bar {
+    width: 100%; /* Sidebar takes full width on mobile */
+    position: fixed; /* Fixed position for mobile */
+    top: 66px; /* Adjust top margin */
+    left: -100%; /* Initially off-screen */
+    background-color: rgba(7, 65, 119, 0.8);
+    opacity: 0; /* Initially invisible */
+    visibility: hidden; /* Hidden */
+    transition: left 0.3s ease, opacity 0.3s ease; /* Smooth transition */
+
+  }
+
+  /* When expanded, sidebar slides in on mobile */
+  #side-bar.expanded {
+    left: 0; /* Sidebar slides into view */
+    bottom: 0;
+    opacity: 1; /* Make visible */
+    visibility: visible; /* Ensure it's visible */
+    backdrop-filter: blur(40px);
+    z-index: 1000000;
+    
+    
+  }
+
+  /* Style for sidebar items on mobile */
+  .sidebar-icon {
+    margin: 0; /* Remove margin for mobile */
+    color: #ffffffbb;
+    
+  }
 
 
-#side-bar:not(.expanded) .sidebar-icon p {
-  opacity: 0; /* Hide text when not expanded */
-  display: none; /* Hide text completely */
 }
 
-#side-bar:not(.expanded) .sidebar-icon .history-logos {
-  display: none;
-}
-
+/* Other media query adjustments */
 @media (max-width: 1254px) {
   #side-bar {
     display: flex;
     flex-direction: column;
   }
-}
-
-@media (max-width: 600px) {
- 
-
-  .post-history-logos {
-    height: 5vh;
-    max-width: 100%;
-  }
-  .history-logos {
-    height: 5vh;
-    max-width: 100%;
-  }
-
-  .event-ticket-logos {
-    height: 4.5vh;
-    max-width: 100%;
-  }
-  #side-bar.expanded .event-ticket-logos {
-    height: 5vh;
-    max-width: 100%;
-  }
-  #side-bar.expanded .post-history-logos {
-    height: 6vh;
-    max-width: 100%;
-    margin-left: -2%;
-  }
-  #side-bar.expanded .history-logos {
-    height: 5.8vh;
-    max-width: 109%;
-    margin-left: -0.2%;
-  }
-  #side-bar.expanded {
-    background-color: rgba(7, 65, 119, 0.8);
-    margin-top: 66px;
-    position: fixed;
-    z-index: 1000000;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    backdrop-filter: blur(40px);
-  }
-}
-
-@media (max-width: 1024px) {
-  #side-bar {
-    display: flex;
-    flex-direction: column;
-  }
-}
-@media (max-width: 950px) {
-  #side-bar:not(.expanded) {
-    display: none;
-  }
-  
-  .sidebar-icon {
-    margin: 0 6px 0 18px;
-  }
-  
-  
 }
