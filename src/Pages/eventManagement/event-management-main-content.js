@@ -2,27 +2,27 @@ import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./event-management-main-content.css";
 import profile from "./images-logos/profile-logo.jpg";
-import { FaSearch, FaEdit, FaTrash, FaCamera, FaUsers } from "react-icons/fa";
-import useImageUpload from "./useImageUpload";
+import { FaSearch, FaEdit, FaTrash, FaUsers } from "react-icons/fa";
+//import useImageUpload from "./useImageUpload";
 
 function EventManagementMainContent() {
   const [events, setEvents] = useState([]);
   const [currentUserName, setCurrentUserName] = useState("");
-  const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [selectedEventId, setSelectedEventId] = useState(null);
+  // const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  // const [selectedEventId, setSelectedEventId] = useState(null);
   const upcomingSlider = useRef(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const {
-    imagePreview,
-    uploading,
-    uploadImage,
-    fileInputRef,
-    handleFileChange,
-    handleDivClick,
-    setImagePreview,
-  } = useImageUpload();
+  // const {
+  //   imagePreview,
+  //   uploading,
+  //   uploadImage,
+  //   fileInputRef,
+  //   handleFileChange,
+  //   handleDivClick,
+  //   setImagePreview,
+  // } = useImageUpload();
 
   useEffect(() => {
     const fetchEvents = async () => {
