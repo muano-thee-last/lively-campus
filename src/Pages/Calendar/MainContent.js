@@ -46,20 +46,32 @@ const MainContent = () => {
         
         // Fetch user's ticketed events
         const userID = sessionStorage.getItem("uid");
-        const ticketResponse = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/getTicketsx/${userID}`);
-        if (!ticketResponse.ok) {
-          throw new Error(`HTTP error! Status: ${ticketResponse.status}`);
-        }
-        const ticketData = await ticketResponse.json();
-        
-        // Filter out tickets with "Title not found" and map to event IDs
-        const validTicketEventIds = ticketData
-          .filter(ticket => ticket.eventTitle !== "Title not found")
-          .map(ticket => ticket.eventId);
+        if (userID) {
+          try {
+            const ticketResponse = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/getTicketsx/${userID}`);
+            if (ticketResponse.ok) {
+              const ticketData = await ticketResponse.json();
+              
+              // Filter out tickets with "Title not found" and map to event IDs
+              const validTicketEventIds = ticketData
+                .filter(ticket => ticket.eventTitle !== "Title not found")
+                .map(ticket => ticket.eventId);
 
-        // Filter events to only include those the user has tickets for
-        const ticketedEvents = data.filter(event => validTicketEventIds.includes(event.id));
-        setUserTicketedEvents(ticketedEvents);
+              // Filter events to only include those the user has tickets for
+              const ticketedEvents = data.filter(event => validTicketEventIds.includes(event.id));
+              setUserTicketedEvents(ticketedEvents);
+            } else {
+              console.log('No tickets found for user or user not logged in');
+              setUserTicketedEvents([]);
+            }
+          } catch (error) {
+            console.error('Error fetching user tickets:', error);
+            setUserTicketedEvents([]);
+          }
+        } else {
+          console.log('User not logged in, skipping ticket fetch');
+          setUserTicketedEvents([]);
+        }
       } catch (error) {
         console.error('Error fetching events:', error);
         setEvents([]);
