@@ -90,9 +90,7 @@
 }
 
 @media (max-width: 600px) {
-  .sidebar-item p {
-    color: rgb(252, 255, 255);
-  }
+ 
 
   .post-history-logos {
     height: 5vh;
