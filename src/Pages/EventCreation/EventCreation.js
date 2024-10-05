@@ -21,14 +21,17 @@ import locationSVG from "./images-logos/location.svg";
 import "./styles/EventCreationStyles.css";
 import PopupCard from "./components/PopupCard";
 import person from "./images-logos/person.svg";
+import zesti from "./Restuarant/zesti.png";
+import lantern from "./Restuarant/chinese_lantern.jpg"; 
+import jimmy from "./Restuarant/jimmy's.png";
+import olives from "./Restuarant/olives.webp"
 import { storage } from "../../Pages/Login/config";
 import Header from "../dashboard/header";
 import SideBar from "../dashboard/side-bar";
 import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../dashboard/footer";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const EVENTS_API =
   "https://us-central1-witslivelycampus.cloudfunctions.net/app/events";
@@ -108,6 +111,56 @@ export default function EventCreation() {
   const [selectedTags, setSelectedTags] = useState(
     isEditing ? editingEvent.tags : []
   );
+
+  const restuarantsMockData = [
+    {
+      venueId: "Zesti Lemonz",
+      capacity: 200,
+      buildingName: "The Matrix",
+      campusName: "Wits West Campus",
+      imageUrl: {zesti},
+      type: "RESTAURANT",
+      isUnderMaintenance: false,
+      rating: 3.3,
+      restuarant: true,
+    },
+    {
+      venueId: "Olives and Plates",
+      capacity: 200,
+      buildingName: "The Matrix",
+      campusName: "Wits West Campus",
+      imageUrl:
+        {olives},
+      type: "RESTAURANT",
+      isUnderMaintenance: false,
+      rating: 5,
+      restuarant: true,
+    },
+    {
+      venueId: "Chinese Lantern",
+      capacity: 200,
+      buildingName: "",
+      campusName: "Wits East Campus",
+      imageUrl:
+        {lantern},
+      type: "RESTAURANT",
+      isUnderMaintenance: false,
+      rating: null,
+      restuarant: true,
+    },
+    {
+      venueId: "Jimmy's",
+      capacity: 200,
+      buildingName: "The Matrix",
+      campusName: "Wits West Campus",
+      imageUrl:
+        {jimmy},
+      type: "RESTAURANT",
+      isUnderMaintenance: false,
+      rating: 4.5,
+      restuarant: true,
+    },
+  ];
   const aboutTags = [
     "Music",
     "Dance",
@@ -315,7 +368,9 @@ export default function EventCreation() {
         lng: 28.02534818903165,
       },
     },
+    ...restuarantsMockData,
   ];
+
 
   const [venueSearchTerm, setVenueSearchTerm] = useState("");
   const [filteredVenues, setFilteredVenues] = useState([]);
@@ -376,8 +431,8 @@ export default function EventCreation() {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-    })
-  }
+    });
+  };
   const errorMessage = () => {
     toast.error("Error saving event. Please try again.", {
       position: "top-right",
@@ -388,7 +443,7 @@ export default function EventCreation() {
       draggable: true,
       progress: undefined,
     });
-  }
+  };
 
   // Function to handle file input click
   function handleDivClick() {
@@ -529,7 +584,18 @@ export default function EventCreation() {
         !image ||
         !eventData.availableTickets
       ) {
-        console.error("All fields must be filled out before submission.");
+        // console.error("All fields must be filled out before submission.");
+        // console.log("eventName missing:", eventData.eventName);
+        // console.log("eventDescription missing:", eventData.eventDescription);
+        // console.log("ticketPrice missing:", eventData.ticketPrice);
+        // console.log("capacity missing:", eventData.capacity);
+        // console.log("eventDate missing:", eventData.eventDate);
+        // console.log("eventTime missing:", eventData.eventTime);
+        // console.log("eventLocation missing:", eventData.eventLocation);
+        // console.log("selectedTags empty:", selectedTags.length);
+        // console.log("image missing:", image);
+        // console.log("availableTickets missing:", eventData.availableTickets);
+
         fillFormMessage();
         setIsSubmitting(false);
         return; // Stop execution if any field is empty
@@ -547,12 +613,14 @@ export default function EventCreation() {
       if (isEditing) {
         if (
           isEditing &&
-        !(editingEvent.title === eventData.eventName &&
-        new Date(editingEvent.date).toLocaleDateString() ===
-          new Date(eventData.eventDate).toLocaleDateString() &&
-        editingEvent.time === startTime &&
-        editingEvent.endTime === endTime &&
-        editingEvent.venue === eventData.eventLocation)
+          !(
+            editingEvent.title === eventData.eventName &&
+            new Date(editingEvent.date).toLocaleDateString() ===
+              new Date(eventData.eventDate).toLocaleDateString() &&
+            editingEvent.time === startTime &&
+            editingEvent.endTime === endTime &&
+            editingEvent.venue === eventData.eventLocation
+          )
         ) {
           const cancelWiman = await fetch(
             `${WIMAN_API}/bookings/cancel/${editingEvent.bookingId}`,
@@ -586,8 +654,8 @@ export default function EventCreation() {
         editingEvent.endTime === endTime &&
         editingEvent.venue === eventData.eventLocation
       ) {
-        skipWiman = true
-        console.log("No changes detected. Skipping Wiman booking."); 
+        skipWiman = true;
+        console.log("No changes detected. Skipping Wiman booking.");
       } else {
         const wimanBody = {
           date: isEditing ? eventData.eventDate : startDate,
@@ -681,6 +749,53 @@ export default function EventCreation() {
 
   useEffect(() => {
     const getVenues = async () => {
+      const restaurantsMockData = [
+        {
+          venueId: "Zesti Lemonz",
+          capacity: 200,
+          buildingName: "The Matrix",
+          campusName: "Wits West Campus",
+          imageUrl: zesti, // Assuming `zesti` is a valid image URL or imported image
+          type: "RESTAURANT",
+          isUnderMaintenance: false,
+          rating: 3.3,
+          restaurant: true, // Fixed spelling
+        },
+        {
+          venueId: "Olives and Plates",
+          capacity: 200,
+          buildingName: "The Matrix",
+          campusName: "Wits West Campus",
+          imageUrl: olives, // Assuming `olives` is a valid image URL or imported image
+          type: "RESTAURANT",
+          isUnderMaintenance: false,
+          rating: 5,
+          restaurant: true, // Fixed spelling
+        },
+        {
+          venueId: "Chinese Lantern",
+          capacity: 200,
+          buildingName: "",
+          campusName: "Wits East Campus",
+          imageUrl: lantern, // Assuming `lantern` is a valid image URL or imported image
+          type: "RESTAURANT",
+          isUnderMaintenance: false,
+          rating: null,
+          restaurant: true, // Fixed spelling
+        },
+        {
+          venueId: "Jimmy's",
+          capacity: 200,
+          buildingName: "The Matrix",
+          campusName: "Wits West Campus",
+          imageUrl: jimmy, // Assuming `jimmy` is a valid image URL or imported image
+          type: "RESTAURANT",
+          isUnderMaintenance: false,
+          rating: 4.5,
+          restaurant: true, // Fixed spelling
+        },
+      ];
+  
       try {
         const response = await fetch(`${WIMAN_API}/venues`, {
           method: "GET",
@@ -690,16 +805,21 @@ export default function EventCreation() {
           },
         });
         const json = await response.json();
-        setAvailableVenues(json);
-        setFilteredVenues(json);
+        const combinedData = [...json, ...restaurantsMockData]; // Combine API data and mock data
+        setAvailableVenues(combinedData);
+        setFilteredVenues(combinedData);
         console.log(json);
       } catch (error) {
         console.error("Error fetching venues:", error);
         setRenderWithMockData(true);
+        setAvailableVenues(restaurantsMockData); // Use mock data in case of failure
+        setFilteredVenues(restaurantsMockData); // Use mock data in case of failure
       }
     };
+  
     getVenues();
   }, [wimanBearerKey]);
+  
 
   const [venueId, setVenueId] = useState("");
   const [venueAvailabilitySlots, setVenueAvailabilitySlots] = useState([]);

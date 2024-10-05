@@ -196,13 +196,13 @@ export default function EventDetails() {
         </div>
       </div>
 
-      <div className="event-description">
+      <div className="event-description" style={{ marginLeft: "8px" }}>
         <h3>Description</h3>
         <div style={{ whiteSpace: "pre-wrap", paddingTop: "1vw" }}>
           <p>{event.description}</p>
         </div>
       </div>
-      <div className="event-venue-location">
+      <div className="event-venue-location" style={{ marginLeft: "8px" }}>
         <h3>Venue and Location</h3>
         <div className="map-container">
           <iframe
@@ -238,7 +238,7 @@ export default function EventDetails() {
         </div>
       )}
 
-      <div className="event-buy-tickets">
+      <div className="event-buy-tickets" style={{ marginLeft: "8px" }}>
         <p>
           <strong>
             Ticket Price: <span>R</span> {event.ticketPrice}{" "}
