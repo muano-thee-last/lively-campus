@@ -182,25 +182,25 @@ describe("EventManagementMainContent", () => {
     });
   });
 
-  it("opens the upload modal when the camera icon is clicked", async () => {
-    const events = [
-      { id: "1", title: "Event 1", organizerName: "Test User", imageUrl: "", availableTickets: 50 },
-    ];
+  // it("opens the upload modal when the camera icon is clicked", async () => {
+  //   const events = [
+  //     { id: "1", title: "Event 1", organizerName: "Test User", imageUrl: "", availableTickets: 50 },
+  //   ];
 
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      json: jest.fn().mockResolvedValue(events),
-    });
+  //   fetch.mockResolvedValueOnce({
+  //     ok: true,
+  //     json: jest.fn().mockResolvedValue(events),
+  //   });
 
-    await act(async () => {
-      render(<EventManagementMainContent />);
-    });
+  //   await act(async () => {
+  //     render(<EventManagementMainContent />);
+  //   });
 
-    const cameraButton = screen.getByTestId("management-event-upload-image");
-    fireEvent.click(cameraButton);
+  //   const cameraButton = screen.getByTestId("management-event-upload-image");
+  //   fireEvent.click(cameraButton);
 
-    expect(screen.getByText("Upload Image")).toBeInTheDocument();
-  });
+  //   expect(screen.getByText("Upload Image")).toBeInTheDocument();
+  // });
 
   // it("handles image upload", async () => {
   //   const events = [

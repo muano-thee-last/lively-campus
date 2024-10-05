@@ -102,46 +102,46 @@ function EventManagementMainContent() {
     });
   };
 
-  const handleUploadImage = async () => {
-    if (selectedEventId) {
-      const imageUrl = await uploadImage();
-      if (imageUrl) {
-        try {
-          const response = await fetch(
-            `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${selectedEventId}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                imageUrl,
-              }),
-            }
-          );
+  // const handleUploadImage = async () => {
+  //   if (selectedEventId) {
+  //     const imageUrl = await uploadImage();
+  //     if (imageUrl) {
+  //       try {
+  //         const response = await fetch(
+  //           `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${selectedEventId}`,
+  //           {
+  //             method: "PUT",
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //             },
+  //             body: JSON.stringify({
+  //               imageUrl,
+  //             }),
+  //           }
+  //         );
 
-          if (response.ok) {
-            setEvents(
-              events.map((event) =>
-                event.id === selectedEventId ? { ...event, imageUrl } : event
-              )
-            );
-            handleUploadModalClose();
-          } else {
-            console.error("Failed to update event image");
-          }
-        } catch (error) {
-          console.error("Error updating event image:", error);
-        }
-      }
-    }
-  };
+  //         if (response.ok) {
+  //           setEvents(
+  //             events.map((event) =>
+  //               event.id === selectedEventId ? { ...event, imageUrl } : event
+  //             )
+  //           );
+  //           handleUploadModalClose();
+  //         } else {
+  //           console.error("Failed to update event image");
+  //         }
+  //       } catch (error) {
+  //         console.error("Error updating event image:", error);
+  //       }
+  //     }
+  //   }
+  // };
 
-  const handleUploadModalClose = () => {
-    setImagePreview(null);
-    setUploadModalOpen(false);
-    setSelectedEventId(null);
-  };
+  // const handleUploadModalClose = () => {
+  //   setImagePreview(null);
+  //   setUploadModalOpen(false);
+  //   setSelectedEventId(null);
+  // };
 
   return (
     <div id="management-main-content">
@@ -208,7 +208,7 @@ function EventManagementMainContent() {
                           onClick={() => handleEdit(event)}
                           data-testid="management-event-edit"
                         />
-                        <FaCamera
+                        {/* <FaCamera
                           className="management-event-upload-image"
                           size={24}
                           onClick={() => {
@@ -216,7 +216,7 @@ function EventManagementMainContent() {
                             setUploadModalOpen(true);
                           }}
                           data-testid="management-event-upload-image"
-                        />
+                        /> */}
                         <FaTrash
                           className="management-deleteEvent"
                           size={24}
@@ -259,7 +259,7 @@ function EventManagementMainContent() {
         </div>
       </div>
 
-      {uploadModalOpen && (
+      {/* {uploadModalOpen && (
         <div className="management-upload-modal-overlay">
           <div className="management-upload-modal-content">
             <h2>Upload Image</h2>
@@ -294,7 +294,7 @@ function EventManagementMainContent() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
