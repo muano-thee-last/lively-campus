@@ -206,6 +206,7 @@ function EventManagementMainContent() {
                           className="management-event-edit"
                           size={24}
                           onClick={() => handleEdit(event)}
+                          data-testid="management-event-edit"
                         />
                         <FaCamera
                           className="management-event-upload-image"
@@ -214,11 +215,13 @@ function EventManagementMainContent() {
                             setSelectedEventId(event.id);
                             setUploadModalOpen(true);
                           }}
+                          data-testid="management-event-upload-image"
                         />
                         <FaTrash
                           className="management-deleteEvent"
                           size={24}
                           onClick={() => handleDelete(event.id)}
+                          data-testid="management-deleteEvent"
                         />
                       </div>
                     </div>
