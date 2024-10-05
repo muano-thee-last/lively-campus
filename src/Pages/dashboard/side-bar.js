@@ -7,6 +7,7 @@ import {
   EventAvailable,
   CheckCircle,
 } from "@mui/icons-material"; // Import MUI icons
+import LogoutIcon from '@mui/icons-material/Logout';
 import "./side-bar.css"; // CSS for styling
 
 function SideBar({ isSidebarOpen }) {
@@ -29,6 +30,10 @@ function SideBar({ isSidebarOpen }) {
     }
     checkAdmin();
   }, []);
+
+  function handleLogout() {
+    sessionStorage.clear();
+  }
 
   return (
     <nav
@@ -58,6 +63,10 @@ function SideBar({ isSidebarOpen }) {
           {isSidebarOpen && <p>Approve Events</p>}
         </Link>
       )}
+      <Link to="/" className="sidebar-item" onClick={handleLogout}>
+        <LogoutIcon className="sidebar-icon" />
+        {isSidebarOpen && <p>Logout</p>}
+      </Link>
     </nav>
   );
 }
