@@ -436,37 +436,48 @@
 }
 
 @media (max-width: 768px) {
+  .calendar-container {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .calendar {
+    padding: 10px;
+  }
+
   .calendar-grid {
     grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
   }
 
   .day {
+    aspect-ratio: auto;
     padding: 2px;
-    height: 0;
-    padding-bottom: calc(100% / 7);
-    position: relative;
+    height: 120px; /* Increased height for more visibility */
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
   }
 
   .day-number {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    font-size: 10px;
+    font-size: 12px;
+    position: static;
+    margin-bottom: 2px;
   }
 
   .events-container {
-    position: absolute;
-    top: 20px;
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
-    overflow: hidden;
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: calc(100% - 20px);
   }
 
   .event-details {
-    font-size: 6px;
-    padding: 1px 2px;
-    margin-bottom: 1px;
+    font-size: 9px; /* Slightly increased font size */
+    padding: 2px 3px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .event-time {
@@ -474,7 +485,7 @@
   }
 
   .viewing-month {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .select-month {
@@ -497,7 +508,7 @@
   }
 
   .month-header {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .calendar-grid {
@@ -505,17 +516,16 @@
   }
 
   .day-name {
-    font-size: 8px;
-    padding: 1px;
+    font-size: 10px;
+    padding: 2px;
   }
 
   .day-number {
-    font-size: 8px;
+    font-size: 10px;
   }
 
   .event-details {
-    font-size: 5px;
-    padding: 1px;
+    font-size: 8px;
   }
 
   .viewing-month {
@@ -524,13 +534,13 @@
 
   .select-month {
     font-size: 12px;
-    padding: 2px 4px;
+    padding: 4px 6px;
   }
 
   .filters input,
   .filters select {
     font-size: 12px;
-    padding: 4px;
+    padding: 6px;
   }
 
   .upcoming-events h4,
@@ -540,18 +550,24 @@
 
   .upcoming-event-title,
   .today-event-title {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .upcoming-event-datetime,
   .today-event-time {
-    font-size: 9px;
+    font-size: 10px;
+  }
+
+  .day {
+    height: 100px; /* Slightly reduced height for smaller screens, but still larger than before */
+    min-height: 100px;
   }
 }
 
 @media (max-width: 400px) {
   .calendar-container {
     font-size: 10px;
+    padding: 5px;
   }
 
   .calendar {
@@ -569,25 +585,28 @@
   }
 
   .select-month {
-    font-size: 10px;
-    padding: 2px;
+    font-size: 12px;
+    padding: 4px;
     width: 100%;
+    margin-bottom: 10px;
   }
 
   .calendar-grid {
-    gap: 0;
+    gap: 1px;
   }
 
   .day {
     border: 1px solid #e0e0e0;
+    height: 80px; /* Further reduced height for very small screens, but still larger than before */
+    min-height: 80px;
   }
 
   .day-number {
-    font-size: 7px;
+    font-size: 9px;
   }
 
   .event-details {
-    font-size: 4px;
+    font-size: 7px;
   }
 
   .highlight-day {
@@ -606,15 +625,15 @@
   }
 
   .select-month {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .day-number {
-    font-size: 6px;
+    font-size: 8px;
   }
 
   .event-details {
-    font-size: 3px;
+    font-size: 5px;
   }
 
   .upcoming-events h4,
@@ -629,6 +648,22 @@
 
   .upcoming-event-datetime,
   .today-event-time {
+    font-size: 8px;
+  }
+}
+
+/* Add this new style for better visibility of event titles on mobile */
+@media (max-width: 768px) {
+  .event-details {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .event-title {
+    display: block;
+    font-weight: bold;
     font-size: 8px;
   }
 }
