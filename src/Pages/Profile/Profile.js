@@ -111,6 +111,22 @@ export default function Profile() {
     navigate("/"); // Redirect to login page
   };
 
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
+
+  const handleLogoutClick = () => {
+    setShowLogoutConfirmation(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    sessionStorage.clear();
+    setShowLogoutConfirmation(false);
+    navigate('/');
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutConfirmation(false);
+  };
+
   return (
     <div>
       <Header toggleSidebar={toggleSidebar} />
@@ -144,25 +160,26 @@ export default function Profile() {
           {/* Logout Button */}
           <div className="additional-features">
             <h2 className="add-features-bold-title">Additional Functions</h2>
-
-            <button
-              className="additional-features-buttons"
-              onClick={handleEventManagement}
-            >
-              Manage your Events
-            </button>
-            <button
-              className="additional-features-buttons"
-              onClick={handleCreateEvent}
-            >
-              Create an Event
-            </button>
-            <button
-              className="additional-features-buttons logout-button"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            <div className="additional-features-buttons-container">
+              <button
+                className="additional-features-buttons"
+                onClick={handleEventManagement}
+              >
+                Manage your Events
+              </button>
+              <button
+                className="additional-features-buttons"
+                onClick={handleCreateEvent}
+              >
+                Create an Event
+              </button>
+              <button
+                className="additional-features-buttons logout-button"
+                onClick={handleLogoutClick}
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
           {/* Liked Events Section */}
@@ -226,6 +243,18 @@ export default function Profile() {
         </div>
       </div>
       <Footer />
+
+      {showLogoutConfirmation && (
+        <div className="logout-confirmation-overlay">
+          <div className="logout-confirmation-modal">
+            <p>Are you sure you want to logout?</p>
+            <div className="logout-confirmation-buttons">
+              <button onClick={handleLogoutConfirm}>Yes</button>
+              <button onClick={handleLogoutCancel}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
