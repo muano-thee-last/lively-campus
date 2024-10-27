@@ -182,8 +182,7 @@ export default function EventDetails() {
         </div>
         <div className="info-item">
           <FaCalendarAlt className="icon" />{" "}
-          {new Date(event.date).toLocaleDateString()}{" "}
-          {event.time}
+          {new Date(event.date).toLocaleDateString()} {event.time}
           {" - "}
           {event.endTime}
         </div>
@@ -193,6 +192,10 @@ export default function EventDetails() {
         <div className="info-item">
           <FaTicketAlt className="icon" /> Available Tickets:{" "}
           {event.availableTickets}
+        </div>
+        <div className="info-item">
+          <FaTicketAlt className="icon" /> Bought Tickets:{" "}
+          {event.capacity - event.availableTickets}
         </div>
       </div>
 
@@ -318,8 +321,7 @@ export default function EventDetails() {
                 } catch (error) {
                   console.error("Error rejecting the event:", error);
                 }
-              }
-              }
+              }}
             >
               Yes
             </Button>
