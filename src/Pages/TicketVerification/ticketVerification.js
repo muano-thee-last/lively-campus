@@ -177,10 +177,10 @@ export default function TicketVerification() {
       {ticket && result === "Valid" && (
         <div className="ticket-info">
           <h3>Ticket Information</h3>
+          <p><strong>Event:</strong> {ticket.event}</p>
           <p><strong>Price:</strong> {ticket.price}</p>
           <p><strong>Purchase Date:</strong> {ticket.purchaseDate}</p>
           <p><strong>Code:</strong> {ticket.code}</p>
-          <p><strong>Event:</strong> {ticket.event}</p>
 
         </div>
       )}

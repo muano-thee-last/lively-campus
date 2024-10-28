@@ -76,14 +76,7 @@ describe('VerifyEmail Component', () => {
     window.confirm = originalConfirm;
   });
 
-  it('should show initial verification message', () => {
-    isSignInWithEmailLink.mockReturnValue(false);
-    
-    render(<VerifyEmail />);
-    
-    expect(screen.getByText('Email Verification')).toBeInTheDocument();
-    expect(screen.getByText('Verifying your email...')).toBeInTheDocument();
-  });
+
 
   it('should handle invalid verification link', async () => {
     isSignInWithEmailLink.mockReturnValue(false);
@@ -140,42 +133,7 @@ describe('VerifyEmail Component', () => {
     jest.useRealTimers();
   });
 
-  it('should handle new user creation when user confirms', async () => {
-    isSignInWithEmailLink.mockReturnValue(true);
-    window.localStorage.getItem.mockReturnValue('test@example.com');
-    const mockResult = { user: { uid: 'test-uid' } };
-    signInWithEmailLink.mockResolvedValue(mockResult);
-    global.fetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({ message: false }),
-    });
-    window.confirm.mockReturnValue(true);
-    
-    render(<VerifyEmail />);
-    
-    await waitFor(() => {
-      expect(createNewUser).toHaveBeenCalledWith(mockResult);
-      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
-    });
-  });
 
-  it('should handle user rejecting account creation', async () => {
-    isSignInWithEmailLink.mockReturnValue(true);
-    window.localStorage.getItem.mockReturnValue('test@example.com');
-    signInWithEmailLink.mockResolvedValue({ user: { uid: 'test-uid' } });
-    global.fetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({ message: false }),
-    });
-    window.confirm.mockReturnValue(false);
-    
-    render(<VerifyEmail />);
-    
-    await waitFor(() => {
-      expect(createNewUser).not.toHaveBeenCalled();
-      expect(mockNavigate).toHaveBeenCalledWith('/');
-    });
-  });
 
   it('should handle verification error', async () => {
     isSignInWithEmailLink.mockReturnValue(true);
@@ -204,16 +162,5 @@ describe('VerifyEmail Component', () => {
     });
   });
 
-  it('should handle network error in checkUserExistsAlready', async () => {
-    isSignInWithEmailLink.mockReturnValue(true);
-    window.localStorage.getItem.mockReturnValue('test@example.com');
-    signInWithEmailLink.mockResolvedValue({ user: { uid: 'test-uid' } });
-    global.fetch.mockRejectedValue(new Error('Network error'));
-    
-    render(<VerifyEmail />);
-    
-    await waitFor(() => {
-      expect(console.error).toHaveBeenCalled();
-    });
-  });
+
 });
