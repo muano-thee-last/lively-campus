@@ -49,9 +49,37 @@ export default function TicketVerification() {
 
       if (data && data.ticketCode === code) {
 
-        if (data.isUsed) {
+        if (data.isUsed == true) {
           setTicketused(true);
         }
+
+        else{
+          // call the api to mark it as used, so it cant be used twice  https://us-central1-witslivelycampus.cloudfunctions.net/app/changeTicketStatus
+          // 
+          /*  
+        
+            @params {
+                ticketCode
+              }
+
+        */
+
+              const changeStatus = fetch("https://us-central1-witslivelycampus.cloudfunctions.net/app/changeTicketStatus", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  "ticketCode": data.ticketCode
+                })
+              })
+              .then(response => response.json())
+              .then(data => console.log(data))
+              .catch(error => console.error("Error:", error));
+              
+
+        }
+
         const ticketData = {
           price: `R${data.price}`,
           purchaseDate: new Date(data.purchaseDate).toLocaleString(),
@@ -128,11 +156,11 @@ export default function TicketVerification() {
         <div className="alert error">
           <strong>Error:</strong> {error}
         </div>
-      )}
+      )}  
 
-      {(result && ticketUsed == false) && (
+      {(result && !ticketUsed) && (
         <div className={`alert ${result === "Valid" ? "success" : "error"}`}>
-          <strong>{result === "Valid" && status ? "Success:" : "Error:"}</strong> {result}
+          <strong>{result === "Valid" ? "Success:" : "Error:"}</strong> {result}
         </div>
       )}
 
