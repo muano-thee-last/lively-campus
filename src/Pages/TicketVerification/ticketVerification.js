@@ -5,13 +5,13 @@ import { useLocation } from "react-router-dom";
 import "./ticketVerification.css";
 
 export default function TicketVerification() {
-  const [ticket, setTicket] = useState(null); 
+  const [ticket, setTicket] = useState(null);
   const [ticketNum, setTicketNum] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [result, setResult] = useState(""); 
+  const [result, setResult] = useState("");
   const [isCameraActive, setIsCameraActive] = useState(false);
-
+  const [ticketUsed, setTicketused] = useState(false);
   const location = useLocation();
 
   const getQueryParams = () => {
@@ -37,7 +37,7 @@ export default function TicketVerification() {
     setIsLoading(true);
     setError("");
     setResult("");
-    setTicket(null); 
+    setTicket(null);
 
     try {
       const response = await fetch(`https://us-central1-witslivelycampus.cloudfunctions.net/app/verifyTicket?ticketCode=${code}`);
@@ -46,21 +46,55 @@ export default function TicketVerification() {
       }
       const data = await response.json();
 
+
       if (data && data.ticketCode === code) {
+
+        if (data.isUsed == true) {
+          setTicketused(true);
+        }
+
+        else{
+          // call the api to mark it as used, so it cant be used twice  https://us-central1-witslivelycampus.cloudfunctions.net/app/changeTicketStatus
+          // 
+          /*  
+        
+            @params {
+                ticketCode
+              }
+
+        */
+
+              const changeStatus = fetch("https://us-central1-witslivelycampus.cloudfunctions.net/app/changeTicketStatus", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  "ticketCode": data.ticketCode
+                })
+              })
+              .then(response => response.json())
+              .then(data => console.log(data))
+              .catch(error => console.error("Error:", error));
+              
+
+        }
+
         const ticketData = {
           price: `R${data.price}`,
           purchaseDate: new Date(data.purchaseDate).toLocaleString(),
           code: data.ticketCode,
+          event: data.eventTitle,
         };
-        setTicket(ticketData); 
-        setResult("Valid"); 
+        setTicket(ticketData);
+        setResult("Valid");
       } else {
         setResult("Not valid");
       }
     } catch (error) {
       console.error("Error fetching ticket:", error);
       setError("Unable to verify ticket. Please try again.");
-      setResult("Not valid"); 
+      setResult("Not valid");
     } finally {
       setIsLoading(false);
     }
@@ -91,14 +125,14 @@ export default function TicketVerification() {
           onChange={handleInputChange}
           className="input-field"
         />
-        <button 
-          onClick={() => verifyTicket(ticketNum)} 
+        <button
+          onClick={() => verifyTicket(ticketNum)}
           disabled={isLoading}
           className="verify-button"
         >
           {isLoading ? "Verifying..." : "Verify"}
         </button>
-        <button 
+        <button
           onClick={() => setIsCameraActive(!isCameraActive)}
           className="camera-button"
         >
@@ -122,20 +156,32 @@ export default function TicketVerification() {
         <div className="alert error">
           <strong>Error:</strong> {error}
         </div>
-      )}
+      )}  
 
-      {result && (
+      {(result && !ticketUsed) && (
         <div className={`alert ${result === "Valid" ? "success" : "error"}`}>
           <strong>{result === "Valid" ? "Success:" : "Error:"}</strong> {result}
         </div>
       )}
 
+
+      {(result && ticketUsed == true) && (
+        <div className={`alert ${result === "Valid" ? "success" : "error"}`}>
+          <p1>
+            Ticket already used
+          </p1>
+        </div>
+      )}
+
+
       {ticket && result === "Valid" && (
         <div className="ticket-info">
           <h3>Ticket Information</h3>
+          <p><strong>Event:</strong> {ticket.event}</p>
           <p><strong>Price:</strong> {ticket.price}</p>
           <p><strong>Purchase Date:</strong> {ticket.purchaseDate}</p>
           <p><strong>Code:</strong> {ticket.code}</p>
+
         </div>
       )}
     </div>
