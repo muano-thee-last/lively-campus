@@ -99,7 +99,7 @@ function VerifyEmail() {
         <h1>Email Verification</h1>
         <p>{verificationStatus}</p>
         {verificationStatus.includes("failed") && (
-          <button onClick={() => navigate("/signin")} className="retry-button">
+          <button onClick={() => navigate("/")} className="retry-button">
             Return to Sign In
           </button>
         )}
