@@ -288,6 +288,7 @@
   width: 100%;
   min-height: 100px;
   resize: vertical;
+  margin-left: 0.5rem;
 }
 .event-details-block label {
   font-size: 20;

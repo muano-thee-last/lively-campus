@@ -153,7 +153,7 @@ function Header({ toggleSidebar, onSearch }) {
           onClick={handleDashboardNavigation}
           className="header-title pointer"
         >
-          Livelycampus
+          LivelyCampus
         </h4>
       </section>
 
