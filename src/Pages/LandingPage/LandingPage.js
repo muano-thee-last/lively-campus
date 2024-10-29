@@ -98,7 +98,7 @@ function LandingPage() {
         </>
       )}
 
-      <Footer />
+      <Footer handleLoginClick={handleButtonClick} />
 
       {showLogin && <LoginModal handleCloseLogin={handleCloseLogin} />}
     </div>
