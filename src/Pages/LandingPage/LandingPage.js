@@ -186,11 +186,63 @@ function EventsSection({ title, events, currentIndex, handleDotClick, showBookNo
     setAnimationKey(prevKey => prevKey + 1);
   }, [currentIndex]);
 
-  const filteredEvents = events.filter(event => 
-    title === "Upcoming Events" 
-      ? ["Tech Innovators Conference", "Wits 100 Celebration"].includes(event.title)
-      : ["Jaiv'ujuluke", "Mountain Biking Challenge"].includes(event.title)
-  );
+  const mockEvents = {
+    upcoming: [
+      {
+        availableTickets: 299,
+        capacity: 300,
+        comments: [],
+        date: "2024-11-29",
+        description: "A conference bringing together tech industry leaders to discuss the latest innovations, trends, and future technologies. Features keynote speakers and breakout sessions.",
+        imageUrl: "https://firebasestorage.googleapis.com/v0/b/witslivelycampus.appspot.com/o/images%2Ftech.jpg?alt=media&token=a85e0d01-f704-48e9-bd32-f3ec223dffba",
+        isApproved: true,
+        likes: 2,
+        organizerId: null,
+        organizerName: "Vhutshilo Ramukosi",
+        tags: ["Conference", "Seminar", "Exhibition", "Research Presentation", "Workshop", "Networking Event"],
+        ticketPrice: 230,
+        time: "07:30",
+        title: "Tech Innovators Conference",
+        venue: "The Great Hall"
+      },
+      // Keep the "Wits 100 Celebration" event
+      events.find(event => event.title === "Wits 100 Celebration")
+    ],
+    previous: [
+      {
+        availableTickets: 15,
+        bookingId: 105,
+        capacity: 100,
+        comments: [{
+          text: "check",
+          timestamp: "10/28/2024, 11:36:45 AM",
+          userName: "Knowledge Ramukosi",
+          userProfilePic: "https://lh3.googleusercontent.com/a/ACg8ocICPY5QapHcHM_F1y6A8oP1Vt8kurA_NpQzEIz85kyR4nf-bw=s96-c"
+        }],
+        createdAt: "2024-10-04T11:52:17.189Z",
+        date: "2024-11-09",
+        description: "Great week introducing freshers to the wits environment",
+        endTime: "15:06",
+        imageUrl: "https://firebasestorage.googleapis.com/v0/b/witslivelycampus.appspot.com/o/images%2Fphoto-1492684223066-81342ee5ff30.jpg?alt=media&token=a1fff9e0-144e-4a42-836a-3b7b2bf61d86",
+        isApproved: true,
+        likes: 2,
+        organizerId: "Ql34IrtMpsOC6nzPXSeifnMnrfw1",
+        organizerImg: "https://lh3.googleusercontent.com/a/ACg8ocLqM_9XDB3CRQtIFijDqs8VSgyWBZi5ANSnBHlH_GeZC-Z4Xw=s96-c",
+        organizerName: "Hulisani Rambau",
+        tags: ["Music", "Dance"],
+        ticketPrice: 5,
+        time: "12:00",
+        title: "Freshers",
+        venue: "West Campus First National Bank Building FNB36"
+      },
+      // Keep the "Mountain Biking Challenge" event
+      events.find(event => event.title === "Mountain Biking Challenge")
+    ]
+  };
+
+  const filteredEvents = title === "Upcoming Events" 
+    ? mockEvents.upcoming.filter(Boolean)  // Filter out any undefined values
+    : mockEvents.previous.filter(Boolean); // Filter out any undefined values
 
   const currentEvent = filteredEvents[currentIndex % filteredEvents.length];
 
