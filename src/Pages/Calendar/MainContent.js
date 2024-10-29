@@ -432,7 +432,7 @@ const MainContent = () => {
                         title={`${event.title} - ${formatEventDateTime(event.date)}`}
                       >
                         <span className="event-title">{event.title}</span>
-                        <span className="event-time">{formatEventTime(event.date)}</span>
+          
                       </div>
                     ))}
                   </div>
