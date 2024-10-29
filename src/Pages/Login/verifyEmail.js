@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "./config";
+import { initializeFirebase, auth } from "./config";
 import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import createNewUser from "./createNewUser";
 
@@ -22,10 +22,9 @@ async function checkUserExistsAlready(email) {
     }
 
     const json = await response.json();
-
     return !json.message;
   } catch (error) {
-    console.error("Error:", error.message);
+    console.error("Error checking user existence:", error.message);
     return false;
   }
 }
@@ -38,55 +37,52 @@ function VerifyEmail() {
 
   useEffect(() => {
     const verifyEmail = async () => {
-      if (isSignInWithEmailLink(auth, window.location.href)) {
-        let email = window.localStorage.getItem("emailForSignIn");
+      try {
+        await initializeFirebase; // Wait for Firebase to be fully initialized
 
-        // Check if email exists in the database
-        if (!email) {
-          email = window.prompt("Please provide your email for confirmation");
-        }
+        if (isSignInWithEmailLink(auth, window.location.href)) {
+          let email = window.localStorage.getItem("emailForSignIn");
 
-        if (email) {
-          try {
-            const result = await signInWithEmailLink(
-              auth,
-              email,
-              window.location.href
-            );
-            const myUID = result.user.uid;
+          if (!email) {
+            email = window.prompt("Please provide your email for confirmation");
+          }
 
-            sessionStorage.setItem("uid", myUID);
+          if (email) {
+            try {
+              const result = await signInWithEmailLink(auth, email, window.location.href);
+              const myUID = result.user.uid;
+              sessionStorage.setItem("uid", myUID);
 
-            const userExists = await checkUserExistsAlready(email);
-            if (!userExists) {
-              const userResponse = window.confirm(
-                "You don't have an account yet, press okay to create a new one"
-              );
+              const userExists = await checkUserExistsAlready(email);
+              if (!userExists) {
+                const userResponse = window.confirm(
+                  "You don't have an account yet, press okay to create a new one"
+                );
 
-              if (userResponse) {
-                createNewUser(result);
-                navigate("/dashboard");
-              } else {
-                // Go back to the landing page
-                navigate("/");
+                if (userResponse) {
+                  createNewUser(result);
+                  navigate("/dashboard");
+                } else {
+                  navigate("/"); // Go back to the landing page
+                }
               }
+
+              window.localStorage.removeItem("emailForSignIn");
+              setVerificationStatus("Email verified successfully! Redirecting...");
+              setTimeout(() => navigate("/dashboard"), 2000);
+            } catch (error) {
+              console.error("Error signing in with email link:", error);
+              setVerificationStatus("Verification failed. Please try again.");
             }
-
-            window.localStorage.removeItem("emailForSignIn");
-            setVerificationStatus(
-              "Email verified successfully! Redirecting..."
-            );
-
-            setTimeout(() => navigate("/dashboard"), 2000);
-          } catch (error) {
-            console.error("Error signing in with email link:", error);
-            setVerificationStatus("Verification failed. Please try again.");
+          } else {
+            setVerificationStatus("No email provided. Verification failed.");
           }
         } else {
-          setVerificationStatus("No email provided. Verification failed.");
+          setVerificationStatus("Invalid verification link.");
         }
-      } else {
-        setVerificationStatus("Invalid verification link.");
+      } catch (error) {
+        console.error("Error during Firebase initialization:", error);
+        setVerificationStatus("Failed to initialize Firebase. Please try again later.");
       }
     };
 
