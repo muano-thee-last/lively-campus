@@ -70,6 +70,10 @@
   height: 28px;
   margin-right: 12px;
 }
+
+.event-venue-location {
+  margin-left: 0.5rem;
+}
 .event-venue-location h3 {
   margin: 10px 0 10px 0;
 }
@@ -90,6 +94,10 @@
   align-items: center;
   border-top: 2px solid #e6e6e6;
   text-wrap: nowrap;
+  z-index: 10;
+}
+.event-buy-tickets strong{
+  margin-left: 0.5rem;
 }
 .centered-modal {
   display: flex;
