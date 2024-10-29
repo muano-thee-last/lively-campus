@@ -238,19 +238,27 @@ function MainContent({ searchQuery }) {
     
     const timeAgo = (timestamp) => {
       const currentTime = new Date();
-      const commentTime = new Date(timestamp); // This timestamp should be fixed from submission time
-      const timeDifference = currentTime - commentTime; // Difference in milliseconds
-
-      const minutesAgo = Math.floor(timeDifference / (1000 * 60)); // Convert to minutes
+      const commentTime = new Date(isNaN(timestamp) ? timestamp : parseInt(timestamp));
+      
+      if (isNaN(commentTime)) {
+        return "Invalid date";
+      }
+    
+      const timeDifference = currentTime - commentTime;
+      if (timeDifference < 0) {
+        return "In the future";
+      }
+    
+      const minutesAgo = Math.floor(timeDifference / (1000 * 60));
       const hoursAgo = Math.floor(minutesAgo / 60);
       const daysAgo = Math.floor(hoursAgo / 24);
     
       if (daysAgo > 0) {
-        return `${daysAgo}d ago`;
+        return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
       } else if (hoursAgo > 0) {
-        return `${hoursAgo}h ago`;
+        return `${hoursAgo} hour${hoursAgo > 1 ? 's' : ''} ago`;
       } else if (minutesAgo > 0) {
-        return `${minutesAgo}min ago`;
+        return `${minutesAgo} minute${minutesAgo > 1 ? 's' : ''} ago`;
       } else {
         return "Just now";
       }

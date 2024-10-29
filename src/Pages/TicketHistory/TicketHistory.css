@@ -9,7 +9,11 @@
 .heading {
   margin: 12px 20px;
   color: #003b5c;
-  font-size: 1.5rem;
+  font-size: 1.9rem;
+  font-weight: bold;
+  margin-left: 40px;
+  margin-top: 20px;
+  margin-bottom: 0px;
 }
 
 .no-tickets-message {
@@ -49,21 +53,20 @@
   padding-left: 20px;
 }
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 980px) {
   .ticket-history {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
   }
-  
-}
-@media screen and (max-width: 600px) {
-  .ticket-history{
-    background-color: #e6ecf1;
+  .heading {
+    text-align: center;
+
   }
   
 }
+
 
 /* Add styles for the no tickets message */
 .no-tickets-message {
@@ -78,8 +81,4 @@
   padding: 20px;
 }
 
-.heading {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  text-align: center;
-}
+

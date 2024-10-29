@@ -38,7 +38,7 @@
     .cards-container {
         display: flex;
         flex-wrap: wrap;
-        z-index: 200;
+        z-index: 2;
         justify-content: center;
         align-items: center;
         

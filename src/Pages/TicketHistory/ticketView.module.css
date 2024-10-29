@@ -10,7 +10,7 @@
  
   .detailsContainer div{
     display: flex ;
-    gap:  10px;
+    gap: 15px;
     margin: 10px 0;
     align-items: center;
   }

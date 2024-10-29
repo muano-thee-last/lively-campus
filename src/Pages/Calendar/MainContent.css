@@ -33,13 +33,19 @@
 .mini-calendar-row, .mini-calendar-dates {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  gap: 1.5px;
+  padding: 4px 0;
 }
 
 .mini-calendar-row {
   background-color: #f1f3f4;
   font-weight: 600;
   font-size: 12px;
-  padding: 8px 0;
+  padding: 8px 0px;
+  transform: translateX(11px);
+}
+.mini-calendar-row span {
+  text-align: center;
 }
 
 .mini-date {
@@ -48,6 +54,7 @@
   align-items: center;
   height: 30px;
   font-size: 12px;
+  /* min-width: 30px; */
 }
 
 .mini-date.highlight {
@@ -682,6 +689,25 @@
   border-radius: 50%;
   font-weight: bold;
   box-shadow: 0 0 0 2px #003B5C;
+}
+
+/* Add this new style for the filtered date */
+.filtered-date {
+  background-color: #FFE5B4 !important; /* Peach color */
+  border: 2px solid #FFA500 !important; /* Orange border */
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.filtered-date:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Make sure the filtered date styling takes precedence */
+.day.filtered-date .day-number {
+  font-weight: bold;
+  color: #003B5C;
 }
 
 /* ... keep any remaining styles ... */
