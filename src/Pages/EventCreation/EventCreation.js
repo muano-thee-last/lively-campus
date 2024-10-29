@@ -413,7 +413,7 @@ export default function EventCreation() {
   const successMessage = () => {
     toast.success("Event created successfully", {
       position: "top-right",
-      autoClose: 5000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -436,7 +436,7 @@ export default function EventCreation() {
   const errorMessage = () => {
     toast.error("Error saving event. Please try again.", {
       position: "top-right",
-      autoClose: 5000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -471,6 +471,15 @@ export default function EventCreation() {
   // Function to open tag popup
   function openTagPopup() {
     setIsPopupTagOpen(true);
+    [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
+      (el) => {
+        document.querySelector(el).classList.add("blurred");
+      }
+    );
+  }
+
+  function blurBackground() {
+
     [".event-creation-container", "#header", "#footer", "#side-bar"].forEach(
       (el) => {
         document.querySelector(el).classList.add("blurred");
@@ -570,6 +579,7 @@ export default function EventCreation() {
   // Function to handle submit button click
   async function handleSubmitButton() {
     setIsSubmitting(true);
+    blurBackground();
     // Validation: Check if all required fields are filled
     if (!isEditing) {
       if (
@@ -598,6 +608,7 @@ export default function EventCreation() {
 
         fillFormMessage();
         setIsSubmitting(false);
+        closeTagPopup();
         return; // Stop execution if any field is empty
       }
     }
@@ -728,6 +739,7 @@ export default function EventCreation() {
         } else {
           errorMessage();
           setIsSubmitting(false);
+          closeTagPopup();
           return;
         }
       } else {
@@ -737,12 +749,14 @@ export default function EventCreation() {
         );
         errorMessage();
         setIsSubmitting(false);
+        closeTagPopup();
         return;
       }
     } catch (error) {
       console.error("Error during submission:", error);
       errorMessage();
       setIsSubmitting(false);
+      closeTagPopup();
       return;
     }
   }

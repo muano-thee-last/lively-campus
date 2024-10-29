@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -182,7 +181,8 @@ export default function EventDetails() {
         </div>
         <div className="info-item">
           <FaCalendarAlt className="icon" />{" "}
-          {new Date(event.date).toLocaleDateString()} {event.time}
+          {new Date(event.date).toLocaleDateString()}{" "}
+          {event.time}
           {" - "}
           {event.endTime}
         </div>
@@ -193,19 +193,15 @@ export default function EventDetails() {
           <FaTicketAlt className="icon" /> Available Tickets:{" "}
           {event.availableTickets}
         </div>
-        <div className="info-item">
-          <FaTicketAlt className="icon" /> Bought Tickets:{" "}
-          {event.capacity - event.availableTickets}
-        </div>
       </div>
 
-      <div className="event-description" style={{ marginLeft: "8px" }}>
+      <div className="event-description">
         <h3>Description</h3>
         <div style={{ whiteSpace: "pre-wrap", paddingTop: "1vw" }}>
           <p>{event.description}</p>
         </div>
       </div>
-      <div className="event-venue-location" style={{ marginLeft: "8px" }}>
+      <div className="event-venue-location">
         <h3>Venue and Location</h3>
         <div className="map-container">
           <iframe
@@ -241,7 +237,7 @@ export default function EventDetails() {
         </div>
       )}
 
-      <div className="event-buy-tickets" style={{ marginLeft: "8px" }}>
+      <div className="event-buy-tickets">
         <p>
           <strong>
             Ticket Price: <span>R</span> {event.ticketPrice}{" "}
@@ -321,7 +317,8 @@ export default function EventDetails() {
                 } catch (error) {
                   console.error("Error rejecting the event:", error);
                 }
-              }}
+              }
+              }
             >
               Yes
             </Button>
