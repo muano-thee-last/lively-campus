@@ -61,8 +61,10 @@ function Header({ toggleSidebar, onSearch }) {
               );
               await deleteNotification(notification.id);
               return null;
+            } else if (eventResponse) {
+              const eventData = await eventResponse.json();
+              return eventData.isApproved ? notification : null;
             }
-            return notification;
           } catch (error) {
             console.error(
               `Error fetching event for notification ${notification.id}:`,

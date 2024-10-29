@@ -33,6 +33,10 @@ function Notifications() {
 
               const eventData = await eventResponse.json();
 
+              if (!eventData.isApproved) {
+                return null;
+              }
+
               const timestampDate = new Date(
                 notification.timestamp._seconds * 1000
               );
@@ -144,11 +148,18 @@ function Notifications() {
     if (diffInHours < 24) {
       if (diffInHours < 1) {
         const minutes = Math.floor((now - date) / (1000 * 60));
-        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+        return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
       }
-      return `${Math.floor(diffInHours)} hour${diffInHours >= 2 ? 's' : ''} ago`;
+      return `${Math.floor(diffInHours)} hour${
+        diffInHours >= 2 ? "s" : ""
+      } ago`;
     }
-    return date.toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
+    return date.toLocaleString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   const renderNotificationItem = (notification) => (
@@ -159,11 +170,13 @@ function Notifications() {
       }`}
       onClick={() => handleViewNotification(notification.id)}
       style={{
-        animation: viewedNotifications.has(notification.id) ? 'none' : 'fadeIn 0.5s ease-out'
+        animation: viewedNotifications.has(notification.id)
+          ? "none"
+          : "fadeIn 0.5s ease-out",
       }}
     >
       <img
-        src={notification.imageUrl || 'https://via.placeholder.com/60'}
+        src={notification.imageUrl || "https://via.placeholder.com/60"}
         alt={notification.title}
         className="notification-image"
       />
@@ -172,16 +185,16 @@ function Notifications() {
           <span className="notification-event">{notification.title}</span>
           <p className="notification-message">{notification.message}</p>
         </div>
-        <span className="notification-time">{formatTimestamp(notification.timestamp)}</span>
+        <span className="notification-time">
+          {formatTimestamp(notification.timestamp)}
+        </span>
       </div>
     </li>
   );
 
   const renderNotificationGroup = (date, notifications) => (
     <div key={date}>
-      <h3 className="notification-date">
-        {isToday(date) ? "Today" : date}
-      </h3>
+      <h3 className="notification-date">{isToday(date) ? "Today" : date}</h3>
       <ul className="notifications-list">
         {notifications.map(renderNotificationItem)}
       </ul>
