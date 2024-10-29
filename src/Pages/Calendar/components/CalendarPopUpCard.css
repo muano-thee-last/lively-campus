@@ -147,3 +147,17 @@
 .event-status.user-event {
   color: #FFD700;
 }
+
+.no-events-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.no-events-image {
+  width: 150px;
+  height: auto;
+  margin-bottom: 10px;
+}

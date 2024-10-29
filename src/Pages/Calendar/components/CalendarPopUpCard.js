@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import './CalendarPopUpCard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faClock, faUsers, faTicketAlt, faStar, faUserEdit } from '@fortawesome/free-solid-svg-icons';
+import coolImage from './cool.png';
 
 const CalendarPopUpCard = ({ date, events, onClose, currentUser }) => {
   return (
@@ -45,7 +46,10 @@ const CalendarPopUpCard = ({ date, events, onClose, currentUser }) => {
               ))}
             </>
           ) : (
-            <p className="no-events-message">Oops!! It looks like there's nothing scheduled for this date.</p>
+            <div className="no-events-container">
+              <img src={coolImage} alt="No events" className="no-events-image" />
+              <p className="no-events-message">Oops!! It looks like there's nothing scheduled for this date.</p>
+            </div>
           )}
         </div>
       </div>

@@ -321,7 +321,6 @@ const MainContent = () => {
               type="date" 
               value={filterDate} 
               onChange={handleFilterDateChange} 
-              max={new Date().toISOString().split('T')[0]}
             />
             <select value={filterType} onChange={handleFilterTypeChange}>
               <option value="">All Types</option>
@@ -409,14 +408,22 @@ const MainContent = () => {
             const isPastDayDate = new Date(currentYear, currentMonth, day + 1) < new Date().setHours(0, 0, 0, 0);
             const hasTicketedEventsForDay = currentDayEvents.some(event => isTicketedEvent(event));
             const hasUserEventsForDay = currentDayEvents.some(event => isUserEvent(event));
+            
+            // Add this new condition to check if this day matches the filtered date
+            const isFilteredDate = filterDate && 
+              day + 1 === new Date(filterDate).getDate() && 
+              currentMonth === new Date(filterDate).getMonth() && 
+              currentYear === new Date(filterDate).getFullYear();
 
             return (
               <div 
                 key={day} 
-                className={`day ${isTodayDate ? 'highlight-day' : ''} 
+                className={`day 
+                  ${isTodayDate ? 'highlight-day' : ''} 
                   ${hasTicketedEventsForDay ? 'has-ticketed-events' : ''}
                   ${hasUserEventsForDay ? 'has-user-events' : ''}
-                  ${isPastDayDate ? 'past-day' : ''}`}
+                  ${isPastDayDate ? 'past-day' : ''}
+                  ${isFilteredDate ? 'filtered-date' : ''}`}
                 onClick={() => handleDateClick(day + 1)}
               >
                 <span className="day-number">{day + 1}</span>
@@ -432,7 +439,7 @@ const MainContent = () => {
                         title={`${event.title} - ${formatEventDateTime(event.date)}`}
                       >
                         <span className="event-title">{event.title}</span>
-                        <span className="event-time">{formatEventTime(event.date)}</span>
+          
                       </div>
                     ))}
                   </div>
