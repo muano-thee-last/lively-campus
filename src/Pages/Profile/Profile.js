@@ -10,6 +10,7 @@ import SideBar from "../dashboard/side-bar";
 import Footer from "../dashboard/footer";
 import profile from "../dashboard/images-logos/profile-logo.jpg";
 import comments from "../dashboard/images-logos/comments.jpeg";
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 
 export default function Profile() {
   const [user, setUser] = useState({});
@@ -28,6 +29,8 @@ export default function Profile() {
   };
 
   const { myImg, name, title, email } = userData;
+
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   useEffect(() => {
     setUser(JSON.parse(sessionStorage.getItem("user")));
@@ -106,9 +109,14 @@ export default function Profile() {
   };
 
   // Logout Function
-  const handleLogout = () => {
-    sessionStorage.clear(); // Clear user data from session storage
-    navigate("/"); // Redirect to login page
+  const handleLogoutClick = () => {
+    setShowLogoutDialog(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    sessionStorage.clear();
+    setShowLogoutDialog(false);
+    navigate('/');
   };
 
   return (
@@ -159,11 +167,20 @@ export default function Profile() {
             </button>
             <button
               className="additional-features-buttons logout-button"
-              onClick={handleLogout}
+              onClick={handleLogoutClick}
             >
               Logout
             </button>
           </div>
+
+          {/* Add the confirmation dialog */}
+          <ConfirmationDialog
+            open={showLogoutDialog}
+            onClose={() => setShowLogoutDialog(false)}
+            onConfirm={handleLogoutConfirm}
+            title="Confirm Logout"
+            message="Are you sure you want to logout?"
+          />
 
           {/* Liked Events Section */}
           <div className="liked-events-section">
