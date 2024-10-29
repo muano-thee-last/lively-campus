@@ -18,7 +18,16 @@ function Notifications() {
         );
         const notificationsData = await response.json();
 
-        const detailedNotifications = await Promise.all(
+        const ticketResponse = await fetch(
+          `https://us-central1-witslivelycampus.cloudfunctions.net/app/getTicketsx/${uid}`
+        );
+        const ticketData = ticketResponse.ok ? await ticketResponse.json() : [];
+
+        const validTicketEventIds = ticketData
+          .filter((ticket) => ticket.eventTitle !== "Title not found")
+          .map((ticket) => ticket.eventId);
+
+        const eventNotifications = await Promise.all(
           notificationsData.map(async (notification) => {
             try {
               const eventResponse = await fetch(
@@ -62,12 +71,57 @@ function Notifications() {
           })
         );
 
-        const validNotifications = detailedNotifications.filter(
+        const validNotifications = eventNotifications.filter(
           (notification) => notification !== null
         );
-        validNotifications.sort((a, b) => b.dateObject - a.dateObject);
 
-        const groupedNotifications = validNotifications.reduce(
+        const today = new Date();
+        const dayBeforeNotifications = await Promise.all(
+          validTicketEventIds.map(async (eventId) => {
+            try {
+              const eventResponse = await fetch(
+                `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${eventId}`
+              );
+              const event = await eventResponse.json();
+
+              const eventDate = new Date(event.date);
+              const oneDayBefore = new Date(eventDate);
+              oneDayBefore.setDate(eventDate.getDate() - 1);
+
+              if (oneDayBefore.toDateString() === today.toDateString()) {
+                return {
+                  id: `upcoming-${eventId}`,
+                  eventId,
+                  title: "Event Reminder",
+                  message: `Reminder: Your event "${event.title}" is tomorrow.`,
+                  timestamp: {
+                    _seconds: Math.floor(oneDayBefore.getTime() / 1000),
+                  },
+                  imageUrl: event.imageUrl || "https://via.placeholder.com/60",
+                  dateObject: oneDayBefore,
+                  formattedDate: oneDayBefore.toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  }),
+                };
+              }
+
+              return null;
+            } catch (error) {
+              console.error(`Error fetching event for reminder:`, error);
+              return null;
+            }
+          })
+        );
+
+        const combinedNotifications = [
+          ...validNotifications,
+          ...dayBeforeNotifications.filter((n) => n !== null),
+        ];
+        combinedNotifications.sort((a, b) => b.dateObject - a.dateObject);
+
+        const groupedNotifications = combinedNotifications.reduce(
           (acc, notification) => {
             const dateKey = notification.formattedDate;
             if (!acc[dateKey]) {
@@ -131,37 +185,6 @@ function Notifications() {
     }
   };
 
-  const isToday = (dateString) => {
-    const today = new Date().toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-    return dateString === today;
-  };
-
-  const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp._seconds * 1000);
-    const now = new Date();
-    const diffInHours = (now - date) / (1000 * 60 * 60);
-
-    if (diffInHours < 24) {
-      if (diffInHours < 1) {
-        const minutes = Math.floor((now - date) / (1000 * 60));
-        return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
-      }
-      return `${Math.floor(diffInHours)} hour${
-        diffInHours >= 2 ? "s" : ""
-      } ago`;
-    }
-    return date.toLocaleString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
   const renderNotificationItem = (notification) => (
     <li
       key={notification.id}
@@ -169,14 +192,9 @@ function Notifications() {
         viewedNotifications.has(notification.id) ? "viewed" : "unviewed"
       }`}
       onClick={() => handleViewNotification(notification.id)}
-      style={{
-        animation: viewedNotifications.has(notification.id)
-          ? "none"
-          : "fadeIn 0.5s ease-out",
-      }}
     >
       <img
-        src={notification.imageUrl || "https://via.placeholder.com/60"}
+        src={notification.imageUrl}
         alt={notification.title}
         className="notification-image"
       />
@@ -185,20 +203,8 @@ function Notifications() {
           <span className="notification-event">{notification.title}</span>
           <p className="notification-message">{notification.message}</p>
         </div>
-        <span className="notification-time">
-          {formatTimestamp(notification.timestamp)}
-        </span>
       </div>
     </li>
-  );
-
-  const renderNotificationGroup = (date, notifications) => (
-    <div key={date}>
-      <h3 className="notification-date">{isToday(date) ? "Today" : date}</h3>
-      <ul className="notifications-list">
-        {notifications.map(renderNotificationItem)}
-      </ul>
-    </div>
   );
 
   return (
@@ -211,9 +217,12 @@ function Notifications() {
       ) : Object.keys(notificationsByDate).length === 0 ? (
         <div className="loading-message">No notifications found.</div>
       ) : (
-        Object.entries(notificationsByDate).map(([date, notifications]) =>
-          renderNotificationGroup(date, notifications)
-        )
+        Object.entries(notificationsByDate).map(([date, notifications]) => (
+          <div key={date}>
+            <h3>{date}</h3>
+            <ul>{notifications.map(renderNotificationItem)}</ul>
+          </div>
+        ))
       )}
     </div>
   );
