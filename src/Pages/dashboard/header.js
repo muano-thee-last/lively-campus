@@ -5,7 +5,7 @@ import {
   Notifications as NotificationsIcon,
   AccountCircle as AccountCircleIcon,
 } from "@mui/icons-material"; // MUI icons
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import { IconButton, InputBase, Badge } from "@mui/material";
 import logo from "./images-logos/logo.png";
 import "./header.css";
@@ -55,7 +55,7 @@ function Header({ toggleSidebar, onSearch }) {
             const eventResponse = await fetch(
               `https://us-central1-witslivelycampus.cloudfunctions.net/app/events/${notification.eventId}`
             );
-            if (!eventResponse.ok) {
+            if (!eventResponse.ok && eventResponse.status === 404) {
               console.log(
                 `Event not found for notification: ${notification.id}`
               );
@@ -68,7 +68,7 @@ function Header({ toggleSidebar, onSearch }) {
               `Error fetching event for notification ${notification.id}:`,
               error
             );
-            await deleteNotification(notification.id);
+
             return null;
           }
         })
@@ -173,7 +173,7 @@ function Header({ toggleSidebar, onSearch }) {
               className="search-button"
               style={{ scale: "1.1" }}
             >
-             <SearchIcon /> 
+              <SearchIcon />
             </IconButton>
           </div>
         )}
