@@ -33,6 +33,8 @@
 .mini-calendar-row, .mini-calendar-dates {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  gap: 1.5px;
+  padding: 4px 0;
 }
 
 .mini-calendar-row {
@@ -41,6 +43,9 @@
   font-size: 12px;
   padding: 8px 0;
 }
+.mini-calendar-row span {
+  text-align: center;
+}
 
 .mini-date {
   display: flex;
@@ -48,6 +53,7 @@
   align-items: center;
   height: 30px;
   font-size: 12px;
+  /* min-width: 30px; */
 }
 
 .mini-date.highlight {
@@ -75,6 +81,7 @@
   background-color: #90EE90; /* Light green */
   color: #003B5C;
   border-radius: 50%;
+  z-index: 2;
 }
 
 /* Upcoming Events section */

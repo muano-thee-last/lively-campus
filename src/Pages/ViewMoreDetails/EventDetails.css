@@ -14,7 +14,7 @@
   z-index: 2;
   display: flex;
   flex-wrap: wrap;
-  margin-top: -78px;
+  margin-top: -84px;
   margin-left: 3px;
   text-align: center;
   align-items: center;
@@ -48,7 +48,7 @@
   flex-wrap: wrap;
   justify-content: space-between; 
   align-items: center; 
-  margin: 20px 0;
+  margin: 0 0 20px 0;
   font-size: 18px;
   font-weight: 500;
 }
