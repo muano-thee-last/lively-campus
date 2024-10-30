@@ -63,8 +63,8 @@ export default function TicketVerification() {
   const onScanSuccess = (decodedText) => {
     stopScanner();
     
-    const prefix = "https://witslivelycampus.web.app/ticketVerification?ticketCode=";
-    const ticketCodeAlt = url.startsWith(prefix) ? url.slice(prefix.length) : url;
+     const prefix = "https://witslivelycampus.web.app/ticketVerification?ticketCode=";
+     const ticketCodeAlt = decodedText.startsWith(prefix) ? decodedText.slice(prefix.length) : decodedText;
 
     setTicketNum(ticketCodeAlt);
 
