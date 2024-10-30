@@ -16,6 +16,7 @@ const TicketModal = ({
   ticketTime,
   qrCode,
 }) => {
+  const studentNumber = JSON.parse(sessionStorage.getItem("user")).email.split("@")[0];
   return (
     <Modal
       isOpen={isOpen}
@@ -38,7 +39,7 @@ const TicketModal = ({
 
             <div className={styles.infoRow}>
               <div className={styles.titleInput}>
-                <p>Student No</p> <h3>{studentNo}</h3>
+                <p>Student No</p> <h3>{studentNumber}</h3>
               </div>
               <div className={styles.titleInput}>
                 <p>Ticket Code</p> <h3>{ticketNo}</h3>
