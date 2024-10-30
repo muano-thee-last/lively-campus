@@ -93,7 +93,7 @@
     display: none !important;
   }
 }
-  @media (max-width: 600px) {
+  @media (max-width: 950px) {
     #header {
  
       background-color:rgba(7, 65, 119, 0.8);
