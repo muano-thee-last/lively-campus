@@ -39,7 +39,7 @@ function EventManagementMainContent() {
             "https://us-central1-witslivelycampus.cloudfunctions.net/app/events/"
           );
           if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);  
           }
 
           const data = await response.json();
