@@ -63,13 +63,19 @@
     margin-top: 2rem;
 }
 
-.social-logos,
-.linkdlen-logo {
+.social-logos {
     width: 30px;
     height: 30px;
     transition: transform 0.3s ease;
     cursor: pointer;
 }
+.linkdlen-logo{
+    width: 38px;
+    height: 38px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
 
 .social-logos:hover,
 .linkdlen-logo:hover {
@@ -105,6 +111,9 @@
     #footer {
         padding: 2rem;
         display: flex;
+    }
+    #footer{
+        display: none;
     }
     
     .email-subscription {
