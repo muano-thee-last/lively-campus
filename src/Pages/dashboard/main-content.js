@@ -241,7 +241,7 @@ function MainContent({ searchQuery }) {
       const commentTime = new Date(isNaN(timestamp) ? timestamp : parseInt(timestamp));
       
       if (isNaN(commentTime)) {
-        return "Invalid date";
+        return "Just now";
       }
     
       const timeDifference = currentTime - commentTime;
