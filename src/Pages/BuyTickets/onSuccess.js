@@ -82,7 +82,7 @@ const SuccessPage = () => {
       await uploadTicketInformation(id, 200);
       await updateTicketsAvailable(id);
       await incrementTicketSalse(id);
-      navigate('/dashboard'); 
+      navigate('/ticket-history'); 
     };
 
     if (id) {
