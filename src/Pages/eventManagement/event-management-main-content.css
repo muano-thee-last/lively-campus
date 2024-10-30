@@ -263,7 +263,7 @@
   .management-card-container {
     width: 100%; /* Show only one card at a time */
     gap: 7%; /* Remove gap to fit one card properly */
-    
+    margin-top: 7%;
    /* Space between cards */
   transition: transform 0.3s ease;
 
@@ -369,6 +369,7 @@
   position: relative;
   display: flex;
   justify-content: center;
+   display: none;
 
 }
 .management-eventManagement2{
