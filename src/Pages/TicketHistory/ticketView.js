@@ -35,7 +35,7 @@ export default function TicketView({
     setModalOpen(false);
   };
 
-const url = ticketCode;
+const url = `https://witslivelycampus.web.app/ticketVerification?ticketCode=${ticketCode}`;
 
   return (
     <div className={styles.ticketContainer}>
