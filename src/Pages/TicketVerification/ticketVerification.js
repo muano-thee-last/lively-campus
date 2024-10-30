@@ -71,8 +71,8 @@ export default function TicketVerification() {
     setTimeout(() => {
       verifyTicket(decodedText);
 
-    }, 200);
-  };
+    }, 500);
+
 
   const onScanError = (error) => console.warn("QR Code scanning error:", error);
 
