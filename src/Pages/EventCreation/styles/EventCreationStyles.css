@@ -282,14 +282,14 @@
 }
 
 .event-description {
-  margin-top: 4px;
+  margin-top: 0.5rem;
   font-size: 1.02rem;
   display: block;
   width: 100%;
   min-height: 100px;
   resize: vertical;
-  margin-left: 0.5rem;
 }
+
 .event-details-block label {
   font-size: 20;
   font-weight: 500;
